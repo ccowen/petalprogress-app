@@ -1,0 +1,146 @@
+.page {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 40px 40px 80px;
+}
+
+/* Header */
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 28px;
+}
+
+.title {
+  font-family: var(--pp-font-display);
+  font-size: 28px;
+  font-weight: 400;
+}
+
+.newBtn {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 9px 20px;
+  background: var(--pp-dark);
+  color: rgba(255, 255, 255, 0.88);
+  border: none;
+  border-radius: var(--pp-radius-pill);
+  font-family: var(--pp-font-body);
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.18s;
+  text-decoration: none;
+}
+
+.newBtn:hover {
+  background: #111;
+}
+
+/* Grid */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+
+/* Card */
+.card {
+  background: var(--pp-surface);
+  border: 1px solid var(--pp-warm-1);
+  border-radius: var(--pp-radius-card);
+  overflow: hidden;
+  transition: all 0.2s;
+  cursor: pointer;
+  text-decoration: none;
+  display: block;
+  color: inherit;
+}
+
+.card:hover {
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.08);
+  transform: translateY(-2px);
+}
+
+.cardVisual {
+  height: 160px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--pp-bg);
+}
+
+.cardBody {
+  padding: 16px 18px 18px;
+}
+
+.cardName {
+  font-family: var(--pp-font-display);
+  font-size: 18px;
+  font-weight: 400;
+  margin-bottom: 6px;
+}
+
+.cardMeta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 12px;
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 2px 9px;
+  border-radius: var(--pp-radius-pill);
+  font-size: 11px;
+}
+
+.badgeActive {
+  background: rgba(143, 166, 140, 0.12);
+  color: var(--pp-sage);
+}
+
+.badgeComplete {
+  background: rgba(123, 155, 175, 0.12);
+  color: #7B9BAF;
+}
+
+.badgePaused {
+  background: var(--pp-warm-1);
+  color: var(--pp-text-muted);
+}
+
+/* New card */
+.cardNew {
+  background: transparent;
+  border: 1.5px dashed var(--pp-warm-2);
+  border-radius: var(--pp-radius-card);
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 230px;
+  gap: 10px;
+  transition: all 0.18s;
+  color: var(--pp-text-muted);
+}
+
+.cardNew:hover {
+  border-color: var(--pp-sage);
+  color: var(--pp-sage);
+  background: rgba(143, 166, 140, 0.04);
+}
+
+.cardNewIcon {
+  font-size: 24px;
+}
+
+.cardNewLabel {
+  font-size: 13px;
+  font-weight: 500;
+}

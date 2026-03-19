@@ -1,0 +1,28 @@
+.tabs {
+  display: flex;
+  gap: 4px;
+  margin-bottom: 28px;
+}
+
+.tab {
+  padding: 6px 16px;
+  border-radius: var(--pp-radius-pill);
+  font-size: 13px;
+  color: var(--pp-text-muted);
+  cursor: pointer;
+  border: none;
+  background: none;
+  font-family: var(--pp-font-body);
+  transition: all var(--pp-transition-fast);
+}
+
+.tab:hover {
+  background: var(--pp-warm-1);
+  color: var(--pp-text-soft);
+}
+
+.active {
+  background: var(--pp-warm-1);
+  color: var(--pp-text);
+  font-weight: 500;
+}

@@ -1,0 +1,27 @@
+.strip {
+  display: grid;
+  gap: 12px;
+  margin-bottom: 32px;
+}
+
+.chip {
+  background: var(--pp-surface);
+  border: 1px solid var(--pp-warm-1);
+  border-radius: 14px;
+  padding: 16px 18px;
+  text-align: center;
+}
+
+.num {
+  font-family: var(--pp-font-display);
+  font-size: 30px;
+  font-weight: 300;
+  line-height: 1;
+  color: var(--pp-text);
+  margin-bottom: 4px;
+}
+
+.lbl {
+  font-size: 12px;
+  color: var(--pp-text-muted);
+}

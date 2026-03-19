@@ -1,0 +1,86 @@
+/* ── Org Name Modal ── */
+
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 500;
+  background: rgba(44, 40, 37, 0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  backdrop-filter: blur(3px);
+}
+
+.box {
+  background: var(--pp-surface, #FDFCFA);
+  border: 1px solid var(--pp-warm-1, #EDE9E3);
+  border-radius: 20px;
+  padding: 36px 36px 32px;
+  width: 100%;
+  max-width: 420px;
+  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.14);
+}
+
+.logo {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 18px;
+  color: var(--pp-text-muted, #A09890);
+  text-align: center;
+  margin-bottom: 24px;
+  display: block;
+}
+
+.title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 24px;
+  font-weight: 400;
+  margin-bottom: 6px;
+}
+
+.sub {
+  font-size: 13px;
+  color: var(--pp-text-soft, #6B6460);
+  margin-bottom: 22px;
+  line-height: 1.6;
+}
+
+.input {
+  width: 100%;
+  padding: 11px 14px;
+  background: var(--pp-bg, #F8F6F3);
+  border: 1.5px solid var(--pp-warm-2, #D4CEC7);
+  border-radius: 10px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 14px;
+  color: var(--pp-text, #2C2825);
+  outline: none;
+  transition: border-color 0.16s;
+  margin-bottom: 14px;
+}
+
+.input:focus {
+  border-color: var(--pp-amber, #C4887A);
+}
+
+.input::placeholder {
+  color: var(--pp-text-muted, #A09890);
+}
+
+.btn {
+  width: 100%;
+  padding: 12px;
+  background: var(--pp-dark, #1E1A17);
+  color: rgba(255, 255, 255, 0.88);
+  border: none;
+  border-radius: 10px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.18s;
+}
+
+.btn:hover {
+  background: #111;
+}

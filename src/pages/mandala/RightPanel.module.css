@@ -1,0 +1,166 @@
+/* ─── Right Panel ─── */
+.panel {
+  width: 276px;
+  overflow: hidden;
+  background: var(--pp-surface);
+  border-left: 1px solid var(--pp-warm-1);
+  flex-shrink: 0;
+}
+
+.inner {
+  width: 276px;
+  padding: 22px 18px;
+  height: 100%;
+  overflow-y: auto;
+}
+
+.sectionLabel {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--pp-text-muted);
+  margin-bottom: 11px;
+  margin-top: 18px;
+}
+
+.sectionLabel:first-child {
+  margin-top: 0;
+}
+
+/* ─── Today Check-in Card ─── */
+.todayCard {
+  background: var(--pp-bg);
+  border: 1.5px solid var(--pp-warm-1);
+  border-radius: 14px;
+  padding: 14px 16px;
+  cursor: pointer;
+  margin-bottom: 4px;
+  transition: all 0.2s;
+  user-select: none;
+}
+
+.todayCard:hover {
+  border-color: var(--pp-warm-2);
+}
+
+.todayCardDone {
+  background: rgba(143, 166, 140, 0.07);
+  border-color: rgba(143, 166, 140, 0.32);
+}
+
+.todayMeta {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--pp-text-muted);
+  margin-bottom: 10px;
+}
+
+.todayRow {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.todayCircle {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  border: 1.5px solid var(--pp-warm-2);
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  color: transparent;
+  transition: all 0.2s;
+}
+
+.todayCardDone .todayCircle {
+  background: var(--pp-sage);
+  border-color: var(--pp-sage);
+  color: white;
+}
+
+.todayLabel {
+  font-family: var(--pp-font-display);
+  font-size: 19px;
+  font-weight: 300;
+  color: var(--pp-text);
+  transition: color 0.2s;
+}
+
+.todayCardDone .todayLabel {
+  color: var(--pp-text-soft);
+}
+
+/* ─── Stat Card ─── */
+.statCard {
+  background: var(--pp-bg);
+  border-radius: 14px;
+  padding: 15px;
+  margin-bottom: 10px;
+}
+
+.statLabel {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--pp-text-muted);
+  margin-bottom: 7px;
+}
+
+.statBig {
+  font-family: var(--pp-font-display);
+  font-size: 38px;
+  font-weight: 300;
+  line-height: 1;
+  margin-bottom: 4px;
+}
+
+.statBigUnit {
+  font-size: 15px;
+  color: var(--pp-text-soft);
+}
+
+.statSm {
+  font-size: 11.5px;
+  color: var(--pp-text-soft);
+}
+
+/* ─── Progress Bar ─── */
+.progBar {
+  height: 5px;
+  background: var(--pp-warm-1);
+  border-radius: 3px;
+  overflow: hidden;
+  margin-top: 10px;
+}
+
+.progFill {
+  height: 100%;
+  border-radius: 3px;
+  background: var(--pp-sage);
+}
+
+/* ─── Week Dots ─── */
+.weekDots {
+  display: flex;
+  gap: 5px;
+  margin-top: 11px;
+}
+
+.wd {
+  flex: 1;
+  height: 5px;
+  border-radius: 3px;
+  background: var(--pp-warm-1);
+}
+
+.wdDone {
+  background: var(--pp-sage);
+}
+
+.wdNow {
+  background: var(--pp-coral);
+}

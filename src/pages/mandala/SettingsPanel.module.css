@@ -1,0 +1,387 @@
+/* ─── Settings Panel — floating card ─── */
+.panel {
+  position: absolute;
+  left: calc(64px + 28px);
+  top: 50%;
+  transform: translateY(-50%) translateX(-10px);
+  z-index: 199;
+  width: 296px;
+  background: var(--pp-surface);
+  border: 1px solid var(--pp-warm-1);
+  border-radius: 20px;
+  box-shadow: 0 8px 40px rgba(0, 0, 0, 0.11), 0 2px 8px rgba(0, 0, 0, 0.05);
+  max-height: 82vh;
+  overflow: hidden;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.22s cubic-bezier(0.4, 0, 0.2, 1),
+    transform 0.22s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.panelOpen {
+  opacity: 1;
+  pointer-events: all;
+  transform: translateY(-50%) translateX(0);
+}
+
+.inner {
+  width: 296px;
+  padding: 24px 20px;
+  max-height: 82vh;
+  overflow-y: auto;
+}
+
+/* ─── Sections ─── */
+.section {
+  display: none;
+}
+
+.sectionShow {
+  display: block;
+  animation: fadeUp 0.22s ease;
+}
+
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.eyebrow {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--pp-text-muted);
+  margin-bottom: 18px;
+}
+
+.title {
+  font-family: var(--pp-font-display);
+  font-size: 22px;
+  font-weight: 400;
+  margin-bottom: 6px;
+}
+
+.desc {
+  font-size: 12px;
+  color: var(--pp-text-soft);
+  line-height: 1.65;
+  margin-bottom: 22px;
+}
+
+/* ─── Theme Grid ─── */
+.themeGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-bottom: 22px;
+}
+
+.themeCard {
+  border-radius: 12px;
+  padding: 11px;
+  cursor: pointer;
+  border: 2px solid transparent;
+  transition: all 0.18s;
+  background: none;
+  font-family: var(--pp-font-body);
+}
+
+.themeCard:hover {
+  border-color: var(--pp-warm-2);
+}
+
+.themeCardOn {
+  border-color: var(--pp-text);
+}
+
+.themeSwatch {
+  height: 50px;
+  border-radius: 8px;
+  margin-bottom: 7px;
+}
+
+.pumpkinSw {
+  background: linear-gradient(135deg, #d4845a, #c4622a, #8b4513);
+}
+
+.iceSw {
+  background: linear-gradient(135deg, #b8d4e8, #7ba7c4, #4a7fa0);
+}
+
+.bloomSw {
+  background: linear-gradient(135deg, #e8a5b8, #c47a95, #8b5070);
+}
+
+.heatSw {
+  background: linear-gradient(135deg, #e8b84b, #d4821a, #c45a1a);
+}
+
+.themeName {
+  font-size: 11px;
+  color: var(--pp-text-soft);
+  text-align: center;
+}
+
+/* ─── Petal Color ─── */
+.petalLabel {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--pp-text-muted);
+  margin-bottom: 10px;
+}
+
+.petalRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 22px;
+}
+
+.pswatch {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  cursor: pointer;
+  border: 2.5px solid transparent;
+  transition: all 0.18s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  padding: 0;
+}
+
+.pswatchOn {
+  border-color: var(--pp-text);
+  padding: 3px;
+}
+
+.pi {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+}
+
+/* ─── Petal Shape Grid ─── */
+.pshapeGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  margin-bottom: 22px;
+}
+
+.pshapeCard {
+  border-radius: 12px;
+  padding: 14px 8px;
+  text-align: center;
+  cursor: pointer;
+  border: 2px solid transparent;
+  transition: all 0.18s;
+  background: var(--pp-bg);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--pp-font-body);
+}
+
+.pshapeCard:hover {
+  background: var(--pp-warm-1);
+}
+
+.pshapeCardOn {
+  border-color: var(--pp-sage);
+  background: var(--pp-warm-1);
+}
+
+.pshapeNm {
+  font-size: 10px;
+  color: var(--pp-text-soft);
+}
+
+/* ─── Figure Grid ─── */
+.figGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  margin-bottom: 22px;
+}
+
+.figCard {
+  border-radius: 12px;
+  padding: 14px 8px;
+  text-align: center;
+  cursor: pointer;
+  border: 2px solid transparent;
+  transition: all 0.18s;
+  background: var(--pp-bg);
+  font-family: var(--pp-font-body);
+}
+
+.figCard:hover {
+  background: var(--pp-warm-1);
+}
+
+.figCardOn {
+  border-color: var(--pp-sage);
+  background: var(--pp-warm-1);
+}
+
+.figEm {
+  font-size: 22px;
+  margin-bottom: 4px;
+}
+
+.figNm {
+  font-size: 10px;
+  color: var(--pp-text-soft);
+}
+
+/* ─── Date Section ─── */
+.dateNote {
+  background: rgba(143, 166, 140, 0.1);
+  border: 1px solid rgba(143, 166, 140, 0.3);
+  border-radius: var(--pp-radius-input);
+  padding: 12px 14px;
+  font-size: 11.5px;
+  color: var(--pp-text-soft);
+  line-height: 1.65;
+  margin-bottom: 16px;
+}
+
+/* ─── Buttons ─── */
+.btnApply {
+  width: 100%;
+  padding: 11px;
+  background: var(--pp-sage);
+  border: none;
+  border-radius: var(--pp-radius-input);
+  font-family: var(--pp-font-body);
+  font-size: 12.5px;
+  color: white;
+  cursor: pointer;
+  transition: all 0.18s;
+  margin-top: 8px;
+  letter-spacing: 0.04em;
+}
+
+.btnApply:hover {
+  background: var(--pp-sage-hover);
+}
+
+.btnGhost {
+  width: 100%;
+  padding: 10px;
+  background: transparent;
+  border: 1px solid var(--pp-warm-2);
+  border-radius: var(--pp-radius-input);
+  font-family: var(--pp-font-body);
+  font-size: 12.5px;
+  color: var(--pp-text-soft);
+  cursor: pointer;
+  transition: all 0.18s;
+  margin-top: 6px;
+}
+
+.btnGhost:hover {
+  background: var(--pp-warm-1);
+  color: var(--pp-text);
+}
+
+/* ─── Mini Calendar (in settings) ─── */
+.miniCal {
+  background: var(--pp-bg);
+  border-radius: 12px;
+  padding: 14px;
+  border: 1px solid var(--pp-warm-1);
+}
+
+.mcHead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.mcMonth {
+  font-family: var(--pp-font-display);
+  font-size: 16px;
+}
+
+.mcNav {
+  width: 24px;
+  height: 24px;
+  border-radius: 6px;
+  background: var(--pp-warm-1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 12px;
+  color: var(--pp-text-soft);
+  border: none;
+  font-family: var(--pp-font-body);
+  transition: background 0.15s;
+}
+
+.mcNav:hover {
+  background: var(--pp-warm-2);
+}
+
+.mcDow {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  text-align: center;
+  font-size: 10px;
+  color: var(--pp-text-muted);
+  text-transform: uppercase;
+  margin-bottom: 6px;
+}
+
+.mcDays {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 2px;
+}
+
+.mcDay {
+  aspect-ratio: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 7px;
+  font-size: 12px;
+  cursor: pointer;
+  transition: all 0.15s;
+  color: var(--pp-text-soft);
+  background: none;
+  border: none;
+  font-family: var(--pp-font-body);
+  padding: 0;
+}
+
+.mcDay:hover {
+  background: var(--pp-warm-1);
+  color: var(--pp-text);
+}
+
+.mcDaySel {
+  background: var(--pp-text) !important;
+  color: var(--pp-bg) !important;
+}
+
+.mcDayBlank {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.btnSetDate {
+  margin-top: 14px;
+}

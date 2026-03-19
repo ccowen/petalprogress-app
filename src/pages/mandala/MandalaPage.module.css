@@ -1,0 +1,227 @@
+/* ─── Page Layout ─── */
+.page {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+  position: relative;
+  height: calc(100vh - 56px);
+  font-size: 13px;
+}
+
+/* ─── Center Canvas ─── */
+.center {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  position: relative;
+}
+
+.mandalaWrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 18px;
+  transition: transform 0.28s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.mandalaWrapShifted {
+  transform: translateX(calc((64px + 28px + 296px) / 2));
+}
+
+.mandalaTitle {
+  font-family: var(--pp-font-display);
+  font-size: 19px;
+  font-style: italic;
+  font-weight: 300;
+  color: var(--pp-text-soft);
+  letter-spacing: 0.04em;
+}
+
+.mandalaDateRange {
+  font-size: 11.5px;
+  color: var(--pp-text-muted);
+  text-align: center;
+  margin-top: -12px;
+  margin-bottom: 4px;
+}
+
+/* ─── Share / Shop Toggle ─── */
+.shareShopToggle {
+  font-size: 12px;
+  color: var(--pp-text-muted);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  cursor: pointer;
+  user-select: none;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: color 0.15s;
+  background: none;
+  border: none;
+  font-family: var(--pp-font-body);
+}
+
+.shareShopToggle:hover {
+  color: var(--pp-text-soft);
+}
+
+.sstArrow {
+  font-style: normal;
+  transition: transform 0.2s;
+  display: inline-block;
+}
+
+.sstArrowOpen {
+  transform: rotate(180deg);
+}
+
+.shareShopPanel {
+  display: none;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  justify-content: center;
+  opacity: 0;
+  overflow: visible;
+}
+
+.shareShopPanelOpen {
+  display: flex;
+  opacity: 1;
+  animation: ssReveal 0.18s ease both;
+}
+
+@keyframes ssReveal {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.shareZone {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  position: relative;
+}
+
+.shareIconBtn {
+  width: 32px;
+  height: 32px;
+  border-radius: 9px;
+  background: var(--pp-surface);
+  border: 1px solid var(--pp-warm-1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.shareIconBtn:hover {
+  background: var(--pp-warm-1);
+}
+
+.shopBtn {
+  padding: 6px 14px;
+  border-radius: var(--pp-radius-pill);
+  border: 1px solid var(--pp-warm-1);
+  background: var(--pp-surface);
+  font-family: var(--pp-font-body);
+  font-size: 12px;
+  color: var(--pp-text-soft);
+  cursor: pointer;
+  transition: all 0.15s;
+  white-space: nowrap;
+}
+
+.shopBtn:hover {
+  background: var(--pp-warm-1);
+  color: var(--pp-text);
+}
+
+/* ─── Share Popup ─── */
+.sharePopup {
+  position: absolute;
+  bottom: calc(100% + 10px);
+  left: 50%;
+  transform: translateX(-50%) translateY(6px) scale(0.98);
+  width: 228px;
+  background: var(--pp-surface);
+  border: 1px solid var(--pp-warm-1);
+  border-radius: 14px;
+  padding: 15px;
+  z-index: 400;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1), 0 2px 6px rgba(0, 0, 0, 0.05);
+  opacity: 0;
+  pointer-events: none;
+  transform-origin: bottom center;
+  transition: opacity 0.18s cubic-bezier(0.4, 0, 0.2, 1),
+    transform 0.18s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.sharePopupOpen {
+  opacity: 1;
+  pointer-events: all;
+  transform: translateX(-50%) translateY(0) scale(1);
+}
+
+.sharePopupTitle {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--pp-text);
+  margin-bottom: 12px;
+}
+
+.shareCheck {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+  font-size: 12.5px;
+  color: var(--pp-text-soft);
+  cursor: pointer;
+}
+
+.shareCheck input[type="checkbox"] {
+  accent-color: var(--pp-sage);
+  cursor: pointer;
+  width: 14px;
+  height: 14px;
+}
+
+.shareSep {
+  height: 1px;
+  background: var(--pp-warm-1);
+  margin: 12px 0;
+}
+
+.shareSubmitBtn {
+  width: 100%;
+  padding: 9px;
+  background: var(--pp-text);
+  color: var(--pp-bg);
+  border: none;
+  border-radius: 9px;
+  font-family: var(--pp-font-body);
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.shareSubmitBtn:hover {
+  background: #111;
+}
+
+.shopZone {
+  position: relative;
+}

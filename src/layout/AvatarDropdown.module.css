@@ -1,0 +1,99 @@
+.wrapper {
+  position: relative;
+  margin-left: auto;
+}
+
+.btn {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  color: white;
+  border: none;
+  cursor: pointer;
+  font-family: var(--pp-font-body);
+  font-size: 12px;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: opacity var(--pp-transition-fast);
+}
+
+.btn:hover {
+  opacity: 0.85;
+}
+
+.sage {
+  background: var(--pp-sage);
+}
+
+.amber {
+  background: var(--pp-amber);
+}
+
+.dropdown {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  min-width: 196px;
+  background: var(--pp-surface);
+  border: 1px solid var(--pp-warm-1);
+  border-radius: 14px;
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.09);
+  padding: 7px;
+  z-index: 300;
+}
+
+.section {
+  font-size: 10.5px;
+  color: var(--pp-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  padding: 6px 11px 3px;
+}
+
+.item {
+  display: block;
+  width: 100%;
+  padding: 8px 11px;
+  font-size: 13px;
+  color: var(--pp-text-soft);
+  text-decoration: none;
+  border-radius: 8px;
+  transition: background 0.13s;
+  white-space: nowrap;
+  border: none;
+  background: none;
+  cursor: pointer;
+  font-family: var(--pp-font-body);
+  text-align: left;
+}
+
+.item:hover {
+  background: var(--pp-warm-1);
+  color: var(--pp-text);
+}
+
+.danger {
+  color: var(--pp-coral);
+}
+
+.danger:hover {
+  background: rgba(196, 90, 90, 0.08);
+  color: var(--pp-coral);
+}
+
+.muted {
+  color: var(--pp-text-muted);
+  font-size: 12px;
+}
+
+.muted:hover {
+  color: var(--pp-text-soft);
+}
+
+.sep {
+  height: 1px;
+  background: var(--pp-warm-1);
+  margin: 5px 0;
+}

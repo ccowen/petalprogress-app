@@ -1,0 +1,85 @@
+.topbar {
+  height: 54px;
+  flex-shrink: 0;
+  background: var(--pp-surface);
+  border-bottom: 1px solid var(--pp-warm-1);
+  display: flex;
+  align-items: center;
+  z-index: 100;
+  padding: 0 24px;
+  position: sticky;
+  top: 0;
+}
+
+.logoZone {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 8px;
+  flex-shrink: 0;
+  text-decoration: none;
+}
+
+.logo {
+  font-family: var(--pp-font-display);
+  font-size: 24px;
+  color: var(--pp-text);
+  line-height: 1;
+}
+
+.logoName {
+  font-family: var(--pp-font-display);
+  font-size: 18px;
+  font-weight: 500;
+  color: var(--pp-text);
+  letter-spacing: 0.01em;
+  white-space: nowrap;
+}
+
+.navTabs {
+  display: flex;
+  gap: 2px;
+  margin-left: 20px;
+}
+
+.navTab {
+  padding: 6px 18px;
+  border-radius: var(--pp-radius-pill);
+  font-size: 12.5px;
+  color: var(--pp-text-soft);
+  cursor: pointer;
+  transition: all 0.18s;
+  letter-spacing: 0.01em;
+}
+
+.disabled {
+  color: var(--pp-warm-2);
+  cursor: default;
+  pointer-events: none;
+}
+
+.topbarRight {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.avatar {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: var(--pp-warm-1);
+  color: var(--pp-text-soft);
+  font-size: 12px;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background var(--pp-transition-fast);
+}
+
+.avatar:hover {
+  background: var(--pp-warm-2);
+}
