@@ -31,6 +31,17 @@
   background: var(--pp-amber);
 }
 
+.petal {
+  background: var(--gradient-5);
+  color: var(--circle-dark);
+}
+
+:global(.petal-blue) .petal,
+:global(.petal-indigo) .petal {
+  background: var(--gradient-3);
+  color: #ffffff;
+}
+
 .dropdown {
   position: absolute;
   top: calc(100% + 8px);

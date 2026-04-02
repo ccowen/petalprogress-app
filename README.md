@@ -57,6 +57,33 @@ The app has three distinct navigation layouts:
 - **AdminLayout** — for team admins (Members, Habits, Insights tabs, amber "Teams" badge)
 - **OnboardingLayout** — for first-time setup (disabled nav tabs, no dropdown)
 
+## Mandala assets
+
+The mandala requires shared assets (SVG shapes, fonts, styles, themes) that live in a separate repo. A fetch script pulls them into `src/mandala/assets/` before the app runs.
+
+**Local dev** — copies from the sibling `mandala-generator` repo:
+
+```bash
+ASSETS_SOURCE=local npm run fetch-assets
+```
+
+**CI / production** — syncs from S3 (configure via env vars):
+
+```bash
+ASSETS_S3_BUCKET=your-bucket  ASSETS_S3_REGION=us-east-1  npm run fetch-assets
+```
+
+`npm run dev` automatically fetches from local. `npm run build` runs the fetch as a prebuild step (defaults to S3).
+
+| Env var | Description | Default |
+|---------|-------------|---------|
+| `ASSETS_SOURCE` | `local` or `s3` | `s3` |
+| `ASSETS_S3_BUCKET` | S3 bucket name | — |
+| `ASSETS_S3_PREFIX` | Key prefix in bucket | `mandala-assets/` |
+| `ASSETS_S3_REGION` | AWS region | `us-east-1` |
+
+For local dev, clone `mandala-generator` as a sibling directory so the path `../mandala-generator/my-assets/` resolves.
+
 ## Dependencies
 
 - **@petalprogress/ui** — shared design tokens and components (linked locally via `file:../petalprogress-ui`)

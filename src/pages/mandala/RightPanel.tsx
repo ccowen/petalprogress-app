@@ -31,6 +31,8 @@ interface RightPanelProps {
   onCheckIn: () => void;
   checkedDays: Set<string>;
   onToggleDay: (key: string) => void;
+  themeClass: string;
+  initialDate?: Date;
 }
 
 export default function RightPanel({
@@ -38,6 +40,8 @@ export default function RightPanel({
   onCheckIn,
   checkedDays,
   onToggleDay,
+  themeClass,
+  initialDate,
 }: RightPanelProps) {
   const todayMeta = useMemo(() => {
     const t = new Date();
@@ -45,7 +49,7 @@ export default function RightPanel({
   }, []);
 
   return (
-    <div className={s.panel}>
+    <div className={`${s.panel} ${themeClass}`}>
       <div className={s.inner}>
         {/* ─── Check-in Card ─── */}
         <div
@@ -62,7 +66,7 @@ export default function RightPanel({
         </div>
 
         {/* ─── Mini Calendar ─── */}
-        <MiniCalendar checkedDays={checkedDays} onToggleDay={onToggleDay} />
+        <MiniCalendar checkedDays={checkedDays} onToggleDay={onToggleDay} initialDate={initialDate} />
 
         {/* ─── This Week Stats ─── */}
         <div className={s.sectionLabel}>This Week</div>
@@ -77,8 +81,6 @@ export default function RightPanel({
             <div className={`${s.wd} ${s.wdDone}`} />
             <div className={`${s.wd} ${s.wdDone}`} />
             <div className={`${s.wd} ${s.wdDone}`} />
-            <div className={`${s.wd} ${s.wdNow}`} />
-            <div className={s.wd} />
             <div className={s.wd} />
           </div>
         </div>

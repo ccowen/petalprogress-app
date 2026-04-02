@@ -4,19 +4,23 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
+    "fetch-assets": "node scripts/fetch-assets.js",
+    "dev": "ASSETS_SOURCE=local node scripts/fetch-assets.js && vite",
+    "prebuild": "node scripts/fetch-assets.js",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview"
   },
   "dependencies": {
     "@petalprogress/ui": "file:../petalprogress-ui",
+    "d3": "^7.9.0",
     "react": "^19.2.4",
     "react-dom": "^19.2.4",
     "react-router": "^7.0.0"
   },
   "devDependencies": {
     "@eslint/js": "^9.39.4",
+    "@types/d3": "^7.4.3",
     "@types/node": "^24.12.0",
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",

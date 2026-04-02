@@ -106,13 +106,19 @@
 }
 
 .dayChecked {
-  background: var(--pp-coral) !important;
-  color: white !important;
+  background: var(--gradient-5) !important;
+  color: var(--circle-dark) !important;
   border-radius: 8px;
 }
 
 .dayChecked:hover {
-  background: #b54f4f !important;
+  background: var(--gradient-6) !important;
+}
+
+:global(.petal-blue) .dayChecked,
+:global(.petal-indigo) .dayChecked {
+  background: var(--gradient-3) !important;
+  color: #ffffff !important;
 }
 
 .note {

@@ -39,7 +39,7 @@ export default function AppLayout() {
             </Link>
           ))}
         </div>
-        <AvatarDropdown color="sage" initials="CW" items={dropdownItems} />
+        <AvatarDropdown color="petal" initials="CW" items={dropdownItems} />
       </nav>
       <main>
         <Outlet />

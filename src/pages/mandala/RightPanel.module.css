@@ -29,14 +29,25 @@
 
 /* ─── Today Check-in Card ─── */
 .todayCard {
-  background: var(--pp-bg);
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(135deg, var(--gradient-2), var(--gradient-5), var(--gradient-7));
   border: 1.5px solid var(--pp-warm-1);
   border-radius: 14px;
   padding: 14px 16px;
   cursor: pointer;
   margin-bottom: 4px;
-  transition: all 0.2s;
+  transition: border-color 0.3s;
   user-select: none;
+}
+
+.todayCard::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to bottom right, var(--pp-bg) 30%, transparent);
+  width: 100%;
+  transition: width 0.5s ease, opacity 0.5s ease;
 }
 
 .todayCard:hover {
@@ -44,19 +55,37 @@
 }
 
 .todayCardDone {
-  background: rgba(143, 166, 140, 0.07);
-  border-color: rgba(143, 166, 140, 0.32);
+  border-color: transparent;
+}
+
+.todayCardDone::before {
+  width: 0%;
+  opacity: 0;
 }
 
 .todayMeta {
+  position: relative;
   font-size: 10px;
   text-transform: uppercase;
   letter-spacing: 0.1em;
   color: var(--pp-text-muted);
   margin-bottom: 10px;
+  font-weight: 600;
+  transition: color 0.3s;
+}
+
+.todayCardDone .todayMeta {
+  color: var(--circle-dark);
+  opacity: 0.6;
+}
+
+:global(.petal-blue) .todayCardDone .todayMeta,
+:global(.petal-indigo) .todayCardDone .todayMeta {
+  color: #ffffff;
 }
 
 .todayRow {
+  position: relative;
   display: flex;
   align-items: center;
   gap: 12px;
@@ -73,25 +102,36 @@
   justify-content: center;
   font-size: 13px;
   color: transparent;
-  transition: all 0.2s;
+  transition: all 0.3s;
 }
 
 .todayCardDone .todayCircle {
-  background: var(--pp-sage);
-  border-color: var(--pp-sage);
-  color: white;
+  background: transparent;
+  border-color: var(--circle-dark);
+  color: var(--circle-dark);
+}
+
+:global(.petal-blue) .todayCardDone .todayCircle,
+:global(.petal-indigo) .todayCardDone .todayCircle {
+  border-color: #ffffff;
+  color: #ffffff;
 }
 
 .todayLabel {
   font-family: var(--pp-font-display);
   font-size: 19px;
-  font-weight: 300;
+  font-weight: 500;
   color: var(--pp-text);
-  transition: color 0.2s;
+  transition: color 0.3s;
 }
 
 .todayCardDone .todayLabel {
-  color: var(--pp-text-soft);
+  color: var(--circle-dark);
+}
+
+:global(.petal-blue) .todayCardDone .todayLabel,
+:global(.petal-indigo) .todayCardDone .todayLabel {
+  color: #ffffff;
 }
 
 /* ─── Stat Card ─── */
@@ -116,6 +156,7 @@
   font-weight: 300;
   line-height: 1;
   margin-bottom: 4px;
+  color: var(--pp-text-soft);
 }
 
 .statBigUnit {
@@ -154,13 +195,23 @@
   flex: 1;
   height: 5px;
   border-radius: 3px;
-  background: var(--pp-warm-1);
+  background: var(--circle-dark, var(--pp-warm-1));
+}
+
+:global(.petal-blue) .wd,
+:global(.petal-indigo) .wd {
+  background: var(--neutral-white);
 }
 
 .wdDone {
-  background: var(--pp-sage);
+  background: var(--gradient-5);
+}
+
+:global(.petal-blue) .wdDone,
+:global(.petal-indigo) .wdDone {
+  background: var(--gradient-3);
 }
 
 .wdNow {
-  background: var(--pp-coral);
+  background: var(--gradient-7);
 }

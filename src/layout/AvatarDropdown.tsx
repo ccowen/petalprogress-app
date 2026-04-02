@@ -12,7 +12,7 @@ export interface DropdownItem {
 }
 
 interface AvatarDropdownProps {
-  color: "sage" | "amber";
+  color: "sage" | "amber" | "petal";
   initials: string;
   items: DropdownItem[];
 }

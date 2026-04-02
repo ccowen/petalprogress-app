@@ -20,15 +20,18 @@ const DOW = ["S", "M", "T", "W", "T", "F", "S"];
 interface MiniCalendarProps {
   checkedDays: Set<string>;
   onToggleDay: (key: string) => void;
+  initialDate?: Date;
 }
 
 export default function MiniCalendar({
   checkedDays,
   onToggleDay,
+  initialDate,
 }: MiniCalendarProps) {
   const today = new Date();
-  const [year, setYear] = useState(today.getFullYear());
-  const [month, setMonth] = useState(today.getMonth());
+  const start = initialDate || today;
+  const [year, setYear] = useState(start.getFullYear());
+  const [month, setMonth] = useState(start.getMonth());
 
   const prevMonth = () => {
     if (month === 0) {
