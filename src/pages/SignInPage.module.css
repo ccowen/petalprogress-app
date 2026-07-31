@@ -1,0 +1,79 @@
+.page {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  padding: 2rem 1.5rem;
+}
+
+.card {
+  width: 100%;
+  max-width: 22rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.1rem;
+  padding: 2rem;
+  border: 1px solid rgb(0 0 0 / 0.12);
+  border-radius: 10px;
+  background: rgb(255 255 255 / 0.9);
+}
+
+.title {
+  font-size: 1.4rem;
+  font-weight: 600;
+  margin: 0;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  font-size: 0.85rem;
+}
+
+.field input {
+  font: inherit;
+  font-size: 0.95rem;
+  padding: 0.55rem 0.7rem;
+  border: 1px solid rgb(0 0 0 / 0.2);
+  border-radius: 6px;
+  background: #fff;
+}
+
+.field input:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 1px;
+}
+
+.submit {
+  font: inherit;
+  font-weight: 600;
+  padding: 0.6rem 1rem;
+  border: 0;
+  border-radius: 6px;
+  background: #35231c;
+  color: #f0ead2;
+  cursor: pointer;
+}
+
+.submit:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+
+.error {
+  margin: 0;
+  font-size: 0.85rem;
+  color: #a5302b;
+}
+
+.hint {
+  margin: 0;
+  font-size: 0.78rem;
+  opacity: 0.7;
+  line-height: 1.5;
+}
+
+.hint code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.95em;
+}

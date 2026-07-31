@@ -1,10 +1,11 @@
-import { useState, useCallback, useRef, useEffect } from "react";
+import { useState, useCallback, useRef, useEffect, useMemo } from "react";
 import Toolbar from "./Toolbar";
 import type { ToolType } from "./Toolbar";
 import SettingsPanel from "./SettingsPanel";
 import RightPanel from "./RightPanel";
 import MandalaCanvas from "./MandalaCanvas";
 import { sampleConfig } from "../../data/sampleMandalaConfig";
+import { loadMandalaConfig } from "../../data/loadMandalaConfig";
 import sampleGeometry from "../../data/sampleGeometry.json";
 import "../../mandala/assets/styles/themes.css";
 import s from "./MandalaPage.module.css";
@@ -12,21 +13,29 @@ import s from "./MandalaPage.module.css";
 const GEOMETRY_API_URL =
   import.meta.env.VITE_GEOMETRY_API_URL || "http://localhost:3000";
 
-/* ─── Build checked days from sample config completions ─── */
-const INITIAL_CHECKED = new Set(
-  sampleConfig.completions.map((c) => {
-    const d = new Date(c.date);
-    return `${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()}`;
-  }),
-);
+/* ─── Checked days from a config's completions ─── */
+function checkedDaysOf(config: typeof sampleConfig): Set<string> {
+  return new Set(
+    config.completions.map((c) => {
+      const d = new Date(c.date);
+      return `${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()}`;
+    }),
+  );
+}
 
 /* ─── Start month from config (parse as local, not UTC) ─── */
-const [startY, startM] = sampleConfig.mandala.start_date.split("-").map(Number);
-const CONFIG_START = new Date(startY, startM - 1, 1);
+function startMonthOf(config: typeof sampleConfig): Date {
+  const [y, m] = config.mandala.start_date.split("-").map(Number);
+  return new Date(y, m - 1, 1);
+}
 
 export default function MandalaPage() {
   console.log("[MandalaPage] component rendering");
   /* ─── State ─── */
+  /* Starts as the bundled sample so first paint is instant, then swaps to
+     the signed-in user's real mandala once the query resolves. */
+  const [config, setConfig] = useState(sampleConfig);
+
   const [activeTool, setActiveTool] = useState<ToolType>("theme");
   const [selectedTheme, setSelectedTheme] = useState(
     sampleConfig.mandala.color_theme_css_class.replace("theme-", ""),
@@ -41,9 +50,33 @@ export default function MandalaPage() {
     sampleConfig.mandala.figure_choice,
   );
   const [checkedIn, setCheckedIn] = useState(false);
-  const [checkedDays, setCheckedDays] = useState<Set<string>>(
-    () => new Set(INITIAL_CHECKED),
+  const [checkedDays, setCheckedDays] = useState<Set<string>>(() =>
+    checkedDaysOf(sampleConfig),
   );
+
+  const configStart = useMemo(() => startMonthOf(config), [config]);
+
+  /* ─── Live data from Supabase ─── */
+  useEffect(() => {
+    let cancelled = false;
+
+    loadMandalaConfig()
+      .then((live) => {
+        if (cancelled || !live) return;
+        setConfig(live);
+        setSelectedTheme(live.mandala.color_theme_css_class.replace("theme-", ""));
+        setSelectedColor(live.mandala.color_petal_css_class.replace("petal-", ""));
+        setSelectedFigure(live.mandala.figure_choice);
+        setCheckedDays(checkedDaysOf(live));
+      })
+      .catch((err) => {
+        console.warn("Could not load mandala from Supabase:", err);
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   /* ─── Sync theme/petal classes to <html> so nav avatar inherits CSS vars ─── */
   useEffect(() => {
@@ -66,7 +99,7 @@ export default function MandalaPage() {
         const res = await fetch(GEOMETRY_API_URL, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(sampleConfig),
+          body: JSON.stringify(config),
         });
         if (!res.ok) throw new Error(`API ${res.status}`);
         const data = await res.json();
@@ -84,7 +117,7 @@ export default function MandalaPage() {
     }
     fetchGeometry();
     return () => { cancelled = true; };
-  }, []);
+  }, [config]);
 
   /* ─── Share / Shop State ─── */
   const [shareShopOpen, setShareShopOpen] = useState(false);
@@ -380,7 +413,7 @@ export default function MandalaPage() {
         checkedDays={checkedDays}
         onToggleDay={handleToggleDay}
         themeClass={`theme-${selectedTheme} petal-${selectedColor}`}
-        initialDate={CONFIG_START}
+        initialDate={configStart}
       />
     </div>
   );

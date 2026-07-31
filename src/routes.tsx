@@ -1,4 +1,6 @@
 import { createBrowserRouter, Navigate } from "react-router";
+import RequireAuth from "./components/RequireAuth.tsx";
+import SignInPage from "./pages/SignInPage.tsx";
 import AppLayout from "./layout/AppLayout.tsx";
 import AdminLayout from "./layout/AdminLayout.tsx";
 import OnboardingLayout from "./layout/OnboardingLayout.tsx";
@@ -12,15 +14,24 @@ import OnboardingReferralPage from "./pages/onboarding/OnboardingReferralPage.ts
 import { MandalaPage } from "./pages/mandala";
 
 export const router = createBrowserRouter([
+  { path: "signin", element: <SignInPage /> },
   {
-    element: <OnboardingLayout />,
+    element: (
+      <RequireAuth>
+        <OnboardingLayout />
+      </RequireAuth>
+    ),
     children: [
       { path: "onboarding", element: <OnboardingPage /> },
       { path: "onboarding/referral", element: <OnboardingReferralPage /> },
     ],
   },
   {
-    element: <AppLayout />,
+    element: (
+      <RequireAuth>
+        <AppLayout />
+      </RequireAuth>
+    ),
     children: [
       { index: true, element: <Navigate to="/mandala" replace /> },
       { path: "mandala", element: <MandalaPage /> },
@@ -30,7 +41,11 @@ export const router = createBrowserRouter([
   },
   {
     path: "admin",
-    element: <AdminLayout />,
+    element: (
+      <RequireAuth>
+        <AdminLayout />
+      </RequireAuth>
+    ),
     children: [
       { index: true, element: <Navigate to="/admin/members" replace /> },
       { path: "members", element: <MembersPage /> },

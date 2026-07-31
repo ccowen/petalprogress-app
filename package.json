@@ -12,7 +12,9 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@ccowen/petalprogress-db": "file:../petalprogress-db",
     "@petalprogress/ui": "file:../petalprogress-ui",
+    "@supabase/supabase-js": "^2.111.0",
     "d3": "^7.9.0",
     "react": "^19.2.4",
     "react-dom": "^19.2.4",
