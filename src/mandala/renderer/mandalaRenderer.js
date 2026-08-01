@@ -99,7 +99,7 @@ export function renderMandala(container, apiResponse) {
 
 			case 'days.shapes': {
 				if (rings.outer) {
-					renderDayRing(svg, rings.outer, dayMap);
+					renderItemRing(svg, rings.outer, dayMap, RING_SPECS.day);
 				}
 				break;
 			}
@@ -128,14 +128,14 @@ export function renderMandala(container, apiResponse) {
 
 			case 'weeks.shapes': {
 				if (rings.inner) {
-					renderWeekRing(svg, rings.inner, weekMap);
+					renderItemRing(svg, rings.inner, weekMap, RING_SPECS.week);
 				}
 				break;
 			}
 
 			case 'months.shapes': {
 				if (rings.intermediate) {
-					renderMonthRing(svg, rings.intermediate, monthMap);
+					renderItemRing(svg, rings.intermediate, monthMap, RING_SPECS.month);
 				}
 				break;
 			}
@@ -286,80 +286,83 @@ function injectComputedDef(svg, key, computedDefs) {
 
 // --- Ring renderers ---
 
-function renderDayRing(svg, ringData, dayMap) {
-	const group = svg.append('g').attr('id', 'outer-day-ring-group');
+/**
+ * The three item rings differ only in what they're called in the DOM, which
+ * completion flag they read, and how the shape is attached. One spec each,
+ * one renderer for all three.
+ */
+const RING_SPECS = {
+	day: {
+		groupId: 'outer-day-ring-group',
+		className: 'day-placement',
+		incompleteClass: 'day-incomplete',
+		itemAttr: 'data-day',
+		stateAttr: 'data-completed',
+		stateFlag: 'isCompleted'
+	},
+	week: {
+		groupId: 'inner-week-ring-group',
+		className: 'week-placement',
+		incompleteClass: 'week-incomplete',
+		itemAttr: 'data-week',
+		stateAttr: 'data-complete',
+		stateFlag: 'isComplete'
+	},
+	month: {
+		groupId: 'intermediate-month-ring-group',
+		className: 'month-placement',
+		extraClass: 'month-petal',
+		incompleteClass: 'month-incomplete',
+		itemAttr: 'data-month',
+		stateAttr: 'data-complete',
+		stateFlag: 'isComplete',
+		// Month petals inline their shape rather than referencing it with
+		// <use>, so CSS can target the inner elements directly.
+		inlineShape: { key: 'month-petal', centering: 'translate(-42.74, -64.22)' }
+	}
+};
+
+/**
+ * Render one ring of repeated shapes from the API's resolved placements.
+ *
+ * Every instance ends up on a `<g>` carrying its own resolved transform.
+ * That transform is the single seam the motion system hooks: an entrance
+ * generator only needs each instance's final transform plus which ring it
+ * belongs to, both of which are right here.
+ */
+function renderItemRing(svg, ringData, stateMap, spec) {
+	const group = svg.append('g').attr('id', spec.groupId);
 	const sorted = [...ringData.placements].sort((a, b) => a.angle - b.angle);
 
-	const days = group.selectAll('g.day-placement')
+	const items = group.selectAll(`g.${spec.className}`)
 		.data(sorted)
 		.enter()
 		.append('g')
-		.attr('class', d => `day-placement ${d.cssClass || 'day-incomplete'}`)
-		.attr('data-day', d => d.itemNumber)
-		.attr('data-completed', d => {
-			const state = dayMap.get(d.itemNumber);
-			return state ? state.isCompleted : false;
+		.attr('class', d => {
+			const extra = spec.extraClass ? `${spec.extraClass} ` : '';
+			return `${spec.className} ${extra}${d.cssClass || spec.incompleteClass}`;
+		})
+		.attr(spec.itemAttr, d => d.itemNumber)
+		.attr(spec.stateAttr, d => {
+			const state = stateMap.get(d.itemNumber);
+			return state ? state[spec.stateFlag] : false;
 		});
 
-	days.append('use').attr('href', d => `#${d.shapeId}`);
-
-	days.attr('transform', d => `translate(${d.x}, ${d.y}) rotate(${d.rotation}) scale(${d.scale})`);
-
-	return group;
-}
-
-function renderWeekRing(svg, ringData, weekMap) {
-	const group = svg.append('g').attr('id', 'inner-week-ring-group');
-	const sorted = [...ringData.placements].sort((a, b) => a.angle - b.angle);
-
-	const weeks = group.selectAll('g.week-placement')
-		.data(sorted)
-		.enter()
-		.append('g')
-		.attr('class', d => `week-placement ${d.cssClass || 'week-incomplete'}`)
-		.attr('data-week', d => d.itemNumber)
-		.attr('data-complete', d => {
-			const state = weekMap.get(d.itemNumber);
-			return state ? state.isComplete : false;
+	if (spec.inlineShape) {
+		// Strip the outer <g> wrapper (id/class/transform) since we apply our own
+		const innerContent = (shapeDefs[spec.inlineShape.key] || '')
+			.replace(/^<g[^>]*>/, '')
+			.replace(/<\/g>\s*$/, '');
+		items.each(function () {
+			d3.select(this).append('g')
+				.attr('transform', spec.inlineShape.centering)
+				.html(innerContent);
 		});
+	} else {
+		items.append('use').attr('href', d => `#${d.shapeId}`);
+	}
 
-	weeks.append('use').attr('href', d => `#${d.shapeId}`);
-
-	weeks.attr('transform', d => `translate(${d.x}, ${d.y}) rotate(${d.rotation}) scale(${d.scale})`);
-
-	return group;
-}
-
-function renderMonthRing(svg, ringData, monthMap) {
-	const group = svg.append('g').attr('id', 'intermediate-month-ring-group');
-	const sorted = [...ringData.placements].sort((a, b) => a.angle - b.angle);
-
-	// Inline month shapes (no <use>) so CSS can target inner elements directly
-	const shapeContent = shapeDefs['month-petal'] || '';
-	// Strip the outer <g> wrapper (id/class/transform) since we apply our own transform
-	const innerContent = shapeContent
-		.replace(/^<g[^>]*>/, '')
-		.replace(/<\/g>\s*$/, '');
-
-	const months = group.selectAll('g.month-placement')
-		.data(sorted)
-		.enter()
-		.append('g')
-		.attr('class', d => `month-placement month-petal ${d.cssClass || 'month-incomplete'}`)
-		.attr('data-month', d => d.itemNumber)
-		.attr('data-complete', d => {
-			const state = monthMap.get(d.itemNumber);
-			return state ? state.isComplete : false;
-		});
-
-	// Append the inner SVG content with the shape's centering transform
-	months.each(function () {
-		d3.select(this).append('g')
-			.attr('transform', 'translate(-42.74, -64.22)')
-			.html(innerContent);
-	});
-
-	months.attr('transform', d => `translate(${d.x}, ${d.y}) rotate(${d.rotation}) scale(${d.scale})`);
+	items.attr('transform', d => `translate(${d.x}, ${d.y}) rotate(${d.rotation}) scale(${d.scale})`);
 
 	return group;
 }
