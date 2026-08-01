@@ -76,22 +76,6 @@
   opacity: 0.8;
 }
 
-.replayBtn {
-  background: none;
-  border: none;
-  cursor: pointer;
-  font-size: 16px;
-  color: var(--circle-dark);
-  opacity: 0.65;
-  transition: opacity 0.15s;
-  padding: 0;
-  line-height: 1;
-}
-
-.replayBtn:hover {
-  opacity: 0.8;
-}
-
 .helpOverlay {
   position: fixed;
   inset: 0;

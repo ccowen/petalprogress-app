@@ -44,7 +44,6 @@ export default function MandalaPage() {
     sampleConfig.mandala.color_petal_css_class.replace("petal-", ""),
   );
   const [selectedShape, setSelectedShape] = useState("classic");
-  const [animKey, setAnimKey] = useState(0);
   const [helpOpen, setHelpOpen] = useState(false);
   const [selectedFigure, setSelectedFigure] = useState(
     sampleConfig.mandala.figure_choice,
@@ -234,7 +233,6 @@ export default function MandalaPage() {
 
           {/* ─── Main Mandala SVG ─── */}
           <MandalaCanvas
-            key={animKey}
             apiResponse={mandalaData}
             className={s.mandalaCanvas}
             themeId={selectedTheme}
@@ -251,13 +249,6 @@ export default function MandalaPage() {
                 title="How to read the mandala"
               >
                 ?
-              </button>
-              <button
-                className={s.replayBtn}
-                onClick={() => setAnimKey((k) => k + 1)}
-                title="Replay animation"
-              >
-                &#8635;
               </button>
             </div>
           <button className={s.shareShopToggle} onClick={toggleShareShop}>
