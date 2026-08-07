@@ -10,12 +10,24 @@
 
 import * as d3 from 'd3';
 import { shapeDefs, figureShapeMap } from './shapeDefs.js';
+import { playEntrance } from '../motion/entrance.js';
+import { playExit } from '../motion/exit.js';
+import { startLoop } from '../motion/loop.js';
 
 /**
  * Render a mandala into a container element from API response data.
+ *
+ * Rendering is static and synchronous. Motion is a separate pass over the
+ * finished rings (see ../motion/entrance.js), which keeps this file about
+ * geometry to DOM and lets the entrance be replayed or skipped without
+ * re-rendering anything.
+ *
+ * options.entrance -- false to render with no motion at all, or an object of
+ * overrides passed through to the entrance generator.
  */
-export function renderMandala(container, apiResponse) {
-	const { theme, geometry, computedDefs, completions } = apiResponse;
+export function renderMandala(container, apiResponse, options = {}) {
+	const { entrance = {}, previewLabels = false } = options;
+	const { theme, geometry, computedDefs, completions, animationGroups } = apiResponse;
 	const { viewBox, rings, background } = geometry;
 	const renderOrder = apiResponse.renderOrder || [];
 
@@ -56,6 +68,14 @@ export function renderMandala(container, apiResponse) {
 
 	const outerRadius = background ? background.circle.radius : (rings.outer ? rings.outer.radius : 180);
 	const bgRadius = Math.max(viewBox.width, viewBox.height) / 2;
+
+	// Rings collected as they render, for the motion pass to animate afterwards.
+	const motionRings = [];
+
+	// Held so a running loop can be stopped before anything else touches the
+	// rings -- a loop left running against a destroyed mandala keeps scheduling
+	// transitions against detached nodes.
+	let loop = null;
 
 	// --- Render in API-specified order ---
 	// This order is paint order: SVG has no z-index, so document order is
@@ -99,7 +119,10 @@ export function renderMandala(container, apiResponse) {
 
 			case 'days.shapes': {
 				if (rings.outer) {
-					renderItemRing(svg, rings.outer, dayMap, RING_SPECS.day);
+					motionRings.push({
+						...motionMetaFor(step, 'days', animationGroups),
+						...renderItemRing(svg, rings.outer, dayMap, RING_SPECS.day)
+					});
 				}
 				break;
 			}
@@ -128,14 +151,20 @@ export function renderMandala(container, apiResponse) {
 
 			case 'weeks.shapes': {
 				if (rings.inner) {
-					renderItemRing(svg, rings.inner, weekMap, RING_SPECS.week);
+					motionRings.push({
+						...motionMetaFor(step, 'weeks', animationGroups),
+						...renderItemRing(svg, rings.inner, weekMap, RING_SPECS.week)
+					});
 				}
 				break;
 			}
 
 			case 'months.shapes': {
 				if (rings.intermediate) {
-					renderItemRing(svg, rings.intermediate, monthMap, RING_SPECS.month);
+					motionRings.push({
+						...motionMetaFor(step, 'months', animationGroups),
+						...renderItemRing(svg, rings.intermediate, monthMap, RING_SPECS.month, { previewLabels })
+					});
 				}
 				break;
 			}
@@ -163,9 +192,45 @@ export function renderMandala(container, apiResponse) {
 		}
 	}
 
+	// --- Motion pass ---
+	// Runs after every ring exists, so the entrance can treat the mandala as
+	// one moment rather than animating rings as they happen to be built.
+	if (entrance !== false) {
+		playEntrance(motionRings, entrance);
+	}
+
 	// Return control API
 	return {
 		svg: svg.node(),
+
+		/** Re-run the entrance without rebuilding the mandala. */
+		replayEntrance(overrides) {
+			loop?.stop();
+			loop = null;
+			return playEntrance(motionRings, { ...entrance, ...overrides });
+		},
+
+		/** Fold the mandala away. Resolves once it has left. */
+		playExit(overrides) {
+			loop?.stop();
+			loop = null;
+			return playExit(motionRings, { ...entrance, ...overrides });
+		},
+
+		/**
+		 * Cycle entrance and exit until stopped. Intended for the marketing
+		 * page and for tuning; the app plays the entrance once instead.
+		 */
+		startLoop(overrides) {
+			loop?.stop();
+			loop = startLoop(motionRings, { ...entrance, ...overrides });
+			return loop;
+		},
+
+		stopLoop() {
+			loop?.stop();
+			loop = null;
+		},
 
 		updateCompletions(newCompletions) {
 			if (newCompletions.days) {
@@ -198,6 +263,8 @@ export function renderMandala(container, apiResponse) {
 		},
 
 		destroy() {
+			loop?.stop();
+			loop = null;
 			svg.remove();
 		}
 	};
@@ -318,9 +385,54 @@ const RING_SPECS = {
 		stateFlag: 'isComplete',
 		// Month petals inline their shape rather than referencing it with
 		// <use>, so CSS can target the inner elements directly.
-		inlineShape: { key: 'month-petal', centering: 'translate(-42.74, -64.22)' }
+		inlineShape: { key: 'month-petal', centering: 'translate(-42.74, -64.22)' },
+		// DEV PREVIEW ONLY -- remove once the geometry API groups labels itself.
+		//
+		// This geometry has no text on the petals: the month abbreviation ring
+		// sits at radius 43-47 while the petals span 81-171, so the labels are
+		// hub furniture, not petal furniture. This synthesises the text the API
+		// would eventually supply, purely so the folding can be judged before
+		// committing to the contract change.
+		previewLabel: {
+			className: 'preview-petal-label',
+			text: (itemNumber) =>
+				['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+				 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'][(itemNumber - 1) % 12],
+			// Placement-local coordinates: the petal is centred on the origin,
+			// so this sits a little inward of its middle.
+			y: 12,
+			fontSize: 22
+		}
 	}
 };
+
+/**
+ * Motion metadata for a render step.
+ *
+ * Both the group name and the shape's bounds come from the API when it declares
+ * them. Everything falls back so the renderer keeps working against responses
+ * that predate the animation contract: the group name falls back to the ring's
+ * historical name, and omitting the bounds leaves the motion layer to measure
+ * the rendered DOM with getBBox() as it did before.
+ *
+ * Preferring the API is not just tidiness. The measurement path needs real
+ * layout, cannot run headless, and degrades silently to a pivot of 0 -- which
+ * folds the shape about its middle instead of its inner edge with nothing
+ * reported.
+ */
+function motionMetaFor(step, fallbackGroup, animationGroups) {
+	const id = step.animation?.group ?? fallbackGroup;
+	const bounds = animationGroups?.[id]?.bounds;
+	if (!bounds) return { id };
+
+	return {
+		id,
+		// -Y points away from the mandala centre in a placement's local frame,
+		// so a shape's innermost point is the bottom of its bounds.
+		pivotY: bounds.y + bounds.height,
+		shapeExtent: bounds.height
+	};
+}
 
 /**
  * Render one ring of repeated shapes from the API's resolved placements.
@@ -330,7 +442,7 @@ const RING_SPECS = {
  * generator only needs each instance's final transform plus which ring it
  * belongs to, both of which are right here.
  */
-function renderItemRing(svg, ringData, stateMap, spec) {
+function renderItemRing(svg, ringData, stateMap, spec, options = {}) {
 	const group = svg.append('g').attr('id', spec.groupId);
 	const sorted = [...ringData.placements].sort((a, b) => a.angle - b.angle);
 
@@ -362,9 +474,37 @@ function renderItemRing(svg, ringData, stateMap, spec) {
 		items.append('use').attr('href', d => `#${d.shapeId}`);
 	}
 
+	// Appended into the same <g> as the shape, which is the whole point: the
+	// fold transform lives on that <g>, so anything inside it folds with the
+	// paper rather than animating on its own. This is what the geometry API
+	// would be declaring when it groups a label with its shape.
+	if (spec.previewLabel && options.previewLabels) {
+		const label = spec.previewLabel;
+		// Styled with attributes rather than CSS: the stylesheet lives under
+		// src/mandala/assets, which fetch-assets regenerates, so an edit there
+		// would be wiped on the next dev run.
+		items
+			.append('text')
+			.attr('class', label.className)
+			.attr('x', 0)
+			.attr('y', label.y)
+			.attr('font-size', label.fontSize)
+			.attr('font-family', 'sans-serif')
+			.attr('font-weight', 600)
+			.attr('text-anchor', 'middle')
+			.attr('dominant-baseline', 'central')
+			.attr('fill', 'var(--neutral-white)')
+			.attr('stroke', 'var(--circle-dark)')
+			.attr('stroke-width', 1.2)
+			.attr('paint-order', 'stroke')
+			.text(d => label.text(d.itemNumber));
+	}
+
 	items.attr('transform', d => `translate(${d.x}, ${d.y}) rotate(${d.rotation}) scale(${d.scale})`);
 
-	return group;
+	// `placements` is handed back in the same order the selection is bound in,
+	// so the motion layer can pair instance i with its placement.
+	return { group, selection: items, placements: sorted };
 }
 
 function renderCenter(svg, centerData) {
