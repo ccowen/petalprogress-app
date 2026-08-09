@@ -72,6 +72,29 @@ export function renderMandala(container, apiResponse, options = {}) {
 	// Rings collected as they render, for the motion pass to animate afterwards.
 	const motionRings = [];
 
+	// Animation groups live here so a group can be created by whichever member
+	// comes first in render order, and reused by the rest.
+	const registry = createGroupRegistry(svg);
+
+	/**
+	 * Distribute a computed def across its group, and register the group for the
+	 * motion pass the first time it is seen.
+	 *
+	 * Registering once matters: a group can be fed by several render steps -- the
+	 * inside and outside halves of the inner week petals arrive separately -- and
+	 * animating the same instances twice would have them fighting each other.
+	 */
+	function addGroupedFragments(step, key) {
+		const groupId = step.animation.group;
+		const result = renderGroupedFragments(
+			svg, registry, step, computedDefs?.[key], animationGroups, geometry
+		);
+		if (!result) return;
+		if (motionRings.some(r => r.id === groupId)) return;
+
+		motionRings.push({ ...motionMetaFor(step, groupId, animationGroups), ...result });
+	}
+
 	// Held so a running loop can be stopped before anything else touches the
 	// rings -- a loop left running against a destroyed mandala keeps scheduling
 	// transitions against detached nodes.
@@ -107,8 +130,17 @@ export function renderMandala(container, apiResponse, options = {}) {
 				break;
 			}
 
-			case 'months.background': {
-				injectComputedDef(svg, 'months.background', computedDefs);
+			case 'months.background':
+			case 'weeks.cutout':
+			case 'weeks.outsidePetalCutout': {
+				// Computed defs that the response may declare as animated. When it
+				// does they are distributed across their group's instances; when it
+				// does not they inject as the single static blobs they always were.
+				if (!step.animation?.group) {
+					injectComputedDef(svg, key, computedDefs);
+					break;
+				}
+				addGroupedFragments(step, key);
 				break;
 			}
 
@@ -119,9 +151,13 @@ export function renderMandala(container, apiResponse, options = {}) {
 
 			case 'days.shapes': {
 				if (rings.outer) {
+					const meta = motionMetaFor(step, 'days', animationGroups);
 					motionRings.push({
-						...motionMetaFor(step, 'days', animationGroups),
-						...renderItemRing(svg, rings.outer, dayMap, RING_SPECS.day)
+						...meta,
+						...renderItemRing(svg, rings.outer, dayMap, RING_SPECS.day, {
+							registry,
+							groupId: meta.id
+						})
 					});
 				}
 				break;
@@ -151,9 +187,13 @@ export function renderMandala(container, apiResponse, options = {}) {
 
 			case 'weeks.shapes': {
 				if (rings.inner) {
+					const meta = motionMetaFor(step, 'weeks', animationGroups);
 					motionRings.push({
-						...motionMetaFor(step, 'weeks', animationGroups),
-						...renderItemRing(svg, rings.inner, weekMap, RING_SPECS.week)
+						...meta,
+						...renderItemRing(svg, rings.inner, weekMap, RING_SPECS.week, {
+							registry,
+							groupId: meta.id
+						})
 					});
 				}
 				break;
@@ -161,9 +201,15 @@ export function renderMandala(container, apiResponse, options = {}) {
 
 			case 'months.shapes': {
 				if (rings.intermediate) {
+					const meta = motionMetaFor(step, 'months', animationGroups);
 					motionRings.push({
-						...motionMetaFor(step, 'months', animationGroups),
-						...renderItemRing(svg, rings.intermediate, monthMap, RING_SPECS.month, { previewLabels })
+						...meta,
+						...renderItemRing(svg, rings.intermediate, monthMap, RING_SPECS.month, {
+							registry,
+							groupId: meta.id,
+							previewLabels,
+							anchors: animationGroups?.[meta.id]?.anchors
+						})
 					});
 				}
 				break;
@@ -187,6 +233,17 @@ export function renderMandala(container, apiResponse, options = {}) {
 				if (rings.center) {
 					renderCenter(svg, rings.center);
 				}
+				break;
+			}
+
+			default: {
+				// Generator-made members joining a group, in mandala coordinates:
+				// a slice of the ring behind the petals, and anything like it.
+				//
+				// Handled here rather than as a named case so the client needs no
+				// change when a new one is added -- the response says which group
+				// it joins and which frame it is drawn in, and that is enough.
+				if (step.animation?.group) addGroupedFragments(step, key);
 				break;
 			}
 		}
@@ -386,21 +443,21 @@ const RING_SPECS = {
 		// Month petals inline their shape rather than referencing it with
 		// <use>, so CSS can target the inner elements directly.
 		inlineShape: { key: 'month-petal', centering: 'translate(-42.74, -64.22)' },
-		// DEV PREVIEW ONLY -- remove once the geometry API groups labels itself.
+		// DEV PREVIEW ONLY -- remove once the geometry API emits the labels.
 		//
-		// This geometry has no text on the petals: the month abbreviation ring
-		// sits at radius 43-47 while the petals span 81-171, so the labels are
-		// hub furniture, not petal furniture. This synthesises the text the API
-		// would eventually supply, purely so the folding can be judged before
-		// committing to the contract change.
+		// Still synthetic in its *content*: this geometry populates no petal
+		// labels, and the month abbreviation ring sits at radius 43-47 while
+		// the petals span 81-171, so today's labels are hub furniture.
+		//
+		// The *position* is no longer synthetic. It comes from the `label`
+		// anchor the artwork declares, so this previews where text will really
+		// sit rather than where the client guessed it might.
 		previewLabel: {
+			anchor: 'label',
 			className: 'preview-petal-label',
 			text: (itemNumber) =>
 				['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
 				 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'][(itemNumber - 1) % 12],
-			// Placement-local coordinates: the petal is centred on the origin,
-			// so this sits a little inward of its middle.
-			y: 12,
 			fontSize: 22
 		}
 	}
@@ -435,6 +492,81 @@ function motionMetaFor(step, fallbackGroup, animationGroups) {
 }
 
 /**
+ * The placements backing an animation group.
+ *
+ * A group either carries them inline, or names where they live with a dotted
+ * path into `geometry.rings` -- 'intermediate' for the month petals,
+ * 'inner.background.innerPetals.inside' for the decorative petals behind the
+ * week ring. Reading it from the response rather than a table here is what lets
+ * a new group appear without the client knowing anything about it.
+ */
+function placementsForGroup(groupId, animationGroups, geometry) {
+	const group = animationGroups?.[groupId];
+	if (!group) return [];
+
+	if (Array.isArray(group.placements)) return group.placements;
+
+	if (typeof group.ring === 'string') {
+		const node = group.ring
+			.split('.')
+			.reduce((at, key) => (at ? at[key] : undefined), geometry.rings);
+		if (Array.isArray(node?.placements)) return node.placements;
+		if (Array.isArray(node)) return node;
+	}
+
+	return [];
+}
+
+/**
+ * Animation groups, and the per-instance `<g>` each one is built from.
+ *
+ * A group is created where it is *first mentioned* in render order, not where
+ * its shapes happen to appear. That matters because members of one group can
+ * belong at very different depths: the ring behind the month petals paints
+ * before the day ring, while the petals themselves paint after it. Creating the
+ * group at its first member keeps the whole group at that depth, so joining a
+ * group never silently restacks anything.
+ *
+ * Instances are shared, so whichever member arrives first creates the `<g>` and
+ * later members decorate it. The identity a group's instances carry -- the
+ * placement class, `data-month`, the completion flag -- is added by whichever
+ * member knows about it, rather than assumed to come from the first arrival.
+ */
+function createGroupRegistry(svg) {
+	const groups = new Map();
+
+	return {
+		/** The container for a group, appended at the point of first mention. */
+		container(groupId) {
+			if (!groups.has(groupId)) {
+				groups.set(groupId, {
+					node: svg.append('g').attr('class', `animation-group animation-group-${groupId}`),
+					instances: new Map()
+				});
+			}
+			return groups.get(groupId);
+		},
+
+		/** Whether an instance has been created, without creating one. */
+		has(groupId, key) {
+			return Boolean(groups.get(groupId)?.instances.has(key));
+		},
+
+		/** One instance's `<g>`, created on first mention and reused after. */
+		instance(groupId, key) {
+			const group = this.container(groupId);
+			if (!group.instances.has(key)) {
+				group.instances.set(
+					key,
+					group.node.append('g').attr('class', 'animation-instance').attr('data-instance', key)
+				);
+			}
+			return group.instances.get(key);
+		}
+	};
+}
+
+/**
  * Render one ring of repeated shapes from the API's resolved placements.
  *
  * Every instance ends up on a `<g>` carrying its own resolved transform.
@@ -443,16 +575,18 @@ function motionMetaFor(step, fallbackGroup, animationGroups) {
  * belongs to, both of which are right here.
  */
 function renderItemRing(svg, ringData, stateMap, spec, options = {}) {
-	const group = svg.append('g').attr('id', spec.groupId);
 	const sorted = [...ringData.placements].sort((a, b) => a.angle - b.angle);
+	const { registry, groupId } = options;
 
-	const items = group.selectAll(`g.${spec.className}`)
-		.data(sorted)
-		.enter()
-		.append('g')
+	// Ask the registry rather than appending directly, so an instance already
+	// created by an earlier member of this group is reused instead of duplicated.
+	const nodes = sorted.map(d => registry.instance(groupId, d.itemNumber).node());
+	const items = d3.selectAll(nodes).data(sorted);
+
+	items
 		.attr('class', d => {
 			const extra = spec.extraClass ? `${spec.extraClass} ` : '';
-			return `${spec.className} ${extra}${d.cssClass || spec.incompleteClass}`;
+			return `animation-instance ${spec.className} ${extra}${d.cssClass || spec.incompleteClass}`;
 		})
 		.attr(spec.itemAttr, d => d.itemNumber)
 		.attr(spec.stateAttr, d => {
@@ -480,14 +614,18 @@ function renderItemRing(svg, ringData, stateMap, spec, options = {}) {
 	// would be declaring when it groups a label with its shape.
 	if (spec.previewLabel && options.previewLabels) {
 		const label = spec.previewLabel;
+		// The artwork says where its label goes. Falling back to the shape's own
+		// centre if no anchor is declared -- visibly placed rather than dropped,
+		// so a missing anchor reads as "put one here" instead of "text is broken".
+		const at = options.anchors?.[label.anchor] ?? { x: 0, y: 0 };
 		// Styled with attributes rather than CSS: the stylesheet lives under
 		// src/mandala/assets, which fetch-assets regenerates, so an edit there
 		// would be wiped on the next dev run.
 		items
 			.append('text')
 			.attr('class', label.className)
-			.attr('x', 0)
-			.attr('y', label.y)
+			.attr('x', at.x)
+			.attr('y', at.y)
 			.attr('font-size', label.fontSize)
 			.attr('font-family', 'sans-serif')
 			.attr('font-weight', 600)
@@ -504,7 +642,123 @@ function renderItemRing(svg, ringData, stateMap, spec, options = {}) {
 
 	// `placements` is handed back in the same order the selection is bound in,
 	// so the motion layer can pair instance i with its placement.
-	return { group, selection: items, placements: sorted };
+	return { selection: items, placements: sorted };
+}
+
+/**
+ * The transform that undoes an instance's placement.
+ *
+ * A group's `<g>` carries `translate rotate scale`, so anything nested inside
+ * inherits it. Content the generator drew in mandala coordinates -- a slice of
+ * the ring behind the petals, say -- would be displaced by that. Wrapping it in
+ * the inverse cancels the placement exactly, and the content renders where it
+ * was drawn.
+ *
+ * Doing it with a wrapper rather than by converting coordinates is what makes
+ * it work for paths: there is no sane way to inverse-transform a `d` attribute,
+ * and no reason to try.
+ *
+ * The fold is appended to the instance's transform, so the composition becomes
+ * `T·R·S·F·(T·R·S)⁻¹` -- the fold conjugated into the instance's frame. At rest
+ * F is identity and the content sits exactly where drawn; mid-fold it travels
+ * with its instance.
+ */
+function inversePlacement(placement) {
+	return (
+		`scale(${1 / placement.scale}) ` +
+		`rotate(${-placement.rotation}) ` +
+		`translate(${-placement.x}, ${-placement.y})`
+	);
+}
+
+/**
+ * Distribute generator-made markup across the instances of an animation group.
+ *
+ * The response sends one blob of SVG per render step, with each piece carrying
+ * the instance it belongs to in an attribute -- `data-animation-instance="7"`.
+ * That keeps `computedDefs` a plain string per key, and puts the identity on the
+ * markup it identifies rather than in a parallel array that has to be kept in
+ * step with it.
+ *
+ * Each piece is moved into its instance and wrapped in the inverse of that
+ * instance's placement, so it keeps the mandala coordinates it was drawn in
+ * while animating as part of the group.
+ *
+ * A piece naming an instance with no placement is left where it is rather than
+ * dropped: it still renders, and an instance with no placement has no transform
+ * for the motion layer to animate anyway.
+ */
+function renderGroupedFragments(svg, registry, step, markup, animationGroups, geometry) {
+	if (!markup) return null;
+
+	const { group: groupId, instanceAttribute = 'data-animation-instance' } = step.animation;
+	const placements = placementsForGroup(groupId, animationGroups, geometry);
+	const placementFor = new Map(placements.map(p => [String(p.itemNumber), p]));
+
+	// Parsed in place so the markup lands in the SVG namespace; anything left
+	// behind (the generator's own wrapper, once emptied) is removed after.
+	const staging = svg.append('g').attr('class', 'computed-def-remainder');
+	staging.html(markup);
+
+	// Static NodeList, so moving nodes out mid-loop is safe.
+	const pieces = staging.node().querySelectorAll(`[${instanceAttribute}]`);
+	let orphans = 0;
+
+	for (const piece of pieces) {
+		const key = piece.getAttribute(instanceAttribute);
+		const placement = placementFor.get(key);
+		if (!placement) {
+			orphans += 1;
+			continue;
+		}
+
+		const instance = registry.instance(groupId, placement.itemNumber);
+
+		// The generator emits each piece already positioned, and that transform
+		// is its placement to the last decimal. Hoist it onto the instance and
+		// drop it here: the instance is what the motion system animates, and a
+		// piece keeping its own copy would be transformed twice. It also lets
+		// several members share one instance -- the inside and outside halves of
+		// an inner week petal arrive from different render steps carrying the
+		// same transform, and both belong to the same moving thing.
+		piece.removeAttribute('transform');
+		instance.node().appendChild(piece);
+	}
+
+	if (orphans) {
+		console.warn(
+			`[mandala] ${step.key}: ${orphans} fragment(s) name an instance with no ` +
+			`placement in the "${groupId}" group; left unanimated.`
+		);
+	}
+
+	// Whatever did not carry the attribute stays where it was parsed, and often
+	// must: a cutout's <defs> and <mask> live here, and the pieces distributed
+	// above still reference them by id. Removing this container when it still
+	// holds them would break every mask="url(#…)" that survived the move.
+	//
+	// Emptiness is judged on drawable content rather than on any element at all,
+	// because moving the pieces out leaves the generator's own wrapper <g>
+	// behind, and an empty wrapper is not a reason to keep the container.
+	const DRAWABLE = 'path,circle,ellipse,rect,line,polygon,polyline,text,use,image';
+	if (!staging.node().querySelector(DRAWABLE)) staging.remove();
+
+	// Give each instance the transform lifted off its members, and hand the
+	// group back in placement order so the motion layer can pair instance i with
+	// placement i. Only instances that actually received something: a group may
+	// declare more placements than this step had pieces for.
+	const filled = placements.filter(p => registry.has(groupId, p.itemNumber));
+	const nodes = filled.map(p => {
+		const instance = registry.instance(groupId, p.itemNumber);
+		instance.attr(
+			'transform',
+			`translate(${p.x}, ${p.y}) rotate(${p.rotation}) scale(${p.scale ?? 1})`
+		);
+		return instance.node();
+	});
+
+	if (!filled.length) return null;
+	return { selection: d3.selectAll(nodes).data(filled), placements: filled };
 }
 
 function renderCenter(svg, centerData) {
