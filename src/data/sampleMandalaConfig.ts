@@ -158,7 +158,10 @@ export const sampleConfig = {
     { day: 362, is_completed: true, date: "2026-12-28" },
     { day: 365, is_completed: true, date: "2026-12-31" },
   ],
-  exclude: ["labels", "icons"],
+  // Asking the API to leave things out of the response. "labels" was dropping
+  // every text label on the mandala, month names included — nothing was failing
+  // to render, the geometry for it was never requested.
+  exclude: ["icons"],
   output_format: "png",
   scale: 4,
   dimensions: [800, 800],

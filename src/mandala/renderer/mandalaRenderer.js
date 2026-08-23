@@ -3,7 +3,7 @@
 // and renders SVG using the defs/use pattern.
 //
 // Asset shapes (day, week, month petal, figures) loaded from shapeDefs.js.
-// Computed shapes (boolean ops like ring-minus-days) come from the API's computedDefs.
+// Computed shapes (boolean ops like the day-ring annulus) come from the API's computedDefs.
 // Render order driven by the API's renderOrder array.
 // Theme colors applied via CSS custom properties.
 // Completion states (cssClass) merged directly onto placements by the API.
@@ -130,8 +130,21 @@ export function renderMandala(container, apiResponse, options = {}) {
 				break;
 			}
 
+			// The band and the week shapes standing on it, united into one shape
+			// per slice by the generator. It places like any other grouped
+			// fragment -- nothing here needs to know a slice carries two weeks,
+			// because after the union there is only one shape. What does not come
+			// for free is the completion class: renderItemRing sets that as it
+			// draws a ring, and it no longer draws this one.
+			case 'weeks.slices': {
+				if (!step.animation?.group) injectComputedDef(svg, key, computedDefs);
+				else addGroupedFragments(step, key);
+				applyItemStates(svg, geometry?.rings?.inner?.placements, 'data-week');
+				break;
+			}
+
 			case 'months.background':
-			case 'weeks.cutout':
+			case 'weeks.background':
 			case 'weeks.outsidePetalCutout': {
 				// Computed defs that the response may declare as animated. When it
 				// does they are distributed across their group's instances; when it
@@ -144,8 +157,8 @@ export function renderMandala(container, apiResponse, options = {}) {
 				break;
 			}
 
-			case 'days.cutout': {
-				injectComputedDef(svg, 'days.cutout', computedDefs);
+			case 'days.background': {
+				injectComputedDef(svg, 'days.background', computedDefs);
 				break;
 			}
 
@@ -169,19 +182,17 @@ export function renderMandala(container, apiResponse, options = {}) {
 			}
 
 			case 'days.labels.monthNames': {
+				// Month names placed at a radius of their own rather than on a
+				// petal — the templates with no month ring. Empty for the yearly
+				// mandala, where they are `months.labels` and ride their petal.
+				//
+				// `month-label` because that is the class the generator gives this
+				// same text in the SVG it renders to PNG; the `month-name-label`
+				// that used to be here matched no rule in the stylesheet, so these
+				// arrived at the browser default of 16px black.
 				if (rings.outer && rings.outer.labels && rings.outer.labels.monthNames) {
-					renderTextLabels(svg, rings.outer.labels.monthNames, 'month-name-label');
+					renderTextLabels(svg, rings.outer.labels.monthNames, 'month-label');
 				}
-				break;
-			}
-
-			case 'weeks.outsidePetalCutout': {
-				injectComputedDef(svg, 'weeks.outsidePetalCutout', computedDefs);
-				break;
-			}
-
-			case 'weeks.cutout': {
-				injectComputedDef(svg, 'weeks.cutout', computedDefs);
 				break;
 			}
 
@@ -216,8 +227,18 @@ export function renderMandala(container, apiResponse, options = {}) {
 			}
 
 			case 'months.labels': {
-				if (rings.center && rings.center.labels && rings.center.labels.monthAbbreviations) {
-					renderArcLabels(svg, rings.center.labels.monthAbbreviations);
+				// The month name printed on its petal. It goes inside the petal's
+				// instance, so it folds with the petal rather than arriving on its
+				// own timing -- the name is painted on the paper.
+				//
+				// This step used to draw the hub's month abbreviations, which the
+				// `hub` step draws again a few entries later. That was a duplicate,
+				// not a second layer: same data, same renderer, drawn twice.
+				if (rings.intermediate && rings.intermediate.labels && rings.intermediate.labels.monthNames) {
+					renderAnchoredLabels(
+						svg, registry, 'months', rings.intermediate.labels.monthNames, 'month-label',
+						rings.intermediate.placements
+					);
 				}
 				break;
 			}
@@ -688,6 +709,29 @@ function inversePlacement(placement) {
  * dropped: it still renders, and an instance with no placement has no transform
  * for the motion layer to animate anyway.
  */
+/**
+ * Completion classes for shapes that arrive already drawn.
+ *
+ * A shape united into a slice is emitted by the generator as markup, so the
+ * class renderItemRing would have set from `placement.cssClass` was never set.
+ * Applied by item attribute -- the same way mandalaStyler does it in the PNG
+ * pipeline -- so a week looks the same whichever pipeline drew it, and identity
+ * keeps living on the shape rather than on the thing carrying it.
+ */
+function applyItemStates(svg, placements, itemAttr) {
+	if (!placements) return;
+	const root = svg.node();
+	for (const p of placements) {
+		if (!p.cssClass) continue;
+		const el = root.querySelector(`[${itemAttr}="${p.itemNumber}"]`);
+		if (!el) continue;
+		const base = (el.getAttribute('class') || '')
+			.replace(/(day|week|month)-(complete|completed|incomplete)/g, '')
+			.trim();
+		el.setAttribute('class', `${base} ${p.cssClass}`.trim());
+	}
+}
+
 function renderGroupedFragments(svg, registry, step, markup, animationGroups, geometry) {
 	if (!markup) return null;
 
@@ -779,7 +823,11 @@ function renderCenter(svg, centerData) {
 
 	// Render month abbreviation labels (curved text on arcs)
 	if (centerData.labels && centerData.labels.monthAbbreviations) {
-		renderArcLabels(group, centerData.labels.monthAbbreviations);
+		// The stylesheet knows these as month-circular-label-center-mandala-text,
+		// which is the class the generator puts on the same text in the SVG it
+		// renders to PNG. `arc-label` alone matches no rule, so they came out in
+		// the browser's default black on a dark hub.
+		renderArcLabels(group, centerData.labels.monthAbbreviations, 'month-circular-label-center-mandala-text');
 	}
 
 	// Render month dividers
@@ -825,8 +873,94 @@ function renderTextLabels(parent, labels, className) {
 		.text(d => d.text);
 }
 
+/**
+ * Render text that belongs to a shape, into that shape's animation instance.
+ *
+ * Three frames meet here, which is the whole difficulty:
+ *
+ *   1. The instance `<g>` carries `translate rotate scale` (renderItemRing).
+ *   2. `anchor` is in the shape's own frame — unscaled, the same frame as the
+ *      group's `bounds`. Placing the text at the anchor inside the instance is
+ *      therefore just `translate(anchor.x, anchor.y)`, with the instance's scale
+ *      doing the conversion.
+ *   3. `curvePath` and the font size are in mandala units, because a font size
+ *      has to mean the same thing here as it does anywhere else on the mandala.
+ *      So the scale is undone again below the anchor.
+ *
+ * Without step 3 the text renders at the placement's scale — 4px of stylesheet
+ * arriving as 2.8px — which is subtle enough to read as "the label looks a bit
+ * off" rather than as a bug.
+ *
+ * `flipped` is applied here, not in the instance transform: the petal does not
+ * flip, and turning the instance would turn the petal with it.
+ */
+function renderAnchoredLabels(svg, registry, groupId, labels, className, hostPlacements) {
+	if (!labels || labels.length === 0) return;
+
+	const hostFor = new Map(hostPlacements.map(p => [p.itemNumber, p]));
+	let orphans = 0;
+
+	for (const label of labels) {
+		const host = hostFor.get(label.itemNumber);
+		if (!host) { orphans += 1; continue; }
+
+		// Into the instance, then straight back out of its frame. The label ends
+		// up drawn at the root's scale while still hanging off the instance, so
+		// the fold carries it and Chrome still paints it.
+		const wrapper = registry
+			.instance(groupId, label.itemNumber)
+			.append('g')
+			.attr('class', `${className}-holder`)
+			.attr('transform', inversePlacement(host));
+
+		const group = wrapper
+			.append('g')
+			.attr('class', className)
+			.attr('data-animation-group', groupId)
+			.attr('data-animation-instance', label.itemNumber)
+			.attr('transform', `translate(${label.x}, ${label.y}) rotate(${label.rotation})`);
+
+		if (!label.curvePath) {
+			group
+				.append('text')
+				.attr('text-anchor', 'middle')
+				.attr('dominant-baseline', 'middle')
+				.text(label.text);
+			continue;
+		}
+
+		// The curve goes in a <defs> inside the label's own <g>, not the mandala's.
+		// A <textPath> lays its glyphs out in the coordinate system of the path it
+		// references, which is wherever that path is defined — so a curve parked in
+		// the root <defs> is read in root user space, and all twelve month names
+		// stack up on one arc through the middle of the mandala. Nothing errors.
+		const pathId = `curve-${label.id}`;
+		group.append('defs')
+			.append('path')
+			.attr('id', pathId)
+			.attr('d', label.curvePath.d)
+			.attr('fill', 'none');
+
+		group
+			.append('text')
+			.attr('text-anchor', 'middle')
+			.attr('dominant-baseline', 'middle')
+			.append('textPath')
+			.attr('href', `#${pathId}`)
+			.attr('startOffset', '50%')
+			.text(label.text);
+	}
+
+	if (orphans) {
+		console.warn(
+			`[mandala] ${orphans} ${className}(s) name an instance with no placement in ` +
+			`the "${groupId}" group; not rendered.`
+		);
+	}
+}
+
 /** Render labels along arc paths (curved text) */
-function renderArcLabels(parent, labels) {
+function renderArcLabels(parent, labels, className = 'arc-label') {
 	if (!labels || labels.length === 0) return;
 
 	const group = parent.append('g').attr('class', 'arc-label-group');
@@ -844,13 +978,23 @@ function renderArcLabels(parent, labels) {
 
 		// Render text along path
 		const text = group.append('text')
-			.attr('class', 'arc-label');
+			.attr('class', className);
 
-		text.append('textPath')
+		// `renderedText` is padded out with filler glyphs to the width of its arc
+		// and is meant to be squeezed back onto it — the API sends `arcLength` for
+		// exactly that. Drawing it without the fit lets each section overrun its
+		// neighbours, and twelve month names pile up into an unreadable ring.
+		const textPath = text.append('textPath')
 			.attr('href', `#${pathId}`)
 			.attr('startOffset', '50%')
 			.attr('text-anchor', 'middle')
 			.text(label.renderedText || label.text);
+
+		if (label.renderedText && label.arcLength) {
+			textPath
+				.attr('textLength', label.arcLength)
+				.attr('lengthAdjust', 'spacingAndGlyphs');
+		}
 	}
 }
 

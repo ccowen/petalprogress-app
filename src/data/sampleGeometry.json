@@ -5051,6 +5051,202 @@
         ],
         "type": "month",
         "shapeId": "month-petal",
+        "labels": {
+          "monthNames": [
+            {
+              "id": "month-label-1",
+              "order": 1,
+              "itemNumber": 1,
+              "text": "January 2026",
+              "x": 7.717036536007705e-15,
+              "y": -144.48049687365094,
+              "rotation": 0,
+              "angle": 0,
+              "flipped": false,
+              "animationGroup": "months",
+              "curvePath": {
+                "d": "M -80,200 Q 0,-200 80,200",
+                "arcLength": 80
+              }
+            },
+            {
+              "id": "month-label-2",
+              "order": 2,
+              "itemNumber": 2,
+              "text": "February 2026",
+              "x": 72.24024843682548,
+              "y": -125.12378064397986,
+              "rotation": 30,
+              "angle": 30,
+              "flipped": false,
+              "animationGroup": "months",
+              "curvePath": {
+                "d": "M -80,200 Q 0,-200 80,200",
+                "arcLength": 80
+              }
+            },
+            {
+              "id": "month-label-3",
+              "order": 3,
+              "itemNumber": 3,
+              "text": "March 2026",
+              "x": 125.12378064397987,
+              "y": -72.24024843682545,
+              "rotation": 60,
+              "angle": 60,
+              "flipped": false,
+              "animationGroup": "months",
+              "curvePath": {
+                "d": "M -80,200 Q 0,-200 80,200",
+                "arcLength": 80
+              }
+            },
+            {
+              "id": "month-label-4",
+              "order": 4,
+              "itemNumber": 4,
+              "text": "April 2026",
+              "x": 144.48049687365094,
+              "y": -1.129842365769084e-15,
+              "rotation": 90,
+              "angle": 90,
+              "flipped": false,
+              "animationGroup": "months",
+              "curvePath": {
+                "d": "M -80,200 Q 0,-200 80,200",
+                "arcLength": 80
+              }
+            },
+            {
+              "id": "month-label-5",
+              "order": 5,
+              "itemNumber": 5,
+              "text": "May 2026",
+              "x": 125.12378064397987,
+              "y": 72.24024843682545,
+              "rotation": 300,
+              "angle": 120,
+              "flipped": true,
+              "animationGroup": "months",
+              "curvePath": {
+                "d": "M -80,-200 Q 0,200 80,-200",
+                "arcLength": 80
+              }
+            },
+            {
+              "id": "month-label-6",
+              "order": 6,
+              "itemNumber": 6,
+              "text": "June 2026",
+              "x": 72.24024843682548,
+              "y": 125.12378064397986,
+              "rotation": 330,
+              "angle": 150,
+              "flipped": true,
+              "animationGroup": "months",
+              "curvePath": {
+                "d": "M -80,-200 Q 0,200 80,-200",
+                "arcLength": 80
+              }
+            },
+            {
+              "id": "month-label-7",
+              "order": 7,
+              "itemNumber": 7,
+              "text": "July 2026",
+              "x": 9.976721267545873e-15,
+              "y": 144.48049687365094,
+              "rotation": 360,
+              "angle": 180,
+              "flipped": true,
+              "animationGroup": "months",
+              "curvePath": {
+                "d": "M -80,-200 Q 0,200 80,-200",
+                "arcLength": 80
+              }
+            },
+            {
+              "id": "month-label-8",
+              "order": 8,
+              "itemNumber": 8,
+              "text": "August 2026",
+              "x": -72.24024843682544,
+              "y": 125.12378064397987,
+              "rotation": 390,
+              "angle": 210,
+              "flipped": true,
+              "animationGroup": "months",
+              "curvePath": {
+                "d": "M -80,-200 Q 0,200 80,-200",
+                "arcLength": 80
+              }
+            },
+            {
+              "id": "month-label-9",
+              "order": 9,
+              "itemNumber": 9,
+              "text": "September 2026",
+              "x": -125.12378064397987,
+              "y": 72.24024843682547,
+              "rotation": 420,
+              "angle": 240,
+              "flipped": true,
+              "animationGroup": "months",
+              "curvePath": {
+                "d": "M -80,-200 Q 0,200 80,-200",
+                "arcLength": 80
+              }
+            },
+            {
+              "id": "month-label-10",
+              "order": 10,
+              "itemNumber": 10,
+              "text": "October 2026",
+              "x": -144.48049687365094,
+              "y": 1.882360016932266e-14,
+              "rotation": 270,
+              "angle": 270,
+              "flipped": false,
+              "animationGroup": "months",
+              "curvePath": {
+                "d": "M -80,200 Q 0,-200 80,200",
+                "arcLength": 80
+              }
+            },
+            {
+              "id": "month-label-11",
+              "order": 11,
+              "itemNumber": 11,
+              "text": "November 2026",
+              "x": -125.12378064397986,
+              "y": -72.24024843682548,
+              "rotation": 300,
+              "angle": 300,
+              "flipped": false,
+              "animationGroup": "months",
+              "curvePath": {
+                "d": "M -80,200 Q 0,-200 80,200",
+                "arcLength": 80
+              }
+            },
+            {
+              "id": "month-label-12",
+              "order": 12,
+              "itemNumber": 12,
+              "text": "December 2026",
+              "x": -72.24024843682552,
+              "y": -125.12378064397984,
+              "rotation": 330,
+              "angle": 330,
+              "flipped": false,
+              "animationGroup": "months",
+              "curvePath": {
+                "d": "M -80,200 Q 0,-200 80,200",
+                "arcLength": 80
+              }
+            }
+          ]
+        },
         "background": {
           "ring": {
             "id": "intermediate-month-ring",
@@ -6299,6 +6495,804 @@
             "innerRadius": 43.1700761742957,
             "outerRadius": 47.695971257084764
           }
+        },
+        "labels": {
+          "weekNumbers": [
+            {
+              "id": "week-number-label-1",
+              "order": 1,
+              "text": "W1",
+              "x": 3.0479752281160715,
+              "y": -50.38903736383358,
+              "rotation": 3.4615384615384617,
+              "angle": 3.4615384615384617,
+              "flipped": false
+            },
+            {
+              "id": "week-number-label-2",
+              "order": 2,
+              "text": "W2",
+              "x": 9.099479342079805,
+              "y": -49.65425173283843,
+              "rotation": 10.384615384615385,
+              "angle": 10.384615384615385,
+              "flipped": false
+            },
+            {
+              "id": "week-number-label-3",
+              "order": 3,
+              "text": "W3",
+              "x": 15.018292556993005,
+              "y": -48.1953952999412,
+              "rotation": 17.307692307692307,
+              "angle": 17.307692307692307,
+              "flipped": false
+            },
+            {
+              "id": "week-number-label-4",
+              "order": 4,
+              "text": "W4",
+              "x": 20.71810524817562,
+              "y": -46.03374147699211,
+              "rotation": 24.230769230769234,
+              "angle": 24.230769230769234,
+              "flipped": false
+            },
+            {
+              "id": "week-number-label-5",
+              "order": 5,
+              "text": "W5",
+              "x": 26.115801311729808,
+              "y": -43.20081204435025,
+              "rotation": 31.153846153846153,
+              "angle": 31.153846153846153,
+              "flipped": false
+            },
+            {
+              "id": "week-number-label-6",
+              "order": 6,
+              "text": "W6",
+              "x": 31.13267018449593,
+              "y": -39.73791749234506,
+              "rotation": 38.07692307692307,
+              "angle": 38.07692307692307,
+              "flipped": false
+            },
+            {
+              "id": "week-number-label-7",
+              "order": 7,
+              "text": "W7",
+              "x": 35.69555462130422,
+              "y": -35.69555462130422,
+              "rotation": 45,
+              "angle": 45,
+              "flipped": false
+            },
+            {
+              "id": "week-number-label-8",
+              "order": 8,
+              "text": "W8",
+              "x": 39.73791749234507,
+              "y": -31.13267018449593,
+              "rotation": 51.92307692307693,
+              "angle": 51.92307692307693,
+              "flipped": false
+            },
+            {
+              "id": "week-number-label-9",
+              "order": 9,
+              "text": "W9",
+              "x": 43.20081204435025,
+              "y": -26.115801311729808,
+              "rotation": 58.84615384615385,
+              "angle": 58.84615384615385,
+              "flipped": false
+            },
+            {
+              "id": "week-number-label-10",
+              "order": 10,
+              "text": "W10",
+              "x": 46.033741476992105,
+              "y": -20.718105248175622,
+              "rotation": 65.76923076923077,
+              "angle": 65.76923076923077,
+              "flipped": false
+            },
+            {
+              "id": "week-number-label-11",
+              "order": 11,
+              "text": "W11",
+              "x": 48.1953952999412,
+              "y": -15.018292556993005,
+              "rotation": 72.6923076923077,
+              "angle": 72.6923076923077,
+              "flipped": false
+            },
+            {
+              "id": "week-number-label-12",
+              "order": 12,
+              "text": "W12",
+              "x": 49.65425173283844,
+              "y": -9.099479342079789,
+              "rotation": 79.61538461538463,
+              "angle": 79.61538461538463,
+              "flipped": false
+            },
+            {
+              "id": "week-number-label-13",
+              "order": 13,
+              "text": "W13",
+              "x": 50.38903736383358,
+              "y": -3.047975228116063,
+              "rotation": 86.53846153846155,
+              "angle": 86.53846153846155,
+              "flipped": false
+            },
+            {
+              "id": "week-number-label-14",
+              "order": 14,
+              "text": "W14",
+              "x": 50.38903736383358,
+              "y": 3.0479752281160755,
+              "rotation": 93.46153846153847,
+              "angle": 93.46153846153847,
+              "flipped": false
+            },
+            {
+              "id": "week-number-label-15",
+              "order": 15,
+              "text": "W15",
+              "x": 49.65425173283843,
+              "y": 9.099479342079814,
+              "rotation": 100.3846153846154,
+              "angle": 100.3846153846154,
+              "flipped": false
+            },
+            {
+              "id": "week-number-label-16",
+              "order": 16,
+              "text": "W16",
+              "x": 48.1953952999412,
+              "y": 15.018292556993018,
+              "rotation": 107.30769230769232,
+              "angle": 107.30769230769232,
+              "flipped": false
+            },
+            {
+              "id": "week-number-label-17",
+              "order": 17,
+              "text": "W17",
+              "x": 46.033741476992105,
+              "y": 20.71810524817563,
+              "rotation": 114.23076923076924,
+              "angle": 114.23076923076924,
+              "flipped": false
+            },
+            {
+              "id": "week-number-label-18",
+              "order": 18,
+              "text": "W18",
+              "x": 43.20081204435025,
+              "y": 26.115801311729808,
+              "rotation": 301.1538461538462,
+              "angle": 121.15384615384616,
+              "flipped": true
+            },
+            {
+              "id": "week-number-label-19",
+              "order": 19,
+              "text": "W19",
+              "x": 39.73791749234507,
+              "y": 31.13267018449592,
+              "rotation": 308.0769230769231,
+              "angle": 128.07692307692307,
+              "flipped": true
+            },
+            {
+              "id": "week-number-label-20",
+              "order": 20,
+              "text": "W20",
+              "x": 35.69555462130422,
+              "y": 35.69555462130422,
+              "rotation": 315,
+              "angle": 135,
+              "flipped": true
+            },
+            {
+              "id": "week-number-label-21",
+              "order": 21,
+              "text": "W21",
+              "x": 31.132670184495947,
+              "y": 39.737917492345055,
+              "rotation": 321.9230769230769,
+              "angle": 141.9230769230769,
+              "flipped": true
+            },
+            {
+              "id": "week-number-label-22",
+              "order": 22,
+              "text": "W22",
+              "x": 26.115801311729808,
+              "y": 43.20081204435025,
+              "rotation": 328.8461538461538,
+              "angle": 148.84615384615384,
+              "flipped": true
+            },
+            {
+              "id": "week-number-label-23",
+              "order": 23,
+              "text": "W23",
+              "x": 20.71810524817562,
+              "y": 46.03374147699211,
+              "rotation": 335.7692307692308,
+              "angle": 155.76923076923077,
+              "flipped": true
+            },
+            {
+              "id": "week-number-label-24",
+              "order": 24,
+              "text": "W24",
+              "x": 15.018292556993018,
+              "y": 48.1953952999412,
+              "rotation": 342.6923076923077,
+              "angle": 162.69230769230768,
+              "flipped": true
+            },
+            {
+              "id": "week-number-label-25",
+              "order": 25,
+              "text": "W25",
+              "x": 9.099479342079805,
+              "y": 49.65425173283843,
+              "rotation": 349.61538461538464,
+              "angle": 169.6153846153846,
+              "flipped": true
+            },
+            {
+              "id": "week-number-label-26",
+              "order": 26,
+              "text": "W26",
+              "x": 3.0479752281160604,
+              "y": 50.38903736383358,
+              "rotation": 356.53846153846155,
+              "angle": 176.53846153846155,
+              "flipped": true
+            },
+            {
+              "id": "week-number-label-27",
+              "order": 27,
+              "text": "W27",
+              "x": -3.0479752281160537,
+              "y": 50.38903736383358,
+              "rotation": 363.46153846153845,
+              "angle": 183.46153846153845,
+              "flipped": true
+            },
+            {
+              "id": "week-number-label-28",
+              "order": 28,
+              "text": "W28",
+              "x": -9.099479342079789,
+              "y": 49.65425173283844,
+              "rotation": 370.38461538461536,
+              "angle": 190.3846153846154,
+              "flipped": true
+            },
+            {
+              "id": "week-number-label-29",
+              "order": 29,
+              "text": "W29",
+              "x": -15.018292556993023,
+              "y": 48.1953952999412,
+              "rotation": 377.3076923076923,
+              "angle": 197.30769230769232,
+              "flipped": true
+            },
+            {
+              "id": "week-number-label-30",
+              "order": 30,
+              "text": "W30",
+              "x": -20.718105248175615,
+              "y": 46.03374147699211,
+              "rotation": 384.2307692307692,
+              "angle": 204.23076923076923,
+              "flipped": true
+            },
+            {
+              "id": "week-number-label-31",
+              "order": 31,
+              "text": "W31",
+              "x": -26.11580131172979,
+              "y": 43.20081204435026,
+              "rotation": 391.1538461538462,
+              "angle": 211.15384615384616,
+              "flipped": true
+            },
+            {
+              "id": "week-number-label-32",
+              "order": 32,
+              "text": "W32",
+              "x": -31.132670184495918,
+              "y": 39.737917492345076,
+              "rotation": 398.0769230769231,
+              "angle": 218.07692307692307,
+              "flipped": true
+            },
+            {
+              "id": "week-number-label-33",
+              "order": 33,
+              "text": "W33",
+              "x": -35.69555462130422,
+              "y": 35.69555462130422,
+              "rotation": 405,
+              "angle": 225,
+              "flipped": true
+            },
+            {
+              "id": "week-number-label-34",
+              "order": 34,
+              "text": "W34",
+              "x": -39.73791749234507,
+              "y": 31.13267018449592,
+              "rotation": 411.9230769230769,
+              "angle": 231.92307692307693,
+              "flipped": true
+            },
+            {
+              "id": "week-number-label-35",
+              "order": 35,
+              "text": "W35",
+              "x": -43.20081204435024,
+              "y": 26.11580131172982,
+              "rotation": 418.8461538461538,
+              "angle": 238.84615384615384,
+              "flipped": true
+            },
+            {
+              "id": "week-number-label-36",
+              "order": 36,
+              "text": "W36",
+              "x": -46.033741476992105,
+              "y": 20.718105248175622,
+              "rotation": 425.7692307692308,
+              "angle": 245.76923076923077,
+              "flipped": true
+            },
+            {
+              "id": "week-number-label-37",
+              "order": 37,
+              "text": "W37",
+              "x": -48.1953952999412,
+              "y": 15.01829255699303,
+              "rotation": 432.6923076923077,
+              "angle": 252.69230769230768,
+              "flipped": true
+            },
+            {
+              "id": "week-number-label-38",
+              "order": 38,
+              "text": "W38",
+              "x": -49.65425173283844,
+              "y": 9.099479342079785,
+              "rotation": 439.61538461538464,
+              "angle": 259.61538461538464,
+              "flipped": true
+            },
+            {
+              "id": "week-number-label-39",
+              "order": 39,
+              "text": "W39",
+              "x": -50.38903736383358,
+              "y": 3.0479752281160635,
+              "rotation": 446.53846153846155,
+              "angle": 266.53846153846155,
+              "flipped": true
+            },
+            {
+              "id": "week-number-label-40",
+              "order": 40,
+              "text": "W40",
+              "x": -50.38903736383358,
+              "y": -3.0479752281160506,
+              "rotation": 273.46153846153845,
+              "angle": 273.46153846153845,
+              "flipped": false
+            },
+            {
+              "id": "week-number-label-41",
+              "order": 41,
+              "text": "W41",
+              "x": -49.654251732838446,
+              "y": -9.099479342079752,
+              "rotation": 280.38461538461536,
+              "angle": 280.38461538461536,
+              "flipped": false
+            },
+            {
+              "id": "week-number-label-42",
+              "order": 42,
+              "text": "W42",
+              "x": -48.195395299941204,
+              "y": -15.018292556992998,
+              "rotation": 287.3076923076923,
+              "angle": 287.3076923076923,
+              "flipped": false
+            },
+            {
+              "id": "week-number-label-43",
+              "order": 43,
+              "text": "W43",
+              "x": -46.033741476992105,
+              "y": -20.71810524817563,
+              "rotation": 294.2307692307692,
+              "angle": 294.2307692307692,
+              "flipped": false
+            },
+            {
+              "id": "week-number-label-44",
+              "order": 44,
+              "text": "W44",
+              "x": -43.20081204435026,
+              "y": -26.11580131172979,
+              "rotation": 301.15384615384613,
+              "angle": 301.15384615384613,
+              "flipped": false
+            },
+            {
+              "id": "week-number-label-45",
+              "order": 45,
+              "text": "W45",
+              "x": -39.737917492345055,
+              "y": -31.13267018449595,
+              "rotation": 308.0769230769231,
+              "angle": 308.0769230769231,
+              "flipped": false
+            },
+            {
+              "id": "week-number-label-46",
+              "order": 46,
+              "text": "W46",
+              "x": -35.695554621304225,
+              "y": -35.69555462130422,
+              "rotation": 315,
+              "angle": 315,
+              "flipped": false
+            },
+            {
+              "id": "week-number-label-47",
+              "order": 47,
+              "text": "W47",
+              "x": -31.13267018449596,
+              "y": -39.73791749234504,
+              "rotation": 321.9230769230769,
+              "angle": 321.9230769230769,
+              "flipped": false
+            },
+            {
+              "id": "week-number-label-48",
+              "order": 48,
+              "text": "W48",
+              "x": -26.115801311729825,
+              "y": -43.200812044350236,
+              "rotation": 328.84615384615387,
+              "angle": 328.84615384615387,
+              "flipped": false
+            },
+            {
+              "id": "week-number-label-49",
+              "order": 49,
+              "text": "W49",
+              "x": -20.718105248175625,
+              "y": -46.033741476992105,
+              "rotation": 335.7692307692308,
+              "angle": 335.7692307692308,
+              "flipped": false
+            },
+            {
+              "id": "week-number-label-50",
+              "order": 50,
+              "text": "W50",
+              "x": -15.018292556993034,
+              "y": -48.1953952999412,
+              "rotation": 342.6923076923077,
+              "angle": 342.6923076923077,
+              "flipped": false
+            },
+            {
+              "id": "week-number-label-51",
+              "order": 51,
+              "text": "W51",
+              "x": -9.099479342079768,
+              "y": -49.654251732838446,
+              "rotation": 349.61538461538464,
+              "angle": 349.61538461538464,
+              "flipped": false
+            },
+            {
+              "id": "week-number-label-52",
+              "order": 52,
+              "text": "W52",
+              "x": -3.047975228116066,
+              "y": -50.38903736383358,
+              "rotation": 356.53846153846155,
+              "angle": 356.53846153846155,
+              "flipped": false
+            }
+          ],
+          "monthAbbreviations": [
+            {
+              "id": "month-circular-label-center-mandala-0",
+              "order": 1,
+              "text": "January",
+              "renderedText": "♐︎ January ♑︎",
+              "arcPath": "M 3.169247525939768,-45.3223511533746 A 45.43302371569023,45.43302371569023 0 0,1 19.916526708342477,-40.83493122103124",
+              "arcLength": 17.44502876546018,
+              "angle": 0,
+              "flipped": false
+            },
+            {
+              "id": "month-circular-label-center-mandala-1",
+              "order": 2,
+              "text": "February",
+              "renderedText": " February ♒︎",
+              "arcPath": "M 25.405824445032124,-37.66568369509147 A 45.43302371569023,45.43302371569023 0 0,1 37.665683695091474,-25.405824445032117",
+              "arcLength": 17.44502876546018,
+              "angle": 30,
+              "flipped": false
+            },
+            {
+              "id": "month-circular-label-center-mandala-2",
+              "order": 3,
+              "text": "March",
+              "renderedText": "♒︎ March ♓︎♓︎",
+              "arcPath": "M 40.83493122103124,-19.91652670834248 A 45.43302371569023,45.43302371569023 0 0,1 45.3223511533746,-3.1692475259397748",
+              "arcLength": 17.44502876546018,
+              "angle": 60,
+              "flipped": false
+            },
+            {
+              "id": "month-circular-label-center-mandala-3",
+              "order": 4,
+              "text": "April",
+              "renderedText": "♓︎ April ♈︎♈︎",
+              "arcPath": "M 45.3223511533746,3.169247525939769 A 45.43302371569023,45.43302371569023 0 0,1 40.83493122103123,19.916526708342484",
+              "arcLength": 17.44502876546018,
+              "angle": 90,
+              "flipped": false
+            },
+            {
+              "id": "month-circular-label-center-mandala-4",
+              "order": 5,
+              "text": "May",
+              "renderedText": "♈︎♈︎ May ♉︎♉︎",
+              "arcPath": "M 25.405824445032124,37.66568369509147 A 45.43302371569023,45.43302371569023 0 0,0 37.665683695091474,25.405824445032113",
+              "arcLength": 17.44502876546018,
+              "angle": 120,
+              "flipped": true
+            },
+            {
+              "id": "month-circular-label-center-mandala-5",
+              "order": 6,
+              "text": "June",
+              "renderedText": "♉︎ June ♊︎♊︎",
+              "arcPath": "M 3.169247525939778,45.3223511533746 A 45.43302371569023,45.43302371569023 0 0,0 19.916526708342474,40.83493122103124",
+              "arcLength": 17.44502876546018,
+              "angle": 150,
+              "flipped": true
+            },
+            {
+              "id": "month-circular-label-center-mandala-6",
+              "order": 7,
+              "text": "July",
+              "renderedText": "♊︎ July ♋︎♋︎",
+              "arcPath": "M -19.916526708342463,40.83493122103125 A 45.43302371569023,45.43302371569023 0 0,0 -3.1692475259397463,45.3223511533746",
+              "arcLength": 17.44502876546018,
+              "angle": 180,
+              "flipped": true
+            },
+            {
+              "id": "month-circular-label-center-mandala-7",
+              "order": 8,
+              "text": "August",
+              "renderedText": "♋︎ August ♌︎",
+              "arcPath": "M -37.66568369509146,25.405824445032138 A 45.43302371569023,45.43302371569023 0 0,0 -25.405824445032113,37.66568369509148",
+              "arcLength": 17.44502876546018,
+              "angle": 210,
+              "flipped": true
+            },
+            {
+              "id": "month-circular-label-center-mandala-8",
+              "order": 9,
+              "text": "September",
+              "renderedText": " September ♍︎",
+              "arcPath": "M -45.3223511533746,3.1692475259397805 A 45.43302371569023,45.43302371569023 0 0,0 -40.83493122103123,19.91652670834249",
+              "arcLength": 17.44502876546018,
+              "angle": 240,
+              "flipped": true
+            },
+            {
+              "id": "month-circular-label-center-mandala-9",
+              "order": 10,
+              "text": "October",
+              "renderedText": "♍︎ October ♎︎",
+              "arcPath": "M -45.3223511533746,-3.169247525939764 A 45.43302371569023,45.43302371569023 0 0,1 -40.83493122103124,-19.916526708342477",
+              "arcLength": 17.44502876546018,
+              "angle": 270,
+              "flipped": false
+            },
+            {
+              "id": "month-circular-label-center-mandala-10",
+              "order": 11,
+              "text": "November",
+              "renderedText": " November ♏︎",
+              "arcPath": "M -37.66568369509149,-25.405824445032092 A 45.43302371569023,45.43302371569023 0 0,1 -25.40582444503214,-37.66568369509146",
+              "arcLength": 17.44502876546018,
+              "angle": 300,
+              "flipped": false
+            },
+            {
+              "id": "month-circular-label-center-mandala-11",
+              "order": 12,
+              "text": "December",
+              "renderedText": " December ♐︎",
+              "arcPath": "M -19.91652670834246,-40.83493122103125 A 45.43302371569023,45.43302371569023 0 0,1 -3.1692475259397432,-45.3223511533746",
+              "arcLength": 17.44502876546018,
+              "angle": 330,
+              "flipped": false
+            }
+          ],
+          "monthDividers": {
+            "placements": [
+              {
+                "id": "month-abbr-divider-1",
+                "order": 1,
+                "itemNumber": 1,
+                "x": 2.7819703534502915e-15,
+                "y": -45.43302371569023,
+                "rotation": 0,
+                "angle": 0,
+                "scale": 0.6962915511983178,
+                "type": "default",
+                "shapeId": "month-abbr-divider"
+              },
+              {
+                "id": "month-abbr-divider-2",
+                "order": 2,
+                "itemNumber": 2,
+                "x": 22.71651185784512,
+                "y": -39.34615270852861,
+                "rotation": 30,
+                "angle": 30,
+                "scale": 0.6962915511983178,
+                "type": "default",
+                "shapeId": "month-abbr-divider"
+              },
+              {
+                "id": "month-abbr-divider-3",
+                "order": 3,
+                "itemNumber": 3,
+                "x": 39.346152708528614,
+                "y": -22.716511857845113,
+                "rotation": 60,
+                "angle": 60,
+                "scale": 0.6962915511983178,
+                "type": "default",
+                "shapeId": "month-abbr-divider"
+              },
+              {
+                "id": "month-abbr-divider-4",
+                "order": 4,
+                "itemNumber": 4,
+                "x": 45.43302371569023,
+                "y": 0,
+                "rotation": 90,
+                "angle": 90,
+                "scale": 0.6962915511983178,
+                "type": "default",
+                "shapeId": "month-abbr-divider"
+              },
+              {
+                "id": "month-abbr-divider-5",
+                "order": 5,
+                "itemNumber": 5,
+                "x": 39.346152708528614,
+                "y": 22.716511857845113,
+                "rotation": 120,
+                "angle": 120,
+                "scale": 0.6962915511983178,
+                "type": "default",
+                "shapeId": "month-abbr-divider"
+              },
+              {
+                "id": "month-abbr-divider-6",
+                "order": 6,
+                "itemNumber": 6,
+                "x": 22.71651185784512,
+                "y": 39.34615270852861,
+                "rotation": 150,
+                "angle": 150,
+                "scale": 0.6962915511983178,
+                "type": "default",
+                "shapeId": "month-abbr-divider"
+              },
+              {
+                "id": "month-abbr-divider-7",
+                "order": 7,
+                "itemNumber": 7,
+                "x": 2.7819703534502915e-15,
+                "y": 45.43302371569023,
+                "rotation": 180,
+                "angle": 180,
+                "scale": 0.6962915511983178,
+                "type": "default",
+                "shapeId": "month-abbr-divider"
+              },
+              {
+                "id": "month-abbr-divider-8",
+                "order": 8,
+                "itemNumber": 8,
+                "x": -22.716511857845106,
+                "y": 39.346152708528614,
+                "rotation": 210,
+                "angle": 210,
+                "scale": 0.6962915511983178,
+                "type": "default",
+                "shapeId": "month-abbr-divider"
+              },
+              {
+                "id": "month-abbr-divider-9",
+                "order": 9,
+                "itemNumber": 9,
+                "x": -39.346152708528614,
+                "y": 22.716511857845113,
+                "rotation": 240,
+                "angle": 240,
+                "scale": 0.6962915511983178,
+                "type": "default",
+                "shapeId": "month-abbr-divider"
+              },
+              {
+                "id": "month-abbr-divider-10",
+                "order": 10,
+                "itemNumber": 10,
+                "x": -45.43302371569023,
+                "y": 5.563940706900583e-15,
+                "rotation": 270,
+                "angle": 270,
+                "scale": 0.6962915511983178,
+                "type": "default",
+                "shapeId": "month-abbr-divider"
+              },
+              {
+                "id": "month-abbr-divider-11",
+                "order": 11,
+                "itemNumber": 11,
+                "x": -39.34615270852861,
+                "y": -22.71651185784512,
+                "rotation": 300,
+                "angle": 300,
+                "scale": 0.6962915511983178,
+                "type": "default",
+                "shapeId": "month-abbr-divider"
+              },
+              {
+                "id": "month-abbr-divider-12",
+                "order": 12,
+                "itemNumber": 12,
+                "x": -22.716511857845138,
+                "y": -39.34615270852861,
+                "rotation": 330,
+                "angle": 330,
+                "scale": 0.6962915511983178,
+                "type": "default",
+                "shapeId": "month-abbr-divider"
+              }
+            ],
+            "bar": {
+              "height": 4,
+              "width": 0.15
+            }
+          }
         }
       }
     }
@@ -6384,11 +7378,16 @@
       }
     },
     {
-      "key": "days.labels.monthNames",
-      "type": "geometry"
+      "key": "months.labels",
+      "type": "geometry",
+      "animation": {
+        "group": "months",
+        "instanceKey": "itemNumber",
+        "instanceAttribute": "data-animation-instance"
+      }
     },
     {
-      "key": "months.labels",
+      "key": "days.labels.monthNames",
       "type": "geometry"
     },
     {
@@ -6435,7 +7434,7 @@
       "anchors": {
         "label": {
           "x": 0,
-          "y": 2.78
+          "y": -26.5
         }
       }
     },

@@ -62,34 +62,43 @@ A group's `<g>` already carries its instance's
 that, so a member holding **absolute** mandala coordinates is transformed twice
 and lands nowhere near where it was meant to.
 
-This is not theoretical: today's `months.labels` sit at radius 43–47 while the
-month petals sit at 126. Grouping them as-is would fling the labels outward by
-their petal's whole placement. Members must be emitted relative to their
-instance's origin — `{ x: 0, y: 12 }` meaning *12 units inward of this petal's
-centre*, not a position in the mandala.
+Members must be emitted relative to their instance's origin — `{ x: 0, y: 12 }`
+meaning *12 units inward of this petal's centre*, not a position in the mandala.
 
-That is also why only the three shape rings are annotated so far: they are the
-only elements whose geometry is already expressed per-instance.
+**Text is the exception.** A `<text>` drawn in the instance's frame sits under
+the placement `scale`, and Chrome will not paint small `<textPath>` text there:
+the glyphs lay out with correct metrics, `getBBox()` and `elementFromPoint()`
+both find them, and nothing is drawn. A counter-scale inside the instance does
+not help. So text members arrive in **mandala coordinates** and are wrapped in
+`inversePlacement()` on the way into the instance — the same treatment computed
+fragments get. They still fold with their instance, because the fold is
+conjugated into its frame either way. `renderAnchoredLabels` does this.
+
+A member also inherits the instance's **paint**, which is a separate trap with
+the same symptom. `.month-placement` sets a 1px stroke on everything under it;
+on a 4px glyph that is wider than the stems, so every letter paints in the
+outline colour and the text vanishes into the petal — while still highlighting
+under a cursor drag, which is how it announces itself. Anything joining a group
+states its own `fill` and `stroke`.
 
 ### Constraint: group members must be contiguous in paint order
 
 A group paints where its **first** member sits, because that is where its `<g>`
 is created. Any non-member between two members gets restacked.
 
-This is not hypothetical. The current order is:
+This was not hypothetical. The order used to be:
 
 ```
- 9  weeks.shapes
 10  months.shapes            ← group member
 11  days.labels.monthNames   ← NOT a member
 12  months.labels            ← group member
-13  months.intentionIcons    ← group member
 ```
 
-Grouping `months.labels` with `months.shapes` moves it from slot 12 to slot 10,
-so `days.labels.monthNames` would begin painting *above* the month labels rather
-than below them. Either move `days.labels.monthNames` out of the way in
-`renderOrder`, or accept the restack deliberately.
+so grouping `months.labels` would have pulled it above `days.labels.monthNames`.
+The generator now emits `months.labels` directly after `months.shapes`, with
+`days.labels.monthNames` after both — and for the yearly mandala that step is
+empty anyway, because the month names ride their petals rather than sitting at a
+radius of their own.
 
 ---
 
