@@ -7,6 +7,11 @@ import MandalaCanvas, { type MandalaCanvasHandle } from "./MandalaCanvas";
 import { sampleConfig } from "../../data/sampleMandalaConfig";
 import { loadMandalaConfig } from "../../data/loadMandalaConfig";
 import sampleGeometry from "../../data/sampleGeometry.json";
+import {
+  FOLD_PRESETS,
+  PRESET_GROUPS,
+  presetOptions,
+} from "../../mandala/motion/presets.js";
 import "../../mandala/assets/styles/themes.css";
 import s from "./MandalaPage.module.css";
 
@@ -45,9 +50,15 @@ export default function MandalaPage() {
   );
   const [selectedShape, setSelectedShape] = useState("classic");
   const [helpOpen, setHelpOpen] = useState(false);
-  // Dev-only: lets the two entrance characters be compared back to back
-  // without a rebuild. Not shipped -- see the guard on the picker below.
-  const [foldMode, setFoldMode] = useState("bulge");
+  // Dev-only: lets entrance characters be compared back to back without a
+  // rebuild. Not shipped -- see the guard on the picker below.
+  //
+  // Also decides what the *first* entrance plays, because it is handed to the
+  // canvas on mount. So this one value is both "what the picker shows" and
+  // "what the app does", and they cannot drift apart. Settling on a direction
+  // is changing it here.
+  const [foldPreset, setFoldPreset] = useState("bulge");
+  const foldOptions = useMemo(() => presetOptions(foldPreset), [foldPreset]);
   const [looping, setLooping] = useState(false);
   const [previewLabels, setPreviewLabels] = useState(false);
   const [selectedFigure, setSelectedFigure] = useState(
@@ -128,7 +139,7 @@ export default function MandalaPage() {
   // running loop with it. Without this the loop button would still read as
   // running while nothing moved, which looks like the animation is broken.
   useEffect(() => {
-    if (looping) canvasRef.current?.startLoop({ foldMode });
+    if (looping) canvasRef.current?.startLoop(foldOptions);
     // Deliberately keyed on previewLabels only: this is about restarting after
     // a rebuild, not about reacting to the loop being toggled directly.
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -257,6 +268,7 @@ export default function MandalaPage() {
             colorId={selectedColor}
             figure={selectedFigure}
             previewLabels={previewLabels}
+            entrance={foldOptions}
           />
 
           {/* ─── Share / Shop ─── */}
@@ -271,7 +283,7 @@ export default function MandalaPage() {
               </button>
               <button
                 className={s.replayBtn}
-                onClick={() => canvasRef.current?.replayEntrance({ foldMode })}
+                onClick={() => canvasRef.current?.replayEntrance(foldOptions)}
                 title="Replay animation"
               >
                 &#8635;
@@ -280,18 +292,27 @@ export default function MandalaPage() {
                 <>
                   <select
                     className={s.foldModeSelect}
-                    value={foldMode}
+                    value={foldPreset}
                     title="Entrance character (dev only)"
                     onChange={(e) => {
-                      setFoldMode(e.target.value);
+                      setFoldPreset(e.target.value);
                       setLooping(false);
-                      canvasRef.current?.replayEntrance({
-                        foldMode: e.target.value,
-                      });
+                      canvasRef.current?.replayEntrance(
+                        presetOptions(e.target.value),
+                      );
                     }}
                   >
-                    <option value="bulge">bulge</option>
-                    <option value="hinge">hinge</option>
+                    {PRESET_GROUPS.map((group) => (
+                      <optgroup key={group} label={group}>
+                        {FOLD_PRESETS.filter((p) => p.group === group).map(
+                          (p) => (
+                            <option key={p.id} value={p.id} title={p.note}>
+                              {p.label}
+                            </option>
+                          ),
+                        )}
+                      </optgroup>
+                    ))}
                   </select>
                   <button
                     className={s.foldModeSelect}
@@ -299,7 +320,7 @@ export default function MandalaPage() {
                     onClick={() => {
                       const next = !looping;
                       setLooping(next);
-                      if (next) canvasRef.current?.startLoop({ foldMode });
+                      if (next) canvasRef.current?.startLoop(foldOptions);
                       else canvasRef.current?.stopLoop();
                     }}
                   >

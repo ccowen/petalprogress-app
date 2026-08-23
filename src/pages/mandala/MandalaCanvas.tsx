@@ -29,11 +29,19 @@ interface MandalaCanvasProps {
   figure: string;
   /** Dev preview: synthesise text on the month petals so folding can be judged */
   previewLabels?: boolean;
+  /**
+   * Fold overrides for the entrance played on mount.
+   *
+   * Read once, when the mandala is built. Later changes go through
+   * replayEntrance rather than rebuilding, so this is not a dependency of the
+   * render effect -- see the note there.
+   */
+  entrance?: Record<string, unknown>;
 }
 
 const MandalaCanvas = forwardRef<MandalaCanvasHandle, MandalaCanvasProps>(
   function MandalaCanvas(
-    { apiResponse, className, themeId, colorId, figure, previewLabels },
+    { apiResponse, className, themeId, colorId, figure, previewLabels, entrance },
     ref,
   ) {
     const containerRef = useRef<HTMLDivElement>(null);
@@ -73,6 +81,7 @@ const MandalaCanvas = forwardRef<MandalaCanvasHandle, MandalaCanvasProps>(
 
       rendererRef.current = renderMandala(containerRef.current, apiResponse, {
         previewLabels,
+        entrance,
       });
 
       // Apply selected theme + figure immediately after render
@@ -88,6 +97,10 @@ const MandalaCanvas = forwardRef<MandalaCanvasHandle, MandalaCanvasProps>(
       // themeId/colorId/figure intentionally omitted — handled by dedicated effects below.
       // previewLabels IS a dependency: it changes what gets built, so toggling
       // it has to rebuild the mandala rather than restyle it.
+      // entrance is NOT: it only decides how the first entrance plays, and
+      // rebuilding the whole mandala to change a fold setting would throw away
+      // every completion state and interaction binding to restart an animation
+      // replayEntrance can restart on its own.
       // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [apiResponse, previewLabels]);
 

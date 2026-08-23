@@ -134,13 +134,14 @@ export function parseTransform(str) {
 		a[0] * b[4] + a[2] * b[5] + a[4], a[1] * b[4] + a[3] * b[5] + a[5]
 	];
 	let m = [1, 0, 0, 1, 0, 0];
-	const re = /(translate|rotate|scale|skewY)\(([^)]*)\)/g;
+	const re = /(translate|rotate|scale|skewX|skewY)\(([^)]*)\)/g;
 	let g;
 	while ((g = re.exec(str))) {
 		const n = g[2].split(/[\s,]+/).filter(Boolean).map(Number);
 		if (g[1] === 'translate') m = mul(m, [1, 0, 0, 1, n[0], n[1] || 0]);
 		else if (g[1] === 'scale') m = mul(m, [n[0], 0, 0, n.length > 1 ? n[1] : n[0], 0, 0]);
 		else if (g[1] === 'skewY') m = mul(m, [1, Math.tan((n[0] * Math.PI) / 180), 0, 1, 0, 0]);
+		else if (g[1] === 'skewX') m = mul(m, [1, 0, Math.tan((n[0] * Math.PI) / 180), 1, 0, 0]);
 		else {
 			const a = (n[0] * Math.PI) / 180;
 			m = mul(m, [Math.cos(a), Math.sin(a), -Math.sin(a), Math.cos(a), 0, 0]);

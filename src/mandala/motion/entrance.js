@@ -6,6 +6,12 @@
 // outward along its spoke, then unfolds about its own vertical centreline into
 // its full shape. Underneath, the whole mandala opens from the middle outward.
 //
+// That is 'bulge' and 'hinge', which are two readings of the mirrored paper
+// kaleidoscope. 'evert' is a third reading of a different paper object -- the
+// kaleidocycle, a hinged ring of tetrahedra that turns endlessly through its
+// own centre -- and it turns each shape about its inner crease instead. See
+// foldMode below for what that changes.
+//
 // Three principles hold the design together:
 //
 //   1. It resolves as one moment. Rings are offset by radius so the motion has
@@ -49,10 +55,33 @@ export const ENTRANCE_DEFAULTS = {
 	 *   'hinge' -- it swings open about that centre line like a panel on a
 	 *              hinge. Width follows cos() of the swing angle, which is the
 	 *              real projected width of a rotating plane, so it reads as
-	 *              turning in space rather than stretching.
+	 *              turning in space rather than stretching. `hingeBeats` breaks
+	 *              that swing into separate movements, so it is worked open in
+	 *              stages rather than in one go.
+	 *   'unfurl'-- it is drawn out of its inner crease to its full length
+	 *              along the spoke, and never opens sideways at all. The shape
+	 *              emerges from the inside of its ring and reaches outward to
+	 *              its fullness, which is what a kaleidocycle looks like in
+	 *              use: a new face rises out of the middle of the ring, opens
+	 *              to full, and on the next turn folds away past the rim while
+	 *              the one behind it rises. Set the exit to travel outward and
+	 *              a loop reads as that procession continuing.
+	 *   'evert' -- it turns about an axis mostly along its inner crease -- the
+	 *              edge it shares with the hub -- rather than down its own
+	 *              centreline. So it foreshortens along the spoke, passes
+	 *              through edge-on and opens out the other side, closing a
+	 *              little as it goes. This is the paper *kaleidocycle* -- the
+	 *              hinged ring of tetrahedra that turns endlessly through its
+	 *              own middle -- rather than the mirrored tube the other two
+	 *              modes come from. The part of the turn it borrows from
+	 *              'hinge' is set by evertHinge.
 	 *
-	 * Both share the same two-stage timing and the same overshoot curve, so
-	 * they differ in character rather than in structure.
+	 * Bulge and hinge share the same two-stage timing and the same overshoot
+	 * curve, so they differ in character rather than structure. Evert differs
+	 * in structure: one clock instead of two, one easing across the whole ring
+	 * instead of one per scrap, and no overshoot at all. A kaleidocycle has a
+	 * single degree of freedom and no rest position, so there is nothing for it
+	 * to settle into and nothing to stage.
 	 */
 	foldMode: 'bulge',
 	/**
@@ -106,6 +135,117 @@ export const ENTRANCE_DEFAULTS = {
 	 * by the time the panel lies flat.
 	 */
 	hingeSkew: 14,
+	/**
+	 * How many separate movements the swing is worked open in.
+	 *
+	 * 1 is a single continuous swing -- the fold as it was before this existed,
+	 * and this setting reproduces it exactly rather than approximately.
+	 *
+	 * 2 opens it like a flap being worked by hand: swing, pause, swing again.
+	 * Each beat carries its own overshoot, so it lands, springs and settles
+	 * before the next starts, and that bounce is what makes a beat register --
+	 * not how much width it adds. Worth knowing that the beats are not evenly
+	 * *visible*: a swinging panel's projected width goes as the cosine of its
+	 * angle, so the first beat opens roughly three quarters of the width and
+	 * the second is the last stretch snapping flat.
+	 *
+	 * The exit inherits this and folds in over the same number of beats,
+	 * because it drives the same interpolator backwards.
+	 *
+	 * Above 3 the pauses get shorter than they read and it turns into a
+	 * stutter. If the beats want more room, lengthen `duration` rather than
+	 * adding more of them.
+	 */
+	hingeBeats: 2,
+	/**
+	 * How much of each beat is spent held still at its end, 0..1.
+	 *
+	 * The pause is the whole point of beating the swing -- without it the
+	 * stages run together and it reads as one uneven swing. Too much and the
+	 * fold spends its time waiting.
+	 */
+	hingeBeatHold: 0.28,
+
+	// --- 'evert' mode ---
+	/**
+	 * How far past flat the shape starts its turn, in degrees.
+	 *
+	 * Above 90 on purpose. At exactly 90 it would start edge-on and simply
+	 * open, which is the hinge again with its axis moved. Past 90 it starts
+	 * mirrored through its crease -- lying inward over the hub, the back of the
+	 * panel showing -- and turns *through* edge-on into place.
+	 *
+	 * That pass through zero is the eversion, and it is the whole point of the
+	 * mode: in the real object the face you are looking at folds away through
+	 * the centre and a different one arrives out of it. Raising this sends the
+	 * shapes further in over the hub before they come back; much past 120 and
+	 * the month petals bury the centre figure on the way through.
+	 */
+	evertSweep: 112,
+	/**
+	 * Peak sideways lean during the turn, in degrees.
+	 *
+	 * The hinge edges of a kaleidocycle are skew to one another, so a unit
+	 * twists as it tips rather than merely tipping. Signed by the same
+	 * `skewSign` the other modes use, so adjacent sectors already lean against
+	 * each other -- neighbouring tetrahedra really do counter-rotate, and it
+	 * keeps the lean from summing into a pinwheel. This only sets how far.
+	 */
+	evertTilt: 12,
+	/**
+	 * How much of the centreline turn to mix into the crease turn, 0..1.
+	 *
+	 * At 0 the shape turns purely about its inner crease: it foreshortens along
+	 * the spoke and its width never moves. That is the honest single-axis fold,
+	 * and on screen it reads as a panel swinging up on a bottom hinge -- a
+	 * garage door -- because a real object turning in space narrows as well as
+	 * shortens.
+	 *
+	 * Raising it turns the shape about an axis part-way between its crease and
+	 * its centreline, so it closes a little as it tips. The crease has to stay
+	 * the dominant half: push this past about 0.6 and the fold stops being an
+	 * eversion and becomes the hinge mode with extra steps.
+	 *
+	 * It brings the hinge's shear with it, on the hinge's own `hingeSkew`
+	 * setting, since that is exactly the character being borrowed.
+	 */
+	evertHinge: 0.45,
+	/**
+	 * How far behind the even sectors the odd ones run, in milliseconds.
+	 *
+	 * Off. The six tetrahedra of a real kaleidocycle are not all presenting a
+	 * face at the same instant -- alternate units sit out of phase, which is
+	 * where the object's hand-over-hand rhythm comes from -- and alternating by
+	 * sector reproduced that on any ring size. But a mandala is not a linkage,
+	 * and nothing here has to obey the real thing's kinematics. On twelve month
+	 * petals the alternation reads as a stutter: every other petal arriving
+	 * late looks like six of them are lagging, not like a mechanism turning.
+	 *
+	 * Left as a knob rather than deleted because it is the one lever that
+	 * brings back the rolling rhythm if the lockstep ever reads as too flat.
+	 * A few hundred ms is where it becomes visible.
+	 *
+	 * Phasing it as a wave travelling *around* the ring is the other obvious
+	 * option and is worse still: consistent motion repeated around a ring reads
+	 * as the whole mandala spinning, the same trap that keeps swirl and spin at
+	 * zero.
+	 */
+	evertPhase: 0,
+
+	// --- 'unfurl' mode ---
+	/**
+	 * How far the far end lags at the start of the draw, in degrees.
+	 *
+	 * The curl left in a sheet that has been rolled: the tip trails as the
+	 * shape comes out and straightens by the time it is at full length. Signed
+	 * by `skewSign`, so adjacent sectors curl against each other and the lean
+	 * cannot sum into a pinwheel.
+	 *
+	 * This is the only ornament the mode has. The extension does the work, and
+	 * at zero the fold is an honest, unornamented draw -- which is worth
+	 * looking at before deciding how much curl it wants.
+	 */
+	unfurlCurl: 9,
 
 	/**
 	 * Overall scale a shape starts at, growing to full size as it settles.
@@ -152,6 +292,20 @@ export const ENTRANCE_DEFAULTS = {
 	 * radius, which is what an entrance wants; the exit flips it.
 	 */
 	pullSign: -1,
+	/**
+	 * Which end of the shape the fold collapses toward.
+	 *
+	 *   'inner' -- the crease nearest the hub. The shape unfolds away from the
+	 *              centre, which is what an arrival wants.
+	 *   'outer' -- the far tip. The shape collapses toward the rim instead.
+	 *
+	 * Pairs with `pullSign`, and the pair has to agree: travel and collapse
+	 * pulling opposite ways cancel, and the collapse wins, because a shape
+	 * shrinking to nothing moves its own length while the travel is a fraction
+	 * of that. Outward travel with an inner collapse is the case that bites --
+	 * see EXIT_DEFAULTS.
+	 */
+	foldPivot: 'inner',
 	/**
 	 * Starting swirl of the position about the mandala centre, in degrees.
 	 *
