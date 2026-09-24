@@ -26,6 +26,16 @@ const S3_REGION = process.env.ASSETS_S3_REGION || "us-east-1";
 
 const mode = (process.env.ASSETS_SOURCE || "s3").toLowerCase();
 
+// The "texts" surface (the production default, see vite.config.ts) doesn't
+// include the mandala pages, so a build for it needs no assets. Dev runs this
+// with ASSETS_SOURCE=local and is unaffected.
+const isBuild = process.env.npm_lifecycle_event === "prebuild";
+const surface = process.env.VITE_APP_SURFACE ?? (isBuild ? "texts" : "full");
+if (surface === "texts") {
+  console.log("  • Skipping mandala assets: building the texts surface only.");
+  process.exit(0);
+}
+
 function ensureDir(dir) {
   if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
 }

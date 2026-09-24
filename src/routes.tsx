@@ -12,8 +12,15 @@ import InsightsPage from "./pages/admin/InsightsPage.tsx";
 import OnboardingPage from "./pages/onboarding/OnboardingPage.tsx";
 import OnboardingReferralPage from "./pages/onboarding/OnboardingReferralPage.tsx";
 import { MandalaPage } from "./pages/mandala";
+import { textsRoutes } from "./texts/routes";
 
+/**
+ * The "full" surface: every page, including ones not launched yet. Used in
+ * local dev by default. Production serves src/routes.texts.tsx instead
+ * until more of the app launches (see vite.config.ts).
+ */
 export const router = createBrowserRouter([
+  ...textsRoutes,
   { path: "signin", element: <SignInPage /> },
   {
     element: (
