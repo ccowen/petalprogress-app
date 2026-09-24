@@ -13,7 +13,7 @@
        exists. Supabase is never loaded, so no keys are needed.
    ══════════════════════════════════════════════════════ */
 
-import { CONSENT_VERSION, consentText } from "./config";
+import { CONSENT_VERSION, DEFAULT_PER_WEEK, consentText } from "./config";
 import type { SignupDraft } from "./draft";
 
 export const DEMO = import.meta.env.VITE_TEXTS_DEMO === "true";
@@ -164,7 +164,7 @@ export async function getSubscription(): Promise<Subscription | null> {
 
   return {
     phone: row.phone,
-    perWeek: row.texts_per_week ?? 7,
+    perWeek: row.texts_per_week ?? DEFAULT_PER_WEEK,
     sendHour: row.send_hour,
     timezone: row.timezone,
     status,

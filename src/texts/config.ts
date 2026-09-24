@@ -12,9 +12,11 @@ export const PRICE = {
 /** Prompts in the book, and so in a full run of texts. */
 export const PROMPT_COUNT = 147;
 
-export const MIN_PER_WEEK = 1;
-export const MAX_PER_WEEK = 7;
+/** The frequencies people can pick, shown as single-select buttons. */
+export const FREQUENCY_OPTIONS = [2, 3, 4, 6] as const;
 export const DEFAULT_PER_WEEK = 3;
+/** Highest frequency on offer. The consent wording covers this. */
+export const MAX_PER_WEEK = Math.max(...FREQUENCY_OPTIONS);
 
 /**
  * Which weekdays get a prompt at each frequency (0 = Sunday).
@@ -22,23 +24,17 @@ export const DEFAULT_PER_WEEK = 3;
  * use the same table. It's the source of truth for "we pick the days".
  */
 export const SEND_DAYS: Record<number, number[]> = {
-  1: [1],
   2: [1, 4],
   3: [1, 3, 5],
   4: [1, 2, 4, 6],
-  5: [1, 2, 3, 4, 5],
   6: [1, 2, 3, 4, 5, 6],
-  7: [0, 1, 2, 3, 4, 5, 6],
 };
 
 export const FREQ_NOTES: Record<number, string> = {
-  1: "One quiet moment a week.",
   2: "Gentle and easy to keep.",
   3: "A steady rhythm, with room to breathe.",
   4: "Most weeks, most days.",
-  5: "Every weekday. Weekends are yours.",
-  6: "Nearly daily, with one day off.",
-  7: "A prompt every day.",
+  6: "Every day but Sunday.",
 };
 
 /**

@@ -10,7 +10,7 @@ serve just those pages; everything else redirects to `/texts`. See
 
 | Route | Page |
 |-------|------|
-| `/texts` | Texts sign-up: welcome → how often + time → pricing → phone + text code → review → Stripe |
+| `/texts` | Texts sign-up: welcome → how often (2, 3, 4 or 6 a week) + time → pricing → phone + text code → review → Stripe |
 | `/texts/welcome` | After payment: "Reply YES to start" (Stripe success URL) |
 | `/texts/signin` | Returning subscribers: sign in with a texted code (no password) |
 | `/texts/account` | Your texts: frequency, time of day, pause/resume, billing & cancel |

@@ -1,7 +1,7 @@
 import type { ReactNode } from "react";
 import { Link } from "react-router";
 import { DEMO } from "../../texts/api";
-import { FREQ_NOTES, MAX_PER_WEEK, MIN_PER_WEEK, SEND_WINDOWS } from "../../texts/config";
+import { FREQ_NOTES, FREQUENCY_OPTIONS, SEND_WINDOWS } from "../../texts/config";
 import { describeDays, describeDuration } from "../../texts/schedule";
 import s from "./texts.module.css";
 
@@ -37,35 +37,31 @@ export function StepDots({ count, current }: { count: number; current: number })
 export function FrequencyPicker({ value, onChange }: { value: number; onChange: (n: number) => void }) {
   return (
     <>
-      <div className={s.stepper}>
-        <button
-          type="button"
-          className={s.stepBtn}
-          onClick={() => onChange(value - 1)}
-          disabled={value <= MIN_PER_WEEK}
-          aria-label="Fewer texts"
-        >
-          &minus;
-        </button>
-        <div className={s.stepNumWrap} aria-live="polite">
-          <div className={s.stepNum}>{value}</div>
-          <div className={s.stepUnit}>{value === 1 ? "text" : "texts"} a week</div>
-        </div>
-        <button
-          type="button"
-          className={s.stepBtn}
-          onClick={() => onChange(value + 1)}
-          disabled={value >= MAX_PER_WEEK}
-          aria-label="More texts"
-        >
-          +
-        </button>
+      <div className={s.freqOptions} role="radiogroup" aria-label="Texts per week">
+        {FREQUENCY_OPTIONS.map((n) => (
+          <button
+            key={n}
+            type="button"
+            role="radio"
+            aria-checked={value === n}
+            className={`${s.option} ${value === n ? s.optionOn : ""}`}
+            onClick={() => onChange(n)}
+          >
+            <span className={s.freqNum}>{n}</span>
+            <span className={s.optionHint}>a week</span>
+          </button>
+        ))}
       </div>
-      <div className={s.freqNote}>{FREQ_NOTES[value]}</div>
-      <div className={s.summaryBox}>
-        <strong>{describeDays(value)}</strong>. At this pace the whole journal takes{" "}
-        <strong>{describeDuration(value)}</strong>. You can change this any time.
-      </div>
+      {/* Nothing selected yet (e.g. a subscriber whose frequency isn't offered any more) */}
+      {FREQ_NOTES[value] && (
+        <>
+          <div className={s.freqNote}>{FREQ_NOTES[value]}</div>
+          <div className={s.summaryBox}>
+            <strong>{describeDays(value)}</strong>. At this pace the whole journal takes{" "}
+            <strong>{describeDuration(value)}</strong>. You can change this any time.
+          </div>
+        </>
+      )}
     </>
   );
 }

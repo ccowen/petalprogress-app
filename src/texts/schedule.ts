@@ -25,8 +25,10 @@ export function describeDuration(perWeek: number): string {
 /** "every day in the evening", "Mon, Wed & Fri in the morning": for mid-sentence use. */
 export function describeSchedule(perWeek: number, sendHour: number): string {
   const days = describeDays(perWeek);
-  const when = days === "Every day" || days === "Weekdays" || days === "Monday to Saturday"
-    ? days.toLowerCase()
+  const when =
+    days === "Every day" ? "every day"
+    : days === "Weekdays" ? "on weekdays"
+    : days === "Monday to Saturday" ? "Monday to Saturday"
     : `on ${days}`;
   const window = windowForHour(sendHour);
   return `${when}, ${window.label.toLowerCase()} (${window.hint})`;

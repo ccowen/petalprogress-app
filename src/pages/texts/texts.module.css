@@ -154,52 +154,20 @@
   color: var(--pp-sage, #8FA68C);
 }
 
-/* ── Stepper (matches onboarding) ── */
-.stepper {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 28px;
-  margin: 8px 0 12px;
+/* ── Frequency: single-select buttons ── */
+.freqOptions {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+  margin: 4px 0 14px;
 }
 
-.stepBtn {
-  width: 44px;
-  height: 44px;
-  border-radius: 50%;
-  border: 1px solid var(--pp-warm-2, #D4CEC7);
-  background: var(--pp-surface, #FDFCFA);
-  font-size: 20px;
-  color: var(--pp-text-soft, #6B6460);
-  cursor: pointer;
-  transition: all 0.15s;
-}
-
-.stepBtn:hover:not(:disabled) {
-  border-color: var(--pp-sage, #8FA68C);
-  color: var(--pp-sage, #8FA68C);
-}
-
-.stepBtn:disabled {
-  opacity: 0.35;
-  cursor: default;
-}
-
-.stepNumWrap {
-  text-align: center;
-  min-width: 90px;
-}
-
-.stepNum {
+.freqNum {
+  display: block;
   font-family: 'Cormorant Garamond', serif;
-  font-size: 56px;
-  line-height: 1;
-}
-
-.stepUnit {
-  font-size: 12px;
-  color: var(--pp-text-muted, #A09890);
-  margin-top: 4px;
+  font-size: 34px;
+  line-height: 1.1;
+  color: var(--pp-text, #2C2825);
 }
 
 .freqNote {
