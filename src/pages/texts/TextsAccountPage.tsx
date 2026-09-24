@@ -131,7 +131,7 @@ function Details({ sub, onChange }: { sub: Subscription; onChange: (s: Subscript
         Your <em>texts.</em>
       </h1>
       <p className={s.desc} style={{ marginBottom: 8 }}>
-        Prompts go to <strong>{displayPhone(sub.phone)}</strong>{" "}
+        Prompts go to <strong>{displayPhone(sub.phone)}</strong>,{" "}
         {describeSchedule(sub.perWeek, sub.sendHour)}.
       </p>
       {sub.status === "awaiting_confirmation" && (

@@ -235,11 +235,7 @@ function Review({ draft, onEdit }: { draft: SignupDraft; onEdit: () => void }) {
         Almost <em>there.</em>
       </h1>
       <div className={s.summaryBox}>
-        <strong>
-          {draft.perWeek} {draft.perWeek === 1 ? "prompt" : "prompts"} a week
-        </strong>{" "}
-        <br />
-        {describeSchedule(draft.perWeek, draft.sendHour)}
+        <strong>{describeSchedule(draft.perWeek, draft.sendHour)}</strong>
         <br />
         To <strong>{draft.phone ? displayPhone(draft.phone) : "your phone"}</strong>
         <br />

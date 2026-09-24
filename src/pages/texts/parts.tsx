@@ -2,7 +2,7 @@ import type { ReactNode } from "react";
 import { Link } from "react-router";
 import { DEMO } from "../../texts/api";
 import { FREQ_NOTES, FREQUENCY_OPTIONS, SEND_WINDOWS } from "../../texts/config";
-import { describeDays, describeDuration } from "../../texts/schedule";
+import { describeDuration } from "../../texts/schedule";
 import s from "./texts.module.css";
 
 /** Page frame for every texts screen: wordmark, one card, optional top link. */
@@ -57,8 +57,9 @@ export function FrequencyPicker({ value, onChange }: { value: number; onChange: 
         <>
           <div className={s.freqNote}>{FREQ_NOTES[value]}</div>
           <div className={s.summaryBox}>
-            <strong>{describeDays(value)}</strong>. At this pace the whole journal takes{" "}
-            <strong>{describeDuration(value)}</strong>. You can change this any time.
+            We'll pick the days, so each prompt is a small surprise. At this pace the whole
+            journal takes <strong>{describeDuration(value)}</strong>. You can change this any
+            time.
           </div>
         </>
       )}

@@ -18,23 +18,17 @@ export const DEFAULT_PER_WEEK = 3;
 /** Highest frequency on offer. The consent wording covers this. */
 export const MAX_PER_WEEK = Math.max(...FREQUENCY_OPTIONS);
 
-/**
- * Which weekdays get a prompt at each frequency (0 = Sunday).
- * Spread as evenly as possible. The daily send job in petalprogress-sms must
- * use the same table. It's the source of truth for "we pick the days".
+/*
+ * Which days a prompt arrives is deliberately NOT shown or chosen here: the
+ * texts service in petalprogress-sms decides, so each one is a small surprise.
+ * The app only knows how many a week and roughly what time of day.
  */
-export const SEND_DAYS: Record<number, number[]> = {
-  2: [1, 4],
-  3: [1, 3, 5],
-  4: [1, 2, 4, 6],
-  6: [1, 2, 3, 4, 5, 6],
-};
 
 export const FREQ_NOTES: Record<number, string> = {
   2: "Gentle and easy to keep.",
   3: "A steady rhythm, with room to breathe.",
   4: "Most weeks, most days.",
-  6: "Every day but Sunday.",
+  6: "Nearly every day.",
 };
 
 /**

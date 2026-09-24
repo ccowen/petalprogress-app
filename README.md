@@ -70,8 +70,10 @@ Stripe or Twilio. Any 6-digit code works and "payment" goes straight to
   | `POST /billing-portal` | `return_url` | `{ url }` | Stripe Billing Portal session (card, receipts, cancel). |
 
 - **`petalprogress-db`**: a `texts_per_week` column on `sms_subscribers`, and
-  somewhere to store `consent_version` / `consent_text`. The daily send job
-  must use the same weekday table as `SEND_DAYS` in `src/texts/config.ts`.
+  somewhere to store `consent_version` / `consent_text`.
+- **Which days** each person gets a prompt is decided by the texts service, not
+  the app. The app never shows or asks for days, only how many a week and a
+  time of day.
 
 ## Project structure
 
