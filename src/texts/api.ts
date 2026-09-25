@@ -13,7 +13,7 @@
        exists. Supabase is never loaded, so no keys are needed.
    ══════════════════════════════════════════════════════ */
 
-import { CONSENT_VERSION, DEFAULT_PER_WEEK, consentText } from "./config";
+import { CONSENT_VERSION, consentText } from "./config";
 import type { SignupDraft } from "./draft";
 
 export const DEMO = import.meta.env.VITE_TEXTS_DEMO === "true";
@@ -23,6 +23,7 @@ export type SubscriptionStatus =
   | "awaiting_confirmation" // paid, hasn't replied YES yet
   | "active"
   | "paused"
+  | "past_due" // Stripe couldn't take the latest payment
   | "cancelled";
 
 export interface Subscription {
@@ -61,8 +62,9 @@ async function callApi<T>(path: string, body: unknown): Promise<T> {
     body: JSON.stringify(body),
   });
   if (!res.ok) {
-    const msg = await res.text().catch(() => "");
-    throw new Error(msg || `Something went wrong (${res.status}). Please try again.`);
+    // The texts service answers errors as {"error": "..."}, written for people.
+    const payload = (await res.json().catch(() => null)) as { error?: string } | null;
+    throw new Error(payload?.error || `Something went wrong (${res.status}). Please try again.`);
   }
   return res.json() as Promise<T>;
 }
@@ -148,23 +150,27 @@ function friendlyAuthError(message: string): string {
 export async function getSubscription(): Promise<Subscription | null> {
   if (DEMO) return demoRead();
 
-  // select("*") on purpose: texts_per_week is added by a pending migration in
-  // petalprogress-db, and a typed column list would not compile until the
-  // generated types catch up.
-  const { data, error } = await (await db())
+  const { data: row, error } = await (await db())
     .from("sms_subscribers")
-    .select("*")
+    .select(
+      "phone, texts_per_week, send_hour, timezone, subscription_status, paused_at, consent_confirmed_at, sms_opted_out_at, current_prompt_index",
+    )
     .maybeSingle();
   if (error) throw new Error(error.message);
-  if (!data) return null;
+  if (!row) return null;
 
-  const row = data as typeof data & { texts_per_week?: number };
-  let status: SubscriptionStatus = row.subscription_status as SubscriptionStatus;
-  if (status === "active" && !row.consent_confirmed_at) status = "awaiting_confirmation";
+  // subscription_status mirrors Stripe billing; pause and the YES are
+  // separate columns (see petalprogress-db docs/database-decisions.md).
+  let status: SubscriptionStatus;
+  if (row.subscription_status === "cancelled" || row.sms_opted_out_at) status = "cancelled";
+  else if (row.subscription_status === "past_due") status = "past_due";
+  else if (!row.consent_confirmed_at) status = "awaiting_confirmation";
+  else if (row.paused_at) status = "paused";
+  else status = "active";
 
   return {
     phone: row.phone,
-    perWeek: row.texts_per_week ?? DEFAULT_PER_WEEK,
+    perWeek: row.texts_per_week,
     sendHour: row.send_hour,
     timezone: row.timezone,
     status,

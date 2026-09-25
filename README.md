@@ -69,11 +69,15 @@ Stripe or Twilio. Any 6-digit code works and "payment" goes straight to
   | `POST /pause`, `POST /resume` | none | 2xx | Sets `subscription_status`. |
   | `POST /billing-portal` | `return_url` | `{ url }` | Stripe Billing Portal session (card, receipts, cancel). |
 
-- **`petalprogress-db`**: a `texts_per_week` column on `sms_subscribers`, and
-  somewhere to store `consent_version` / `consent_text`.
+- **`petalprogress-db`** migration `20260925000100_texts_signup.sql`
+  (`texts_per_week`, `paused_at`, consent record, `sms_messages`); this app's
+  types come from that repo.
 - **Which days** each person gets a prompt is decided by the texts service, not
   the app. The app never shows or asks for days, only how many a week and a
   time of day.
+
+The server side of all this lives in petalprogress-sms (`webhooks/texts_api.py`,
+`webhooks/stripe_webhook.py`).
 
 ## Project structure
 

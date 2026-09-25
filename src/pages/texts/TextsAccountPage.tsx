@@ -19,6 +19,7 @@ const STATUS_LABEL: Record<Subscription["status"], string> = {
   awaiting_confirmation: "Waiting for your YES",
   active: "Active",
   paused: "Paused",
+  past_due: "Payment problem",
   cancelled: "Cancelled",
 };
 
@@ -134,6 +135,12 @@ function Details({ sub, onChange }: { sub: Subscription; onChange: (s: Subscript
         Prompts go to <strong>{displayPhone(sub.phone)}</strong>,{" "}
         {describeSchedule(sub.perWeek, sub.sendHour)}.
       </p>
+      {sub.status === "past_due" && (
+        <p className={s.desc}>
+          Your last payment didn't go through, so prompts are on hold. Update your card under{" "}
+          <strong>Billing &amp; cancel</strong> below.
+        </p>
+      )}
       {sub.status === "awaiting_confirmation" && (
         <p className={s.desc}>
           Reply <strong>YES</strong> to our welcome text to get your first prompt.
