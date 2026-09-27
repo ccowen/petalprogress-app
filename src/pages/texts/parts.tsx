@@ -1,7 +1,7 @@
 import type { ReactNode } from "react";
 import { Link } from "react-router";
 import { DEMO } from "../../texts/api";
-import { FREQ_NOTES, FREQUENCY_OPTIONS, SEND_WINDOWS } from "../../texts/config";
+import { ANSWERS_PRIVACY, FREQ_NOTES, FREQUENCY_OPTIONS, SEND_WINDOWS } from "../../texts/config";
 import { describeDuration } from "../../texts/schedule";
 import s from "./texts.module.css";
 
@@ -87,5 +87,19 @@ export function TimePicker({ value, onChange }: { value: number; onChange: (hour
         ))}
       </div>
     </>
+  );
+}
+
+/** The answers-privacy promise, as a quiet callout. */
+export function PrivacyNote() {
+  return (
+    <div className={s.privacy}>
+      <span className={s.privacyIcon} aria-hidden="true">
+        ◎
+      </span>
+      <p>
+        <strong>{ANSWERS_PRIVACY.title}</strong> {ANSWERS_PRIVACY.text}
+      </p>
+    </div>
   );
 }

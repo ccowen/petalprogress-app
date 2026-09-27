@@ -63,5 +63,19 @@ export function consentText() {
   );
 }
 
+/**
+ * The privacy promise about answers, shown on the welcome and phone steps
+ * and the account page. petalprogress-sms makes it true: reply words go only
+ * to an anonymous table (no person, number or time), and messages are deleted
+ * from Twilio an hour after they finish. Don't strengthen this wording
+ * without checking that the backend still backs it up.
+ */
+export const ANSWERS_PRIVACY = {
+  title: "Your answers stay yours.",
+  text:
+    "Replies are never saved to your account or linked to your number. We may keep " +
+    "answers anonymously, with no name or number attached, to help improve the prompts.",
+};
+
 /** Where the marketing site lives (for Terms / Privacy links). */
 export const SITE_URL = "https://petalprogress.com";

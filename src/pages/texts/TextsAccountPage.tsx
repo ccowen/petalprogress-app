@@ -12,7 +12,7 @@ import {
 import { PROMPT_COUNT } from "../../texts/config";
 import { displayPhone } from "../../texts/phone";
 import { describeSchedule } from "../../texts/schedule";
-import { FrequencyPicker, TextsShell, TimePicker } from "./parts";
+import { FrequencyPicker, PrivacyNote, TextsShell, TimePicker } from "./parts";
 import s from "./texts.module.css";
 
 const STATUS_LABEL: Record<Subscription["status"], string> = {
@@ -208,9 +208,10 @@ function Details({ sub, onChange }: { sub: Subscription; onChange: (s: Subscript
             {error}
           </p>
         )}
-        <p className={s.fine} style={{ marginTop: 16 }}>
+        <p className={s.fine} style={{ marginTop: 16, marginBottom: 16 }}>
           You can also reply PAUSE or STOP to any text.
         </p>
+        <PrivacyNote />
       </div>
     </>
   );

@@ -5,7 +5,7 @@ import { CONSENT_VERSION, PRICE, PROMPT_COUNT, SITE_URL, consentText } from "../
 import { loadDraft, newDraft, saveDraft, type SignupDraft } from "../../texts/draft";
 import { displayPhone } from "../../texts/phone";
 import { describeSchedule } from "../../texts/schedule";
-import { FrequencyPicker, StepDots, TextsShell, TimePicker } from "./parts";
+import { FrequencyPicker, PrivacyNote, StepDots, TextsShell, TimePicker } from "./parts";
 import { PhoneCodeForm } from "./PhoneCodeForm";
 import s from "./texts.module.css";
 
@@ -101,7 +101,10 @@ export default function TextsSignupPage() {
             </li>
             <li className={s.point}>
               <span className={s.pointIcon}>❋</span>
-              <span>Your answers aren't kept as a journal. That's what the book is for.</span>
+              <span>
+                Replies are never saved to your account or linked to your number. Want to keep
+                them? That's what the journal is for.
+              </span>
             </li>
           </ul>
           <div className={s.nav}>
@@ -183,6 +186,7 @@ export default function TextsSignupPage() {
             We'll text you a code to confirm the number. It's also how you'll sign in later, with no
             password to remember.
           </p>
+          <PrivacyNote />
           <PhoneCodeForm
             createAccount
             initialPhone={draft.phone}

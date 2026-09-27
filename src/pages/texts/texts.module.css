@@ -384,6 +384,30 @@
   text-decoration: underline;
 }
 
+/* ── Privacy callout ── */
+.privacy {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  background: rgba(143, 166, 140, 0.1);
+  border-radius: 12px;
+  padding: 12px 14px;
+  font-size: 12.5px;
+  line-height: 1.6;
+  color: var(--pp-text-soft, #6B6460);
+  margin-bottom: 20px;
+}
+
+.privacy strong {
+  color: var(--pp-text, #2C2825);
+  font-weight: 500;
+}
+
+.privacyIcon {
+  color: var(--pp-sage, #8FA68C);
+  line-height: 1.6;
+}
+
 /* ── Account page ── */
 .section {
   border-top: 1px solid var(--pp-warm-1, #EDE9E3);
