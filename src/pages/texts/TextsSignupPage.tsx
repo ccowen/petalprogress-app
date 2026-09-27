@@ -78,7 +78,7 @@ export default function TextsSignupPage() {
         <>
           <div className={s.eyebrow}>Prompted journal texts</div>
           <h1 className={s.title}>
-            A journal prompt, <em>by text.</em>
+            A guided journal experience, <em>translated to text.</em>
           </h1>
           <p className={s.desc}>
             The gratitude prompts from the PetalProgress journal, sent to your phone. Reply with a
