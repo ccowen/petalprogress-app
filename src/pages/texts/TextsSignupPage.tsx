@@ -81,8 +81,9 @@ export default function TextsSignupPage() {
           </h1>
           <p className={s.desc}>
             The gratitude prompts from the PetalProgress journal, sent to your phone. Each one is
-            thought-provoking, but the answer is simple: a word, a number, or a choice. Answering
-            is the practice, and then you let it go.
+            thought-provoking, but the answer is simple. Engaging with the question is the
+            practice: think it over, reply with <em>yes</em>, <em>maybe</em>, <em>3</em>, or{" "}
+            <em>squirrel</em>, and let it go.
           </p>
           <div className={s.phoneMock} aria-hidden="true">
             <div className={s.bubble}>
