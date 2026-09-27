@@ -76,7 +76,6 @@ export default function TextsSignupPage() {
 
       {step === "welcome" && (
         <>
-          <div className={s.eyebrow}>Prompted journal texts</div>
           <h1 className={s.title}>
             A guided journal experience, <em>translated to text.</em>
           </h1>
