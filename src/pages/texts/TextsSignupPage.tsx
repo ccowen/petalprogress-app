@@ -80,8 +80,9 @@ export default function TextsSignupPage() {
             A guided journal experience, <em>translated to text.</em>
           </h1>
           <p className={s.desc}>
-            The gratitude prompts from the PetalProgress journal, sent to your phone. Reply with a
-            word, a number, or a choice. Answering is the practice, and then you let it go.
+            The gratitude prompts from the PetalProgress journal, sent to your phone. Each one is
+            thought-provoking, but the answer is simple: a word, a number, or a choice. Answering
+            is the practice, and then you let it go.
           </p>
           <div className={s.phoneMock} aria-hidden="true">
             <div className={s.bubble}>
