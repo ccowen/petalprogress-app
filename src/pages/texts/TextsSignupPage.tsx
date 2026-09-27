@@ -97,7 +97,7 @@ export default function TextsSignupPage() {
             </li>
             <li className={s.point}>
               <span className={s.pointIcon}>◎</span>
-              <span>You choose how many a week, from one to every day.</span>
+              <span>You choose how many a week, from two to six.</span>
             </li>
             <li className={s.point}>
               <span className={s.pointIcon}>❋</span>
