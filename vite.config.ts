@@ -3,24 +3,24 @@ import { defineConfig, loadEnv } from 'vite'
 import react from '@vitejs/plugin-react'
 
 /**
- * Which pages ship. "texts" serves only the prompted journal texts sign-up
- * (src/routes.texts.tsx); "full" serves everything (src/routes.tsx).
+ * Which pages ship. "texts" serves only the guided-journal texts pages
+ * (src/routes.texts.tsx); "full" adds the mandala, gallery, calendar and admin
+ * pages (src/routes.tsx), which aren't launched and are hidden for now.
  *
- * Defaults: `vite build` → texts (what's launched), `vite` dev → full.
- * Override with VITE_APP_SURFACE=texts|full, e.g. in Vercel's env settings.
- * When more of the app launches, move its routes into routes.texts.tsx, or
- * switch production to "full".
+ * Default: texts, for both `vite build` and `vite` dev, so local dev behaves
+ * like production. Set VITE_APP_SURFACE=full (in .env.local or inline) to work
+ * on the hidden pages. When more of the app launches, move its routes into
+ * routes.texts.tsx, or switch the default to "full".
  */
-function appSurface(command: string, mode: string) {
+function appSurface(mode: string) {
   const env = loadEnv(mode, process.cwd(), 'VITE_')
   const surface = process.env.VITE_APP_SURFACE ?? env.VITE_APP_SURFACE
-  if (surface === 'texts' || surface === 'full') return surface
-  return command === 'build' ? 'texts' : 'full'
+  return surface === 'full' ? 'full' : 'texts'
 }
 
 // https://vite.dev/config/
-export default defineConfig(({ command, mode }) => {
-  const surface = appSurface(command, mode)
+export default defineConfig(({ mode }) => {
+  const surface = appSurface(mode)
   const routes = surface === 'texts' ? './src/routes.texts.tsx' : './src/routes.tsx'
   return {
     plugins: [react()],
