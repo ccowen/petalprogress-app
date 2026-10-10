@@ -10,8 +10,8 @@ import TextsAccountPage from "../pages/texts/TextsAccountPage";
  * Shared by both surfaces — see src/routes.texts.tsx.
  */
 export const textsRoutes: RouteObject[] = [
-  { path: "texts", element: <TextsSignupPage /> },
-  { path: "texts/signin", element: <TextsSignInPage /> },
-  { path: "texts/welcome", element: <TextsWelcomePage /> },
-  { path: "texts/account", element: <TextsAccountPage /> },
+  { path: "guided-journal", element: <TextsSignupPage /> },
+  { path: "guided-journal/signin", element: <TextsSignInPage /> },
+  { path: "guided-journal/welcome", element: <TextsWelcomePage /> },
+  { path: "guided-journal/account", element: <TextsAccountPage /> },
 ];

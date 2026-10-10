@@ -11,6 +11,8 @@ import { textsRoutes } from "./texts/routes";
  */
 export const router = createBrowserRouter([
   ...textsRoutes,
-  { path: "signin", element: <Navigate to="/texts/signin" replace /> },
-  { path: "*", element: <Navigate to="/texts" replace /> },
+  // The bare domain is most likely a returning subscriber; sign-up links point at /guided-journal.
+  { index: true, element: <Navigate to="/guided-journal/signin" replace /> },
+  { path: "signin", element: <Navigate to="/guided-journal/signin" replace /> },
+  { path: "*", element: <Navigate to="/guided-journal" replace /> },
 ]);
