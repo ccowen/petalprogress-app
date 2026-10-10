@@ -26,6 +26,15 @@ const S3_REGION = process.env.ASSETS_S3_REGION || "us-east-1";
 
 const mode = (process.env.ASSETS_SOURCE || "s3").toLowerCase();
 
+// The "texts" surface (the default, see vite.config.ts) doesn't include the
+// mandala pages, so it needs no assets. Only VITE_APP_SURFACE=full fetches
+// them. Note: .env.local isn't read here, so set it in the shell for dev:
+//   VITE_APP_SURFACE=full npm run dev
+if (process.env.VITE_APP_SURFACE !== "full") {
+  console.log("  • Skipping mandala assets: texts surface only.");
+  process.exit(0);
+}
+
 function ensureDir(dir) {
   if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
 }

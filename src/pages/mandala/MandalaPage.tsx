@@ -1,32 +1,46 @@
-import { useState, useCallback, useRef, useEffect } from "react";
+import { useState, useCallback, useRef, useEffect, useMemo } from "react";
 import Toolbar from "./Toolbar";
 import type { ToolType } from "./Toolbar";
 import SettingsPanel from "./SettingsPanel";
 import RightPanel from "./RightPanel";
-import MandalaCanvas from "./MandalaCanvas";
+import MandalaCanvas, { type MandalaCanvasHandle } from "./MandalaCanvas";
 import { sampleConfig } from "../../data/sampleMandalaConfig";
+import { loadMandalaConfig } from "../../data/loadMandalaConfig";
 import sampleGeometry from "../../data/sampleGeometry.json";
+import {
+  FOLD_PRESETS,
+  PRESET_GROUPS,
+  presetOptions,
+} from "../../mandala/motion/presets.js";
 import "../../mandala/assets/styles/themes.css";
 import s from "./MandalaPage.module.css";
 
 const GEOMETRY_API_URL =
   import.meta.env.VITE_GEOMETRY_API_URL || "http://localhost:3000";
 
-/* ─── Build checked days from sample config completions ─── */
-const INITIAL_CHECKED = new Set(
-  sampleConfig.completions.map((c) => {
-    const d = new Date(c.date);
-    return `${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()}`;
-  }),
-);
+/* ─── Checked days from a config's completions ─── */
+function checkedDaysOf(config: typeof sampleConfig): Set<string> {
+  return new Set(
+    config.completions.map((c) => {
+      const d = new Date(c.date);
+      return `${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()}`;
+    }),
+  );
+}
 
 /* ─── Start month from config (parse as local, not UTC) ─── */
-const [startY, startM] = sampleConfig.mandala.start_date.split("-").map(Number);
-const CONFIG_START = new Date(startY, startM - 1, 1);
+function startMonthOf(config: typeof sampleConfig): Date {
+  const [y, m] = config.mandala.start_date.split("-").map(Number);
+  return new Date(y, m - 1, 1);
+}
 
 export default function MandalaPage() {
   console.log("[MandalaPage] component rendering");
   /* ─── State ─── */
+  /* Starts as the bundled sample so first paint is instant, then swaps to
+     the signed-in user's real mandala once the query resolves. */
+  const [config, setConfig] = useState(sampleConfig);
+
   const [activeTool, setActiveTool] = useState<ToolType>("theme");
   const [selectedTheme, setSelectedTheme] = useState(
     sampleConfig.mandala.color_theme_css_class.replace("theme-", ""),
@@ -35,15 +49,49 @@ export default function MandalaPage() {
     sampleConfig.mandala.color_petal_css_class.replace("petal-", ""),
   );
   const [selectedShape, setSelectedShape] = useState("classic");
-  const [animKey, setAnimKey] = useState(0);
   const [helpOpen, setHelpOpen] = useState(false);
+  // Dev-only: lets entrance characters be compared back to back without a
+  // rebuild. Not shipped -- see the guard on the picker below.
+  //
+  // Also decides what the *first* entrance plays, because it is handed to the
+  // canvas on mount. So this one value is both "what the picker shows" and
+  // "what the app does", and they cannot drift apart. Settling on a direction
+  // is changing it here.
+  const [foldPreset, setFoldPreset] = useState("bulge");
+  const foldOptions = useMemo(() => presetOptions(foldPreset), [foldPreset]);
+  const [looping, setLooping] = useState(false);
+  const [previewLabels, setPreviewLabels] = useState(false);
   const [selectedFigure, setSelectedFigure] = useState(
     sampleConfig.mandala.figure_choice,
   );
   const [checkedIn, setCheckedIn] = useState(false);
-  const [checkedDays, setCheckedDays] = useState<Set<string>>(
-    () => new Set(INITIAL_CHECKED),
+  const [checkedDays, setCheckedDays] = useState<Set<string>>(() =>
+    checkedDaysOf(sampleConfig),
   );
+
+  const configStart = useMemo(() => startMonthOf(config), [config]);
+
+  /* ─── Live data from Supabase ─── */
+  useEffect(() => {
+    let cancelled = false;
+
+    loadMandalaConfig()
+      .then((live) => {
+        if (cancelled || !live) return;
+        setConfig(live);
+        setSelectedTheme(live.mandala.color_theme_css_class.replace("theme-", ""));
+        setSelectedColor(live.mandala.color_petal_css_class.replace("petal-", ""));
+        setSelectedFigure(live.mandala.figure_choice);
+        setCheckedDays(checkedDaysOf(live));
+      })
+      .catch((err) => {
+        console.warn("Could not load mandala from Supabase:", err);
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   /* ─── Sync theme/petal classes to <html> so nav avatar inherits CSS vars ─── */
   useEffect(() => {
@@ -66,7 +114,7 @@ export default function MandalaPage() {
         const res = await fetch(GEOMETRY_API_URL, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(sampleConfig),
+          body: JSON.stringify(config),
         });
         if (!res.ok) throw new Error(`API ${res.status}`);
         const data = await res.json();
@@ -84,7 +132,18 @@ export default function MandalaPage() {
     }
     fetchGeometry();
     return () => { cancelled = true; };
-  }, []);
+  }, [config]);
+
+  /* ─── Dev: keep the loop alive across rebuilds ─── */
+  // Toggling the text preview rebuilds the mandala, and destroy() stops any
+  // running loop with it. Without this the loop button would still read as
+  // running while nothing moved, which looks like the animation is broken.
+  useEffect(() => {
+    if (looping) canvasRef.current?.startLoop(foldOptions);
+    // Deliberately keyed on previewLabels only: this is about restarting after
+    // a rebuild, not about reacting to the loop being toggled directly.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [previewLabels]);
 
   /* ─── Share / Shop State ─── */
   const [shareShopOpen, setShareShopOpen] = useState(false);
@@ -92,6 +151,7 @@ export default function MandalaPage() {
   const [sharePopupPlatform, setSharePopupPlatform] = useState("Instagram");
   const [shopPopupOpen, setShopPopupOpen] = useState(false);
 
+  const canvasRef = useRef<MandalaCanvasHandle>(null);
   const shareZoneRef = useRef<HTMLDivElement>(null);
   const shopZoneRef = useRef<HTMLDivElement>(null);
 
@@ -201,12 +261,14 @@ export default function MandalaPage() {
 
           {/* ─── Main Mandala SVG ─── */}
           <MandalaCanvas
-            key={animKey}
+            ref={canvasRef}
             apiResponse={mandalaData}
             className={s.mandalaCanvas}
             themeId={selectedTheme}
             colorId={selectedColor}
             figure={selectedFigure}
+            previewLabels={previewLabels}
+            entrance={foldOptions}
           />
 
           {/* ─── Share / Shop ─── */}
@@ -221,11 +283,58 @@ export default function MandalaPage() {
               </button>
               <button
                 className={s.replayBtn}
-                onClick={() => setAnimKey((k) => k + 1)}
+                onClick={() => canvasRef.current?.replayEntrance(foldOptions)}
                 title="Replay animation"
               >
                 &#8635;
               </button>
+              {import.meta.env.DEV && (
+                <>
+                  <select
+                    className={s.foldModeSelect}
+                    value={foldPreset}
+                    title="Entrance character (dev only)"
+                    onChange={(e) => {
+                      setFoldPreset(e.target.value);
+                      setLooping(false);
+                      canvasRef.current?.replayEntrance(
+                        presetOptions(e.target.value),
+                      );
+                    }}
+                  >
+                    {PRESET_GROUPS.map((group) => (
+                      <optgroup key={group} label={group}>
+                        {FOLD_PRESETS.filter((p) => p.group === group).map(
+                          (p) => (
+                            <option key={p.id} value={p.id} title={p.note}>
+                              {p.label}
+                            </option>
+                          ),
+                        )}
+                      </optgroup>
+                    ))}
+                  </select>
+                  <button
+                    className={s.foldModeSelect}
+                    title="Loop entrance and exit (dev only)"
+                    onClick={() => {
+                      const next = !looping;
+                      setLooping(next);
+                      if (next) canvasRef.current?.startLoop(foldOptions);
+                      else canvasRef.current?.stopLoop();
+                    }}
+                  >
+                    {looping ? "■ loop" : "▶ loop"}
+                  </button>
+                  <button
+                    className={s.foldModeSelect}
+                    title="Synthesise text on the month petals (dev only)"
+                    onClick={() => setPreviewLabels((v) => !v)}
+                  >
+                    {previewLabels ? "✓ text" : "text"}
+                  </button>
+                </>
+              )}
             </div>
           <button className={s.shareShopToggle} onClick={toggleShareShop}>
             Share &middot; Shop{" "}
@@ -380,7 +489,7 @@ export default function MandalaPage() {
         checkedDays={checkedDays}
         onToggleDay={handleToggleDay}
         themeClass={`theme-${selectedTheme} petal-${selectedColor}`}
-        initialDate={CONFIG_START}
+        initialDate={configStart}
       />
     </div>
   );

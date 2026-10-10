@@ -1,4 +1,6 @@
 import { createBrowserRouter, Navigate } from "react-router";
+import RequireAuth from "./components/RequireAuth.tsx";
+import SignInPage from "./pages/SignInPage.tsx";
 import AppLayout from "./layout/AppLayout.tsx";
 import AdminLayout from "./layout/AdminLayout.tsx";
 import OnboardingLayout from "./layout/OnboardingLayout.tsx";
@@ -10,17 +12,33 @@ import InsightsPage from "./pages/admin/InsightsPage.tsx";
 import OnboardingPage from "./pages/onboarding/OnboardingPage.tsx";
 import OnboardingReferralPage from "./pages/onboarding/OnboardingReferralPage.tsx";
 import { MandalaPage } from "./pages/mandala";
+import { textsRoutes } from "./texts/routes";
 
+/**
+ * The "full" surface: every page, including ones not launched yet. Used in
+ * local dev by default. Production serves src/routes.texts.tsx instead
+ * until more of the app launches (see vite.config.ts).
+ */
 export const router = createBrowserRouter([
+  ...textsRoutes,
+  { path: "signin", element: <SignInPage /> },
   {
-    element: <OnboardingLayout />,
+    element: (
+      <RequireAuth>
+        <OnboardingLayout />
+      </RequireAuth>
+    ),
     children: [
       { path: "onboarding", element: <OnboardingPage /> },
       { path: "onboarding/referral", element: <OnboardingReferralPage /> },
     ],
   },
   {
-    element: <AppLayout />,
+    element: (
+      <RequireAuth>
+        <AppLayout />
+      </RequireAuth>
+    ),
     children: [
       { index: true, element: <Navigate to="/mandala" replace /> },
       { path: "mandala", element: <MandalaPage /> },
@@ -30,7 +48,11 @@ export const router = createBrowserRouter([
   },
   {
     path: "admin",
-    element: <AdminLayout />,
+    element: (
+      <RequireAuth>
+        <AdminLayout />
+      </RequireAuth>
+    ),
     children: [
       { index: true, element: <Navigate to="/admin/members" replace /> },
       { path: "members", element: <MembersPage /> },

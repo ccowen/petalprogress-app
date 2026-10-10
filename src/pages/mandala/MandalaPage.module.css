@@ -92,6 +92,22 @@
   opacity: 0.8;
 }
 
+/* Dev-only entrance picker; not rendered in production builds. */
+.foldModeSelect {
+  background: none;
+  border: 1px solid currentColor;
+  border-radius: 3px;
+  color: var(--circle-dark);
+  cursor: pointer;
+  font-size: 11px;
+  opacity: 0.55;
+  padding: 1px 3px;
+}
+
+.foldModeSelect:hover {
+  opacity: 0.8;
+}
+
 .helpOverlay {
   position: fixed;
   inset: 0;

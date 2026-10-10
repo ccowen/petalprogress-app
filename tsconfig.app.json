@@ -22,7 +22,10 @@
     "noUnusedParameters": true,
     "erasableSyntaxOnly": true,
     "noFallthroughCasesInSwitch": true,
-    "noUncheckedSideEffectImports": true
+    "noUncheckedSideEffectImports": true,
+
+    /* Resolved per surface in vite.config.ts; typed against the full router */
+    "paths": { "@app/routes": ["./src/routes.tsx"] }
   },
   "include": ["src"]
 }
