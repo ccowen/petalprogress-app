@@ -105,6 +105,15 @@
   color: var(--pp-text-soft, #6B6460);
 }
 
+/* Section heading inside a card, smaller than .title. */
+.subtitle {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 23px;
+  font-weight: 400;
+  line-height: 1.2;
+  margin-bottom: 6px;
+}
+
 .desc {
   font-size: 14px;
   color: var(--pp-text-soft, #6B6460);
@@ -216,9 +225,23 @@
   border-color: var(--pp-warm-2, #D4CEC7);
 }
 
-.optionOn {
+.optionOn,
+.optionOn:hover {
   border-color: var(--pp-sage, #8FA68C);
-  background: rgba(143, 166, 140, 0.08);
+  background: var(--pp-sage, #8FA68C);
+}
+
+.optionOn .optionLabel,
+.optionOn .optionHint,
+.optionOn .freqNum {
+  color: #fff;
+}
+
+/* "Anytime works, surprise me": a text link under the windows that turns every one on. */
+.surpriseBtn {
+  display: block;
+  margin: -12px auto 22px;
+  font-size: 13px;
 }
 
 .optionLabel {
@@ -235,9 +258,13 @@
 }
 
 /* ── Price ── */
+/* "$3 / monthly price": serif amount, the label in the body sans beside it. */
 .price {
-  text-align: center;
-  margin: 4px 0 20px;
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: 10px;
+  margin: 8px 0 24px;
 }
 
 .priceAmount {
@@ -247,8 +274,9 @@
 }
 
 .pricePeriod {
-  font-size: 13px;
-  color: var(--pp-text-muted, #A09890);
+  font-size: 14px;
+  letter-spacing: 0.02em;
+  color: var(--pp-text-soft, #6B6560);
 }
 
 /* ── Form fields ── */
@@ -474,9 +502,67 @@
   margin-top: 12px;
 }
 
+.demoReset {
+  background: none;
+  border: none;
+  padding: 0;
+  font: inherit;
+  font-weight: 600;
+  color: inherit;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+/* ── Signature (after payment) ── */
+.nameBox {
+  composes: summaryBox;
+  text-align: center;
+  padding: 22px 16px 18px;
+}
+
+.nameActions {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+}
+
+/* Small outlined pills under the name: visible, but quieter than "Keep this name". */
+.nameBtn {
+  padding: 8px 16px;
+  background: var(--pp-surface, #FDFCFA);
+  border: 1.5px solid var(--pp-sage, #8FA68C);
+  border-radius: 999px;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--pp-sage, #8FA68C);
+  cursor: pointer;
+}
+
+.nameBtn:hover:not(:disabled) {
+  background: rgba(143, 166, 140, 0.12);
+}
+
+.nameBtn:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+.nameValue {
+  display: block;
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 30px;
+  line-height: 1.15;
+  color: var(--pp-text, #2C2825);
+  word-break: break-word;
+  margin-bottom: 10px;
+}
+
 .bubble {
   background: #e9e9eb;
   color: #1c1c1e;
+  white-space: pre-line;
+  width: fit-content;
   border-radius: 18px 18px 18px 4px;
   padding: 10px 14px;
   font-size: 14px;
@@ -499,6 +585,42 @@
   border-radius: 16px;
   padding: 16px;
   margin-bottom: 22px;
+}
+
+/*
+ * The gif PetalProgress sends back after a reply: an incoming media bubble.
+ * Until the real gifs exist this is a labelled placeholder; an <img> with the
+ * same class drops straight in (object-fit keeps it tidy).
+ */
+.gifSlot {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 160px;
+  height: 120px;
+  margin-bottom: 8px;
+  border-radius: 18px 18px 18px 4px;
+  background: rgba(143, 166, 140, 0.12);
+  border: 1.5px dashed var(--pp-sage, #8FA68C);
+  color: var(--pp-sage, #8FA68C);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  object-fit: cover;
+}
+
+/* Day and time above a message, as a text thread shows them. */
+.stamp {
+  text-align: center;
+  font-size: 11px;
+  font-weight: 600;
+  color: #8e8e93;
+  margin: 6px 0 10px;
+}
+
+.stamp:not(:first-child) {
+  margin-top: 16px;
 }
 
 @media (max-width: 420px) {

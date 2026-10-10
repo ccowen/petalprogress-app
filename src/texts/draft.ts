@@ -1,17 +1,17 @@
-import { DEFAULT_PER_WEEK, SEND_WINDOWS } from "./config";
+import { DEFAULT_PER_WEEK, DEFAULT_SEND_WINDOWS, type SendWindowId } from "./config";
 import { detectTimezone } from "./schedule";
 
 /**
- * Choices made during sign-up. Kept in sessionStorage so they survive the
- * text-code step and the round trip to Stripe Checkout.
+ * Choices made during sign-up. Kept in sessionStorage so they survive a
+ * reload and the round trip to Stripe Checkout. The phone number isn't here:
+ * it's asked for after payment, on the welcome page, and sent straight to
+ * the texts service with the consent.
  */
 export interface SignupDraft {
   perWeek: number;
-  sendHour: number;
+  /** At least one. */
+  sendWindows: SendWindowId[];
   timezone: string;
-  /** E.164, set once the number is entered. */
-  phone: string | null;
-  consentVersion: string | null;
   /** Where they came from, e.g. "scan" for the QR code in printed products. */
   source: string | null;
 }
@@ -21,10 +21,8 @@ const KEY = "pp-texts-signup";
 export function newDraft(source: string | null = null): SignupDraft {
   return {
     perWeek: DEFAULT_PER_WEEK,
-    sendHour: SEND_WINDOWS[0].hour,
+    sendWindows: [...DEFAULT_SEND_WINDOWS],
     timezone: detectTimezone(),
-    phone: null,
-    consentVersion: null,
     source,
   };
 }

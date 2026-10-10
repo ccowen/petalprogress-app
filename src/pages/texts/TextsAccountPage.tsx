@@ -12,6 +12,7 @@ import {
 import { PROMPT_COUNT } from "../../texts/config";
 import { displayPhone } from "../../texts/phone";
 import { describeSchedule } from "../../texts/schedule";
+import { ChangeNumberForm } from "./ChangeNumberForm";
 import { FrequencyPicker, PrivacyNote, TextsShell, TimePicker } from "./parts";
 import s from "./texts.module.css";
 
@@ -23,7 +24,7 @@ const STATUS_LABEL: Record<Subscription["status"], string> = {
   cancelled: "Cancelled",
 };
 
-/** /texts/account — frequency, time, pause, billing. */
+/** /guided-journal/account — frequency, time, pause, billing. */
 export default function TextsAccountPage() {
   const navigate = useNavigate();
   const [sub, setSub] = useState<Subscription | null | undefined>(undefined);
@@ -33,12 +34,14 @@ export default function TextsAccountPage() {
     let live = true;
     (async () => {
       if (!(await isSignedIn())) {
-        navigate("/texts/signin", { replace: true });
+        navigate("/guided-journal/signin", { replace: true });
         return;
       }
       const found = await getSubscription();
       if (live) setSub(found);
-    })().catch((e) => live && setError(e instanceof Error ? e.message : String(e)));
+    })().catch(
+      (e) => live && setError(e instanceof Error ? e.message : String(e)),
+    );
     return () => {
       live = false;
     };
@@ -50,7 +53,7 @@ export default function TextsAccountPage() {
       className={s.topLink}
       onClick={async () => {
         await signOut();
-        navigate("/texts/signin", { replace: true });
+        navigate("/guided-journal/signin", { replace: true });
       }}
     >
       Sign out
@@ -82,10 +85,14 @@ export default function TextsAccountPage() {
           No texts <em>yet.</em>
         </h1>
         <p className={s.desc}>
-          You're signed in, but you haven't finished signing up. If you just paid, give it a minute
-          and refresh.
+          You're signed in, but you haven't finished signing up. If you just
+          paid, give it a minute and refresh.
         </p>
-        <Link to="/texts" className={s.btnNext} style={{ display: "block" }}>
+        <Link
+          to="/guided-journal"
+          className={s.btnNext}
+          style={{ display: "block" }}
+        >
           Finish signing up
         </Link>
       </TextsShell>
@@ -99,15 +106,25 @@ export default function TextsAccountPage() {
   );
 }
 
-function Details({ sub, onChange }: { sub: Subscription; onChange: (s: Subscription) => void }) {
+function Details({
+  sub,
+  onChange,
+}: {
+  sub: Subscription;
+  onChange: (s: Subscription) => void;
+}) {
   const [perWeek, setPerWeek] = useState(sub.perWeek);
-  const [sendHour, setSendHour] = useState(sub.sendHour);
+  const [sendWindows, setSendWindows] = useState(sub.sendWindows);
+  const [changingNumber, setChangingNumber] = useState(false);
   const [busy, setBusy] = useState(false);
   const [note, setNote] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
 
-  const dirty = perWeek !== sub.perWeek || sendHour !== sub.sendHour;
+  const dirty =
+    perWeek !== sub.perWeek || sendWindows.join() !== sub.sendWindows.join();
   const pct = Math.min(100, Math.round((sub.promptsDone / PROMPT_COUNT) * 100));
+  // No moving a lapsed or cancelled account to a new number.
+  const canChangeNumber = sub.status === "active" || sub.status === "paused" || sub.status === "awaiting_confirmation";
 
   async function run(action: () => Promise<void>, done: string) {
     setBusy(true);
@@ -117,7 +134,11 @@ function Details({ sub, onChange }: { sub: Subscription; onChange: (s: Subscript
       await action();
       setNote(done);
     } catch (e) {
-      setError(e instanceof Error ? e.message : "Something went wrong. Please try again.");
+      setError(
+        e instanceof Error
+          ? e.message
+          : "Something went wrong. Please try again.",
+      );
     } finally {
       setBusy(false);
     }
@@ -125,25 +146,32 @@ function Details({ sub, onChange }: { sub: Subscription; onChange: (s: Subscript
 
   return (
     <>
-      <span className={`${s.status} ${sub.status === "active" ? "" : s.statusMuted}`}>
+      <span
+        className={`${s.status} ${sub.status === "active" ? "" : s.statusMuted}`}
+      >
         {STATUS_LABEL[sub.status]}
       </span>
-      <h1 className={s.title}>
-        Your <em>texts.</em>
-      </h1>
+      <h1 className={s.title}>Your settings.</h1>
       <p className={s.desc} style={{ marginBottom: 8 }}>
         Prompts go to <strong>{displayPhone(sub.phone)}</strong>,{" "}
-        {describeSchedule(sub.perWeek, sub.sendHour)}.
+        {describeSchedule(sub.perWeek, sub.sendWindows)}.
+        {sub.displayName && (
+          <>
+            {" "}
+            Your mandala is signed <strong>{sub.displayName}</strong>.
+          </>
+        )}
       </p>
       {sub.status === "past_due" && (
         <p className={s.desc}>
-          Your last payment didn't go through, so prompts are on hold. Update your card under{" "}
-          <strong>Billing &amp; cancel</strong> below.
+          Your last payment didn't go through, so prompts are on hold. Update
+          your card under <strong>Billing &amp; cancel</strong> below.
         </p>
       )}
       {sub.status === "awaiting_confirmation" && (
         <p className={s.desc}>
-          Reply <strong>YES</strong> to our welcome text to get your first prompt.
+          Reply <strong>YES</strong> to our welcome text to get your first
+          prompt.
         </p>
       )}
       <div className={s.progress} aria-hidden="true">
@@ -157,7 +185,7 @@ function Details({ sub, onChange }: { sub: Subscription; onChange: (s: Subscript
         <div className={s.section}>
           <span className={s.label}>How often</span>
           <FrequencyPicker value={perWeek} onChange={setPerWeek} />
-          <TimePicker value={sendHour} onChange={setSendHour} />
+          <TimePicker value={sendWindows} onChange={setSendWindows} />
           <button
             type="button"
             className={s.btnNext}
@@ -165,8 +193,12 @@ function Details({ sub, onChange }: { sub: Subscription; onChange: (s: Subscript
             disabled={!dirty || busy}
             onClick={() =>
               run(async () => {
-                await updatePreferences({ perWeek, sendHour, timezone: sub.timezone });
-                onChange({ ...sub, perWeek, sendHour });
+                await updatePreferences({
+                  perWeek,
+                  sendWindows,
+                  timezone: sub.timezone,
+                });
+                onChange({ ...sub, perWeek, sendWindows });
               }, "Saved. Your next prompt will follow the new rhythm.")
             }
           >
@@ -184,10 +216,15 @@ function Details({ sub, onChange }: { sub: Subscription; onChange: (s: Subscript
               disabled={busy}
               onClick={() => {
                 const pausing = sub.status === "active";
-                run(async () => {
-                  await setPaused(pausing);
-                  onChange({ ...sub, status: pausing ? "paused" : "active" });
-                }, pausing ? "Paused. We won't text until you resume." : "Welcome back. Prompts resume at your next send time.");
+                run(
+                  async () => {
+                    await setPaused(pausing);
+                    onChange({ ...sub, status: pausing ? "paused" : "active" });
+                  },
+                  pausing
+                    ? "Paused. We won't text until you resume."
+                    : "Welcome back. Prompts resume at your next send time.",
+                );
               }}
             >
               {sub.status === "paused" ? "Resume texts" : "Pause texts"}
@@ -201,7 +238,32 @@ function Details({ sub, onChange }: { sub: Subscription; onChange: (s: Subscript
           >
             Billing &amp; cancel
           </button>
+          {canChangeNumber && (
+            <button
+              type="button"
+              className={s.btnBack}
+              disabled={busy || changingNumber}
+              onClick={() => setChangingNumber(true)}
+            >
+              Change number
+            </button>
+          )}
         </div>
+        {changingNumber && (
+          <div className={s.section}>
+            <span className={s.label}>New number</span>
+            <ChangeNumberForm
+              currentPhone={sub.phone}
+              onCancel={() => setChangingNumber(false)}
+              onChanged={(phone) => {
+                onChange({ ...sub, phone });
+                setChangingNumber(false);
+                setError(null);
+                setNote(`Done. Prompts now go to ${displayPhone(phone)}. Sign in with this number from now on.`);
+              }}
+            />
+          </div>
+        )}
         {note && <p className={s.saved}>{note}</p>}
         {error && (
           <p className={s.error} role="alert" style={{ marginTop: 10 }}>

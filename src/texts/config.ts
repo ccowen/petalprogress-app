@@ -26,22 +26,26 @@ export const MAX_PER_WEEK = Math.max(...FREQUENCY_OPTIONS);
 
 export const FREQ_NOTES: Record<number, string> = {
   2: "Gentle and easy to keep.",
-  3: "A steady rhythm, with room to breathe.",
   4: "Most weeks, most days.",
   6: "Nearly every day.",
 };
 
 /**
- * Time-of-day choices. Values are the local hour stored in
- * sms_subscribers.send_hour. All sit inside the 8am–9pm quiet-hours window.
+ * Time-of-day choices. People can pick more than one. The hour is the local
+ * hour the texts service sends in; it's never shown, so a "morning" prompt
+ * stays a small surprise. All sit inside the 8am–9pm quiet-hours window.
+ *
+ * sms_subscribers.send_hour holds one hour today; see api.ts for how a
+ * multi-window choice is sent and read back until the column becomes a list.
  */
 export const SEND_WINDOWS = [
-  { id: "morning", label: "Morning", hint: "around 8am", hour: 8 },
-  { id: "midday", label: "Midday", hint: "around noon", hour: 12 },
-  { id: "evening", label: "Evening", hint: "around 7pm", hour: 19 },
+  { id: "morning", label: "Morning", hour: 8 },
+  { id: "midday", label: "Midday", hour: 12 },
+  { id: "evening", label: "Evening", hour: 19 },
 ] as const;
 
 export type SendWindowId = (typeof SEND_WINDOWS)[number]["id"];
+export const DEFAULT_SEND_WINDOWS: SendWindowId[] = ["morning"];
 
 /**
  * Consent shown next to the unticked checkbox. The exact text and its version

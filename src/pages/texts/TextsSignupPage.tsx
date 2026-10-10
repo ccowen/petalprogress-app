@@ -1,20 +1,24 @@
 import { useEffect, useState } from "react";
 import { Link, useSearchParams } from "react-router";
 import { getSubscription, isSignedIn, startCheckout, type Subscription } from "../../texts/api";
-import { CONSENT_VERSION, PRICE, PROMPT_COUNT, SITE_URL, consentText } from "../../texts/config";
+import { PRICE, PROMPT_COUNT } from "../../texts/config";
 import { loadDraft, newDraft, saveDraft, type SignupDraft } from "../../texts/draft";
 import { displayPhone } from "../../texts/phone";
 import { describeSchedule } from "../../texts/schedule";
-import { FrequencyPicker, PrivacyNote, StepDots, TextsShell, TimePicker } from "./parts";
-import { PhoneCodeForm } from "./PhoneCodeForm";
+import { FrequencyPicker, StepDots, TextsShell, TimePicker } from "./parts";
 import s from "./texts.module.css";
 
-const STEPS = ["welcome", "frequency", "pricing", "phone", "review"] as const;
+const STEPS = ["welcome", "frequency", "pricing", "review"] as const;
 type Step = (typeof STEPS)[number];
 
 /* ══════════════════════════════════════════════════════
-   /texts — sign up for prompted journal texts.
-   welcome → how often → pricing → phone + code → review → Stripe
+   /guided-journal — sign up for prompted journal texts.
+   welcome → how often → pricing → review → Stripe → (welcome page) phone
+
+   The phone number is asked for AFTER payment, on the Stripe success page,
+   and the "Reply YES" text goes out the moment it's entered. So typing a
+   number always produces a text, and no text ever goes to a number nobody
+   has paid for.
    ══════════════════════════════════════════════════════ */
 export default function TextsSignupPage() {
   const [params] = useSearchParams();
@@ -22,7 +26,7 @@ export default function TextsSignupPage() {
     () => loadDraft() ?? newDraft(params.get("from")),
   );
   const [step, setStep] = useState<Step>(() =>
-    params.get("step") === "review" && loadDraft()?.phone ? "review" : "welcome",
+    params.get("step") === "review" && loadDraft() ? "review" : "welcome",
   );
   const [existing, setExisting] = useState<Subscription | null>(null);
 
@@ -47,7 +51,7 @@ export default function TextsSignupPage() {
   };
 
   const signInLink = (
-    <Link to="/texts/signin" className={s.topLink}>
+    <Link to="/guided-journal/signin" className={s.topLink}>
       Already signed up? Sign in
     </Link>
   );
@@ -61,10 +65,10 @@ export default function TextsSignupPage() {
         </h1>
         <p className={s.desc}>
           Your prompts go to {displayPhone(existing.phone)}. You can change how often they arrive,
-          pause, or manage billing from your texts page.
+          pause, or manage billing from your settings page.
         </p>
-        <Link to="/texts/account" className={s.btnNext} style={{ display: "block" }}>
-          Go to your texts
+        <Link to="/guided-journal/account" className={s.btnNext} style={{ display: "block" }}>
+          Go to your settings
         </Link>
       </TextsShell>
     );
@@ -72,40 +76,61 @@ export default function TextsSignupPage() {
 
   return (
     <TextsShell topLink={signInLink}>
-      <StepDots count={STEPS.length} current={STEPS.indexOf(step)} />
+      {/* The welcome screen isn't a numbered step, so no dot is lit until Step 1. */}
+      <StepDots count={STEPS.length - 1} current={STEPS.indexOf(step) - 1} />
 
       {step === "welcome" && (
         <>
           <h1 className={s.title}>
-            A guided journal experience, <em>translated to text.</em>
+            Try a guided journal, one text at a time.
           </h1>
           <p className={s.desc}>
-            The gratitude prompts from the PetalProgress journal, sent to your phone. Each one is
-            thought-provoking, but the answer is simple. Engaging with the question is the
-            practice: think it over, reply with <em>yes</em>, <em>maybe</em>, <em>3</em>, or{" "}
+            You move through the whole experience in small pieces. Each prompt is crafted for open thought,
+            and your answer can be simple or anything. Engaging with the question is the
+            practice. Maybe you reply with <em>yes</em>, <em>maybe</em>, <em>3</em>, or{" "}
             <em>squirrel</em>, and let it go.
           </p>
           <div className={s.phoneMock} aria-hidden="true">
+            <div className={s.stamp}>Tuesday 8:04 AM</div>
             <div className={s.bubble}>
-              On a scale from one to five, how gentle have you been with yourself this week?
+              {"🌱 Please consider this. Your yes could lose intention if you default to saying yes.\n\n" +
+                "Did you personally, deeply value saying yes to something recently?\n\n" +
+                "All responses welcome, including yes no maybe unsure"}
             </div>
-            <div className={s.bubbleMe}>4</div>
+            <div className={s.bubbleMe}>yes</div>
+            <div className={s.bubble}>Nice!</div>
+            {/* Reply gif goes here: swap the placeholder for <img className={s.gifSlot} src=… alt="" /> */}
+            <div className={s.gifSlot}>gif</div>
+            <div className={s.stamp}>Friday 7:12 PM</div>
+            <div className={s.bubble}>
+              {"🌙 Which of these animal quirks fits you right about now? Or pick one you like.\n\n" +
+                "- a squirrel burying a decoy nut pile\n" +
+                "- an emperor penguin rotating in its group huddle\n" +
+                "- a pufferfish drawing sand circles\n" +
+                "- something else\n" +
+                "- unsure"}
+            </div>
+            <div className={s.bubbleMe}>squirrel</div>
+            <div className={s.bubble}>Nice!</div>
+            {/* Reply gif goes here */}
+            <div className={s.gifSlot}>gif</div>
           </div>
           <ul className={s.points}>
             <li className={s.point}>
-              <span className={s.pointIcon}>☾</span>
+              <span className={s.pointIcon}>✦</span>
               <span>{PROMPT_COUNT} prompts, looking inward, outward, and toward growth.</span>
             </li>
             <li className={s.point}>
-              <span className={s.pointIcon}>◎</span>
-              <span>You choose how many a week, from two to six.</span>
+              <span className={s.pointIcon}>✺</span>
+              <span>Every answer reveals your mandala.</span>
             </li>
             <li className={s.point}>
               <span className={s.pointIcon}>❋</span>
-              <span>
-                Replies are never saved to your account or linked to your number. Want to keep
-                them? That's what the journal is for.
-              </span>
+              <span>Replies are never saved to your account or linked to your number.</span>
+            </li>
+            <li className={s.point}>
+              <span className={s.pointIcon}>✓</span>
+              <span>Keep going for as long as it helps. Cancel anytime.</span>
             </li>
           </ul>
           <div className={s.nav}>
@@ -120,13 +145,13 @@ export default function TextsSignupPage() {
         <>
           <div className={s.eyebrow}>Step 1 · Your rhythm</div>
           <h1 className={s.title}>
-            How often <em>feels right?</em>
+            How many <em>prompts a week</em> are you willing to try?
           </h1>
-          <p className={s.desc}>Start smaller than you think. You can always add more later.</p>
+          <p className={s.desc}>You can change this at anytime.</p>
           <FrequencyPicker value={draft.perWeek} onChange={(perWeek) => update({ perWeek })} />
-          <TimePicker value={draft.sendHour} onChange={(sendHour) => update({ sendHour })} />
+          <TimePicker value={draft.sendWindows} onChange={(sendWindows) => update({ sendWindows })} />
           <p className={s.fine} style={{ marginBottom: 18 }}>
-            Times are in your timezone ({draft.timezone.replace(/_/g, " ")}).
+            *Texts are sent between 8am and 9pm in your local timezone.
           </p>
           <div className={s.nav}>
             <button type="button" className={s.btnBack} onClick={() => go("welcome")}>
@@ -142,17 +167,15 @@ export default function TextsSignupPage() {
       {step === "pricing" && (
         <>
           <div className={s.eyebrow}>Step 2 · Pricing</div>
-          <h1 className={s.title}>
-            One simple <em>price.</em>
-          </h1>
+          <h1 className={s.title}>Pricing info</h1>
           <div className={s.price}>
-            <div className={s.priceAmount}>{PRICE.amount}</div>
-            <div className={s.pricePeriod}>per {PRICE.period}, however often you choose</div>
+            <span className={s.priceAmount}>{PRICE.amount}</span>
+            <span className={s.pricePeriod}>/ {PRICE.period}ly price</span>
           </div>
           <ul className={s.points}>
             <li className={s.point}>
               <span className={s.pointIcon}>✓</span>
-              <span>Every prompt in the journal, at your pace.</span>
+              <span>Every prompt in the journal, and your growing mandala texted to you.</span>
             </li>
             <li className={s.point}>
               <span className={s.pointIcon}>✓</span>
@@ -170,46 +193,10 @@ export default function TextsSignupPage() {
             <button type="button" className={s.btnBack} onClick={() => go("frequency")}>
               Back
             </button>
-            <button type="button" className={s.btnNext} onClick={() => go("phone")}>
+            <button type="button" className={s.btnNext} onClick={() => go("review")}>
               Continue
             </button>
           </div>
-        </>
-      )}
-
-      {step === "phone" && (
-        <>
-          <div className={s.eyebrow}>Step 3 · Your phone</div>
-          <h1 className={s.title}>
-            Where should we <em>text you?</em>
-          </h1>
-          <p className={s.desc}>
-            We'll text you a code to confirm the number. It's also how you'll sign in later, with no
-            password to remember.
-          </p>
-          <PrivacyNote />
-          <PhoneCodeForm
-            createAccount
-            initialPhone={draft.phone}
-            consent={
-              <>
-                {consentText()} See our{" "}
-                <a href={`${SITE_URL}/terms`} target="_blank" rel="noopener">
-                  Terms
-                </a>{" "}
-                and{" "}
-                <a href={`${SITE_URL}/privacy`} target="_blank" rel="noopener">
-                  Privacy Policy
-                </a>
-                .
-              </>
-            }
-            onBack={() => go("pricing")}
-            onVerified={(phone) => {
-              update({ phone, consentVersion: CONSENT_VERSION });
-              go("review");
-            }}
-          />
         </>
       )}
 
@@ -235,14 +222,12 @@ function Review({ draft, onEdit }: { draft: SignupDraft; onEdit: () => void }) {
 
   return (
     <>
-      <div className={s.eyebrow}>Step 4 · Review</div>
+      <div className={s.eyebrow}>Step 3 · Review</div>
       <h1 className={s.title}>
         Almost <em>there.</em>
       </h1>
       <div className={s.summaryBox}>
-        <strong>{describeSchedule(draft.perWeek, draft.sendHour)}</strong>
-        <br />
-        To <strong>{draft.phone ? displayPhone(draft.phone) : "your phone"}</strong>
+        <strong>{describeSchedule(draft.perWeek, draft.sendWindows)}</strong>
         <br />
         <strong>
           {PRICE.amount}/{PRICE.period}
@@ -253,8 +238,8 @@ function Review({ draft, onEdit }: { draft: SignupDraft; onEdit: () => void }) {
         </button>
       </div>
       <p className={s.desc}>
-        Next you'll pay securely with Stripe. Then we'll send you a text: reply <strong>YES</strong>{" "}
-        and your first prompt is on its way.
+        Next you'll pay securely with Stripe. Then you'll enter your mobile number and we'll text
+        you right away: reply <strong>YES</strong> and your first prompt is on its way.
       </p>
       {error && (
         <p className={s.error} role="alert">
@@ -269,3 +254,4 @@ function Review({ draft, onEdit }: { draft: SignupDraft; onEdit: () => void }) {
     </>
   );
 }
+

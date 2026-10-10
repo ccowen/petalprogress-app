@@ -1,44 +1,26 @@
-import { useState, type FormEvent, type ReactNode } from "react";
+import { useState, type FormEvent } from "react";
 import { sendCode, verifyCode } from "../../texts/api";
-import { displayPhone, formatUsPhone, toE164 } from "../../texts/phone";
+import { displayPhone, toE164 } from "../../texts/phone";
+import { PhoneInput } from "./parts";
 import s from "./texts.module.css";
 
-interface Props {
-  /** true on sign-up, false on sign-in (won't create an account). */
-  createAccount: boolean;
-  /** Consent line to require before sending a code. Omit on sign-in. */
-  consent?: ReactNode;
-  initialPhone?: string | null;
-  submitLabel?: string;
-  onVerified: (phone: string) => void;
-  onBack?: () => void;
-  /** Tells the parent whether we're on the phone or the code screen. */
-  onStageChange?: (stage: "phone" | "code") => void;
-}
-
-export function PhoneCodeForm({
-  createAccount,
-  consent,
-  initialPhone,
-  submitLabel = "Text me a code",
-  onVerified,
-  onBack,
-  onStageChange,
-}: Props) {
-  const [stage, setStageState] = useState<"phone" | "code">("phone");
-  const [phoneInput, setPhoneInput] = useState(initialPhone ? displayPhone(initialPhone) : "");
-  const [agreed, setAgreed] = useState(false);
+/**
+ * Sign-in: a phone number, then the 6-digit code we text to it.
+ *
+ * This is the only place a text goes out without payment, and it only goes
+ * to numbers that already have an account (the texts service creates the
+ * account after Stripe checkout). Sign-up never texts a code, so this form
+ * can't be used to pump texts at arbitrary numbers.
+ */
+export function PhoneCodeForm({ onVerified }: { onVerified: (phone: string) => void }) {
+  const [stage, setStage] = useState<"phone" | "code">("phone");
+  const [phoneInput, setPhoneInput] = useState("");
   const [code, setCode] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
   const [resent, setResent] = useState(false);
 
   const phone = toE164(phoneInput);
-
-  function setStage(next: "phone" | "code") {
-    setStageState(next);
-    onStageChange?.(next);
-  }
 
   async function run(action: () => Promise<void>) {
     setBusy(true);
@@ -55,9 +37,8 @@ export function PhoneCodeForm({
   function submitPhone(e: FormEvent) {
     e.preventDefault();
     if (!phone) return setError("Please enter a 10-digit US mobile number.");
-    if (consent && !agreed) return setError("Please tick the box to agree to receive texts.");
     run(async () => {
-      await sendCode(phone, createAccount);
+      await sendCode(phone);
       setCode("");
       setStage("code");
     });
@@ -104,7 +85,7 @@ export function PhoneCodeForm({
             disabled={busy}
             onClick={() =>
               run(async () => {
-                await sendCode(phone, createAccount);
+                await sendCode(phone);
                 setResent(true);
               })
             }
@@ -130,42 +111,15 @@ export function PhoneCodeForm({
 
   return (
     <form onSubmit={submitPhone} noValidate>
-      <label className={s.label} htmlFor="texts-phone">
-        Mobile number
-      </label>
-      <div className={s.phoneRow}>
-        <span className={s.phonePrefix}>+1</span>
-        <input
-          id="texts-phone"
-          className={s.input}
-          type="tel"
-          inputMode="tel"
-          autoComplete="tel-national"
-          placeholder="(555) 123-4567"
-          value={phoneInput}
-          onChange={(e) => setPhoneInput(formatUsPhone(e.target.value))}
-          autoFocus
-        />
-      </div>
-      {consent && (
-        <label className={s.consent}>
-          <input type="checkbox" checked={agreed} onChange={(e) => setAgreed(e.target.checked)} />
-          <span>{consent}</span>
-        </label>
-      )}
+      <PhoneInput value={phoneInput} onChange={setPhoneInput} />
       {error && (
         <p className={s.error} role="alert">
           {error}
         </p>
       )}
       <div className={s.nav}>
-        {onBack && (
-          <button type="button" className={s.btnBack} onClick={onBack}>
-            Back
-          </button>
-        )}
-        <button type="submit" className={s.btnNext} disabled={busy || !phone || (!!consent && !agreed)}>
-          {busy ? "Sending…" : submitLabel}
+        <button type="submit" className={s.btnNext} disabled={busy || !phone}>
+          {busy ? "Sending…" : "Text me a code"}
         </button>
       </div>
     </form>
