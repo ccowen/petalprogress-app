@@ -197,8 +197,8 @@
 
 .statusOnTrack {
   composes: statusBadge;
-  background: rgba(143, 166, 140, 0.12);
-  color: var(--pp-sage, #8FA68C);
+  background: rgba(185, 83, 106, 0.12);
+  color: var(--pp-primary);
 }
 
 .statusAtRisk {

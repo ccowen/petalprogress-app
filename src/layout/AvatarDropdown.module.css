@@ -24,11 +24,11 @@
 }
 
 .sage {
-  background: var(--pp-sage);
+  background: var(--pp-primary);
 }
 
 .amber {
-  background: var(--pp-amber);
+  background: var(--pp-marigold);
 }
 
 .petal {

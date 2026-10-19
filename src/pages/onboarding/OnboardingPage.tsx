@@ -109,7 +109,7 @@ export default function OnboardingPage() {
   const [tipStep3Visible, setTipStep3Visible] = useState(true);
   const [tipStep4Visible, setTipStep4Visible] = useState(true);
 
-  const petalColor = '#7B9BAF';
+  const petalColor = '#539BCF';
 
   /* ── Step navigation ── */
   const goStep = useCallback((n: StepId) => {

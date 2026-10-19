@@ -60,7 +60,7 @@
 }
 
 .input:focus {
-  border-color: var(--pp-amber, #C4887A);
+  border-color: var(--pp-marigold);
 }
 
 .input::placeholder {

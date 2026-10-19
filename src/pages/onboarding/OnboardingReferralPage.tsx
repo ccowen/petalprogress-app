@@ -14,7 +14,7 @@ const REFERRAL = {
   days: '91 days',
   frequency: 4,
   freqNote: 'A solid rhythm \u2014 four days leaves room for life.',
-  petalColor: '#C4887A',
+  petalColor: '#D49537',
 } as const;
 
 /* ── Constants ── */

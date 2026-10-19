@@ -100,13 +100,13 @@
 }
 
 .badgeActive {
-  background: rgba(143, 166, 140, 0.12);
-  color: var(--pp-sage);
+  background: rgba(185, 83, 106, 0.12);
+  color: var(--pp-primary);
 }
 
 .badgeComplete {
-  background: rgba(123, 155, 175, 0.12);
-  color: #7B9BAF;
+  background: rgba(83, 155, 207, 0.12);
+  color: var(--pp-sky);
 }
 
 .badgePaused {
@@ -131,9 +131,9 @@
 }
 
 .cardNew:hover {
-  border-color: var(--pp-sage);
-  color: var(--pp-sage);
-  background: rgba(143, 166, 140, 0.04);
+  border-color: var(--pp-primary);
+  color: var(--pp-primary);
+  background: rgba(185, 83, 106, 0.04);
 }
 
 .cardNewIcon {

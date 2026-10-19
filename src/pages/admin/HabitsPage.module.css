@@ -160,10 +160,10 @@
 }
 
 .assign {
-  background: rgba(143, 166, 140, 0.12);
-  color: var(--pp-sage);
+  background: rgba(185, 83, 106, 0.12);
+  color: var(--pp-primary);
 }
 
 .assign:hover {
-  background: rgba(143, 166, 140, 0.22);
+  background: rgba(185, 83, 106, 0.22);
 }

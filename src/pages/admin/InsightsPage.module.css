@@ -74,7 +74,7 @@
 }
 
 .deltaUp {
-  color: var(--pp-sage, #8FA68C);
+  color: var(--pp-primary);
 }
 
 .deltaDown {
@@ -128,8 +128,8 @@
 
 .badgeGood {
   composes: sectionBadge;
-  background: rgba(143, 166, 140, 0.12);
-  color: var(--pp-sage, #8FA68C);
+  background: rgba(185, 83, 106, 0.12);
+  color: var(--pp-primary);
 }
 
 /* ── Mini table ── */
@@ -201,7 +201,7 @@
 .streakBarFill {
   height: 100%;
   border-radius: 2px;
-  background: var(--pp-sage, #8FA68C);
+  background: var(--pp-primary);
 }
 
 .streakNum {
@@ -244,9 +244,9 @@
 .printBtn {
   padding: 11px 24px;
   flex-shrink: 0;
-  background: rgba(143, 166, 140, 0.15);
-  border: 1px solid rgba(143, 166, 140, 0.3);
-  color: var(--pp-sage, #8FA68C);
+  background: rgba(185, 83, 106, 0.15);
+  border: 1px solid rgba(185, 83, 106, 0.3);
+  color: var(--pp-primary);
   border-radius: 100px;
   font-family: 'DM Sans', sans-serif;
   font-size: 13px;
@@ -257,5 +257,5 @@
 }
 
 .printBtn:hover {
-  background: rgba(143, 166, 140, 0.25);
+  background: rgba(185, 83, 106, 0.25);
 }
