@@ -52,7 +52,8 @@ export default function TextsSignupPage() {
 
   const signInLink = (
     <Link to="/guided-journal/signin" className={s.topLink}>
-      Already signed up? Sign in
+      Already signed up?<br />
+      Sign in
     </Link>
   );
 
