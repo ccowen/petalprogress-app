@@ -33,7 +33,7 @@ export function TextsShell({ children, topLink }: { children: ReactNode; topLink
       )}
       <header className={s.top}>
         <Link to="/guided-journal" className={s.wordmark}>
-          𖢻 PetalProgress
+          PetalProgress
         </Link>
         {topLink}
       </header>

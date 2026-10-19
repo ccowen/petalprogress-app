@@ -20,7 +20,8 @@
 
 .wordmark {
   font-family: 'Cormorant Garamond', serif;
-  font-size: 19px;
+  font-size: 24px;
+  font-weight: 600;
   color: var(--pp-text, #2C2825);
   text-decoration: none;
 }
