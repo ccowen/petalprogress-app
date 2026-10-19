@@ -2,7 +2,7 @@
 
 .page {
   min-height: 100vh;
-  background: var(--pp-bg, #F8F6F3);
+  background: var(--pp-sky);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -27,7 +27,7 @@
 
 .topLink {
   font-size: 12.5px;
-  color: var(--pp-text-soft, #6B6460);
+  color: var(--pp-text, #2C2825);
   text-decoration: none;
   background: none;
   border: none;
@@ -36,7 +36,7 @@
 }
 
 .topLink:hover {
-  color: var(--pp-text, #2C2825);
+  text-decoration: underline;
 }
 
 .card {
@@ -496,7 +496,7 @@
   font-size: 11.5px;
   text-align: center;
   color: var(--pp-marigold);
-  background: rgba(212, 149, 55, 0.1);
+  background: var(--pp-surface, #FDFCFA);
   border-radius: 8px;
   padding: 6px 10px;
   margin-top: 12px;
