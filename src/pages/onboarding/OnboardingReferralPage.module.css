@@ -42,7 +42,7 @@
 
 .sdotActive {
   composes: sdot;
-  background: var(--pp-amber, #C4887A);
+  background: var(--pp-marigold);
   width: 28px;
 }
 
@@ -110,8 +110,8 @@
 
 /* ── Sponsored habit card ── */
 .sponsoredCard {
-  background: rgba(143, 166, 140, 0.06);
-  border: 1.5px solid rgba(143, 166, 140, 0.28);
+  background: rgba(185, 83, 106, 0.06);
+  border: 1.5px solid rgba(185, 83, 106, 0.28);
   border-radius: 14px;
   padding: 20px 22px;
   margin-bottom: 20px;
@@ -124,9 +124,9 @@
   font-size: 10px;
   text-transform: uppercase;
   letter-spacing: 0.1em;
-  color: var(--pp-sage, #8FA68C);
+  color: var(--pp-primary);
   margin-bottom: 14px;
-  background: rgba(143, 166, 140, 0.12);
+  background: rgba(185, 83, 106, 0.12);
   padding: 3px 10px;
   border-radius: 100px;
 }
@@ -151,14 +151,14 @@
   width: 5px;
   height: 5px;
   border-radius: 50%;
-  background: var(--pp-sage, #8FA68C);
+  background: var(--pp-primary);
   flex-shrink: 0;
 }
 
 /* ── Timeframe display card ── */
 .timeframeDisplayCard {
-  background: rgba(143, 166, 140, 0.06);
-  border: 1.5px solid rgba(143, 166, 140, 0.28);
+  background: rgba(185, 83, 106, 0.06);
+  border: 1.5px solid rgba(185, 83, 106, 0.28);
   border-radius: 14px;
   padding: 20px 22px;
   margin-bottom: 20px;
@@ -182,8 +182,8 @@
 .timeframeChip {
   padding: 3px 10px;
   border-radius: 100px;
-  background: rgba(143, 166, 140, 0.12);
-  color: var(--pp-sage, #8FA68C);
+  background: rgba(185, 83, 106, 0.12);
+  color: var(--pp-primary);
   font-size: 11px;
   letter-spacing: 0.03em;
 }
@@ -268,7 +268,7 @@
 
 .btnNextAmber {
   composes: btnNext;
-  background: var(--pp-amber, #C4887A);
+  background: var(--pp-marigold);
 }
 
 .btnNextAmber:hover {
@@ -360,7 +360,7 @@
   width: 5px;
   height: 5px;
   border-radius: 50%;
-  background: var(--pp-amber, #C4887A);
+  background: var(--pp-marigold);
   flex-shrink: 0;
 }
 

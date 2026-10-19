@@ -13,9 +13,9 @@ interface MandalaData {
 }
 
 const mandalas: MandalaData[] = [
-  { name: "Morning Meditation", freq: "Daily", petals: 23, total: 30, color: "#8FA68C", status: "active" },
-  { name: "Evening Run", freq: "5\u00D7/week", petals: 18, total: 30, color: "#7B9BAF", status: "active" },
-  { name: "Reading", freq: "Daily", petals: 30, total: 30, color: "#C4887A", status: "complete" },
+  { name: "Morning Meditation", freq: "Daily", petals: 23, total: 30, color: "#B9536A", status: "active" },
+  { name: "Evening Run", freq: "5\u00D7/week", petals: 18, total: 30, color: "#539BCF", status: "active" },
+  { name: "Reading", freq: "Daily", petals: 30, total: 30, color: "#D49537", status: "complete" },
   { name: "Journaling", freq: "Daily", petals: 30, total: 30, color: "#C45A5A", status: "complete" },
   { name: "Cold Shower", freq: "Daily", petals: 7, total: 30, color: "#9B8FA6", status: "active" },
 ];

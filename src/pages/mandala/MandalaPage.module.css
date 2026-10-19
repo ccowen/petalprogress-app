@@ -366,7 +366,7 @@
 }
 
 .shareCheck input[type="checkbox"] {
-  accent-color: var(--pp-sage);
+  accent-color: var(--pp-primary);
   cursor: pointer;
   width: 14px;
   height: 14px;

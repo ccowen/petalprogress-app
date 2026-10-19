@@ -47,7 +47,7 @@
 }
 
 .btnActive {
-  background: rgba(143, 166, 140, 0.14);
+  background: rgba(185, 83, 106, 0.14);
 }
 
 .btnActive::after {
@@ -58,7 +58,7 @@
   transform: translateY(-50%);
   width: 4px;
   height: 4px;
-  background: var(--pp-sage);
+  background: var(--pp-primary);
   border-radius: 50%;
 }
 
@@ -75,7 +75,7 @@
 }
 
 .btnActive .label {
-  color: var(--pp-sage);
+  color: var(--pp-primary);
 }
 
 .tip {

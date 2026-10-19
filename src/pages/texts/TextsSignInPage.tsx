@@ -13,7 +13,8 @@ export default function TextsSignInPage() {
     <TextsShell
       topLink={
         <Link to="/guided-journal" className={s.topLink}>
-          New here? Sign up
+          New here?<br />
+          Sign up
         </Link>
       }
     >

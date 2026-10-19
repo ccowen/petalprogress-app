@@ -81,21 +81,21 @@ interface TopCompleter {
 const TOP_COMPLETERS: TopCompleter[] = [
   {
     initials: 'SK',
-    color: '#8FA68C',
+    color: '#B9536A',
     name: 'Sarah Kim',
     habit: 'Morning Stretch',
     pct: 100,
   },
   {
     initials: 'SS',
-    color: '#7B9BAF',
+    color: '#539BCF',
     name: 'Sam Sato',
     habit: 'Morning Stretch',
     pct: 87,
   },
   {
     initials: 'AR',
-    color: '#7B9BAF',
+    color: '#539BCF',
     name: 'Alex Rivera',
     habit: 'Morning Stretch',
     pct: 74,

@@ -42,7 +42,7 @@
 
 .sdotActive {
   composes: sdot;
-  background: var(--pp-sage, #8FA68C);
+  background: var(--pp-primary);
   width: 28px;
 }
 
@@ -124,7 +124,7 @@
 }
 
 .field:focus {
-  border-color: var(--pp-sage, #8FA68C);
+  border-color: var(--pp-primary);
 }
 
 .field::placeholder {
@@ -153,9 +153,9 @@
 
 .lawMiniPillLit {
   composes: lawMiniPill;
-  background: rgba(196, 136, 122, 0.12);
-  color: var(--pp-amber, #C4887A);
-  border-color: rgba(196, 136, 122, 0.3);
+  background: rgba(212, 149, 55, 0.12);
+  color: var(--pp-marigold);
+  border-color: rgba(212, 149, 55, 0.3);
 }
 
 /* ── Law badge ── */
@@ -173,14 +173,14 @@
 
 .lawEasy {
   composes: lawBadge;
-  background: rgba(143, 166, 140, 0.12);
-  color: var(--pp-sage, #8FA68C);
+  background: rgba(185, 83, 106, 0.12);
+  color: var(--pp-primary);
 }
 
 /* ── Tip card ── */
 .tipCard {
-  background: rgba(143, 166, 140, 0.08);
-  border: 1px solid rgba(143, 166, 140, 0.2);
+  background: rgba(185, 83, 106, 0.08);
+  border: 1px solid rgba(185, 83, 106, 0.2);
   border-radius: 11px;
   padding: 13px 15px;
   margin-bottom: 16px;
@@ -390,7 +390,7 @@
 }
 
 .fieldDate:focus {
-  border-color: var(--pp-sage, #8FA68C);
+  border-color: var(--pp-primary);
 }
 
 /* ── Stepper ── */
@@ -476,11 +476,11 @@
 
 .btnNextSage {
   composes: btnNext;
-  background: var(--pp-sage, #8FA68C);
+  background: var(--pp-primary);
 }
 
 .btnNextSage:hover {
-  background: #7a9577;
+  background: var(--pp-primary-hover);
 }
 
 .btnBack {
@@ -569,7 +569,7 @@
   width: 5px;
   height: 5px;
   border-radius: 50%;
-  background: var(--pp-sage, #8FA68C);
+  background: var(--pp-primary);
   flex-shrink: 0;
 }
 
