@@ -3,7 +3,10 @@
    Reddit-style Adjective_Noun_Number with a yoga and nature spin. Generated
    after payment, shuffled until it feels right, then fixed (like Reddit's
    generated usernames). Signs the mandala images texted back as prompts are
-   answered. Stored as sms_subscribers.display_name by the texts service.
+   answered. Stored as sms_subscribers.display_name by the texts service,
+   which enforces uniqueness: the pool here is ~86k combinations, so with
+   random picks two subscribers would share one well before 1,000 sign-ups.
+   On a clash the service changes the number and returns the stored name.
    ══════════════════════════════════════════════════════ */
 
 const ADJECTIVES = [

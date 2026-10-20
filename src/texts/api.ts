@@ -291,7 +291,11 @@ export async function startCheckout(draft: SignupDraft) {
  * it again for the same session before the YES arrives changes the number
  * and resends, so a typo is fixed by just entering the number again.
  */
-export async function claimCheckout(sessionId: string | null, phone: string, displayName: string) {
+export async function claimCheckout(
+  sessionId: string | null,
+  phone: string,
+  displayName: string,
+): Promise<{ displayName: string }> {
   if (DEMO) {
     const d = loadDraft() ?? newDraft();
     demoWrite({
@@ -304,10 +308,12 @@ export async function claimCheckout(sessionId: string | null, phone: string, dis
       promptsDone: 0,
     });
     demoPhone = phone;
-    return;
+    return { displayName };
   }
   if (!sessionId) throw new Error("This link is missing its payment reference. Please use the link from your receipt.");
-  await callApi(
+  // Signatures are unique. If the one picked here is already taken, the
+  // service changes the number and tells us what it stored; show that one.
+  const r = await callApi<{ display_name?: string }>(
     "/claim",
     {
       session_id: sessionId,
@@ -318,6 +324,7 @@ export async function claimCheckout(sessionId: string | null, phone: string, dis
     },
     { auth: false },
   );
+  return { displayName: r.display_name || displayName };
 }
 
 export async function updatePreferences(prefs: Preferences) {

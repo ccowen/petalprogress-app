@@ -78,7 +78,7 @@ account, so neither form can be used to pump texts at arbitrary numbers.
   | Endpoint | Body | Returns | Does |
   |---|---|---|---|
   | `POST /checkout` | `texts_per_week, send_hours, timezone, source, success_url, cancel_url` | `{ url }` | Creates a Stripe Checkout Session with the choices in metadata. `success_url` contains the literal `{CHECKOUT_SESSION_ID}` for Stripe to fill in. Rate-limit by IP; it sends no texts but does create Checkout Sessions. |
-  | `POST /claim` | `session_id, phone, display_name, consent_version, consent_text` | 2xx | Called from the success page. Verify the Checkout Session is paid and not yet confirmed by YES; create the auth user (admin API) and the `sms_subscribers` row from the session metadata; store the consent record and `display_name`; send "Reply YES". Idempotent per session: calling again with a different number before the YES updates the number and resends. Rate-limit per session (a few tries) so a session id can't drive many texts. |
+  | `POST /claim` | `session_id, phone, display_name, consent_version, consent_text` | `{ display_name }` | Called from the success page. Verify the Checkout Session is paid and not yet confirmed by YES; create the auth user (admin API) and the `sms_subscribers` row from the session metadata; store the consent record and `display_name`; send "Reply YES". **Signatures are unique** (unique index on `display_name`): if the requested one is taken, keep the words and pick a different 2-digit number (retry on conflict) and return the name actually stored; the app shows that. Idempotent per session: calling again with a different number before the YES updates the number and resends. Rate-limit per session (a few tries) so a session id can't drive many texts. |
   | `POST /resend-claim-link` | `email` | 2xx | Unauthenticated, from the sign-in page. Find paid, *unclaimed* Checkout Sessions with this customer email and email the finish link (`/guided-journal/welcome?session_id=…`). Always return 2xx with no detail, found or not, so it can't be used to test who has paid. Rate-limit by IP and by email (one send per few minutes). Sends email only, never texts. |
   | `POST /claim-status` | `session_id` | `{ claimed, phone?, display_name? }` | Unauthenticated. Lets the welcome page resume at "check your phone" after a reload instead of asking for the name and number again. Return only whether it's claimed plus the number and name already given by that same session. |
   | `POST /preferences` | `texts_per_week, send_hours, timezone` | 2xx | Updates the subscriber row. |
@@ -88,11 +88,12 @@ account, so neither form can be used to pump texts at arbitrary numbers.
 
 - **`petalprogress-db`** migration `20260925000100_texts_signup.sql`
   (`texts_per_week`, `paused_at`, consent record, `sms_messages`), plus a
-  `sms_subscribers.display_name text` column for the signature
-  (`src/texts/names.ts` generates it, e.g. `Gentle_Heron_42`; the texts
-  service puts it at the bottom of the mandala images). It's chosen once at
-  sign-up and not editable afterwards, like Reddit's generated usernames.
-  This app's types come from that repo.
+  `sms_subscribers.display_name text` column for the signature, with a
+  **unique index** (`src/texts/names.ts` generates it, e.g. `Gentle_Heron_42`;
+  the texts service puts it at the bottom of the mandala images and resolves
+  clashes at claim time). It's chosen once at sign-up and not editable
+  afterwards, like Reddit's generated usernames. This app's types come from
+  that repo.
 - **Which days** each person gets a prompt is decided by the texts service, not
   the app. The app never shows or asks for days, only how many a week and a
   time of day.

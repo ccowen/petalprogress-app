@@ -123,7 +123,7 @@ export default function TextsWelcomePage() {
         <p className={s.desc}>
           We've sent a text to <strong>{displayPhone(phone)}</strong>. Reply{" "}
           <strong>YES</strong> to confirm, and your first prompt arrives right
-          away.
+          away. Your signature is <strong>{name}</strong>.
         </p>
         <div className={s.phoneMock} aria-hidden="true">
           <div className={s.bubble}>
@@ -172,9 +172,10 @@ export default function TextsWelcomePage() {
         name={name}
         initialPhone={phone}
         onBack={() => setStage("name")}
-        onSent={(sentTo) => {
+        onSent={(sentTo, storedName) => {
           clearDraft();
           setPhone(sentTo);
+          setName(storedName);
           setStage("sent");
           window.scrollTo(0, 0);
         }}
@@ -194,7 +195,8 @@ function ClaimForm({
   name: string;
   initialPhone: string | null;
   onBack: () => void;
-  onSent: (phone: string) => void;
+  /** The signature is the one the service stored, which may differ if the pick was taken. */
+  onSent: (phone: string, displayName: string) => void;
 }) {
   const [input, setInput] = useState(
     initialPhone ? displayPhone(initialPhone) : "",
@@ -212,8 +214,8 @@ function ClaimForm({
     setBusy(true);
     setError(null);
     try {
-      await claimCheckout(sessionId, phone, name);
-      onSent(phone);
+      const { displayName } = await claimCheckout(sessionId, phone, name);
+      onSent(phone, displayName);
     } catch (err) {
       setError(
         err instanceof Error
