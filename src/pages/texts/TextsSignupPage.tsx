@@ -1,19 +1,22 @@
 import { useEffect, useState } from "react";
 import { Link, useSearchParams } from "react-router";
 import { getSubscription, isSignedIn, startCheckout, type Subscription } from "../../texts/api";
-import { PRICE, PROMPT_COUNT } from "../../texts/config";
+import { PRICE } from "../../texts/config";
 import { loadDraft, newDraft, saveDraft, type SignupDraft } from "../../texts/draft";
 import { displayPhone } from "../../texts/phone";
 import { describeSchedule } from "../../texts/schedule";
 import { FrequencyPicker, StepDots, TextsShell, TimePicker } from "./parts";
+import { ExampleThread, WelcomeStep } from "./WelcomeStep";
 import s from "./texts.module.css";
 
-const STEPS = ["welcome", "frequency", "pricing", "review"] as const;
+const STEPS = ["welcome", "example", "frequency", "pricing", "review"] as const;
 type Step = (typeof STEPS)[number];
+/** "welcome" and "example" come before Step 1, so the dots cover the last three. */
+const NUMBERED_STEPS = 3;
 
 /* ══════════════════════════════════════════════════════
    /guided-journal — sign up for prompted journal texts.
-   welcome → how often → pricing → review → Stripe → (welcome page) phone
+   welcome → example thread → how often → pricing → review → Stripe → (welcome page) phone
 
    The phone number is asked for AFTER payment, on the Stripe success page,
    and the "Reply YES" text goes out the moment it's entered. So typing a
@@ -77,66 +80,25 @@ export default function TextsSignupPage() {
 
   return (
     <TextsShell topLink={signInLink}>
-      {/* The welcome screen isn't a numbered step, so no dot is lit until Step 1. */}
-      <StepDots count={STEPS.length - 1} current={STEPS.indexOf(step) - 1} />
+      <StepDots count={NUMBERED_STEPS} current={STEPS.indexOf(step) - (STEPS.length - NUMBERED_STEPS)} />
 
-      {step === "welcome" && (
+      {step === "welcome" && <WelcomeStep onStart={() => go("example")} />}
+
+      {step === "example" && (
         <>
-          <h1 className={s.title}>
-            Try a guided journal, one text at a time.
-          </h1>
+          <h1 className={s.title}>You'll receive something like this.</h1>
           <p className={s.desc}>
-            You move through the whole experience in small pieces. Each prompt is crafted for open thought,
-            and your answer can be simple or anything. Engaging with the question is the
-            practice. Maybe you reply with <em>yes</em>, <em>maybe</em>, <em>3</em>, or{" "}
-            <em>squirrel</em>, and let it go.
+            Each prompt is crafted for open thought, and your answer can be simple or anything.
+            Engaging with the question is the practice. Maybe you reply with <em>yes</em>,{" "}
+            <em>maybe</em>, <em>3</em>, or <em>squirrel</em>.
           </p>
-          <div className={s.phoneMock} aria-hidden="true">
-            <div className={s.stamp}>Tuesday 8:04 AM</div>
-            <div className={s.bubble}>
-              {"🌱 Please consider this. Your yes could lose intention if you default to saying yes.\n\n" +
-                "Did you personally, deeply value saying yes to something recently?\n\n" +
-                "All responses welcome, including yes no maybe unsure"}
-            </div>
-            <div className={s.bubbleMe}>yes</div>
-            <div className={s.bubble}>Nice!</div>
-            {/* Reply gif goes here: swap the placeholder for <img className={s.gifSlot} src=… alt="" /> */}
-            <div className={s.gifSlot}>gif</div>
-            <div className={s.stamp}>Friday 7:12 PM</div>
-            <div className={s.bubble}>
-              {"🌙 Which of these animal quirks fits you right about now? Or pick one you like.\n\n" +
-                "- a squirrel burying a decoy nut pile\n" +
-                "- an emperor penguin rotating in its group huddle\n" +
-                "- a pufferfish drawing sand circles\n" +
-                "- something else\n" +
-                "- unsure"}
-            </div>
-            <div className={s.bubbleMe}>squirrel</div>
-            <div className={s.bubble}>Nice!</div>
-            {/* Reply gif goes here */}
-            <div className={s.gifSlot}>gif</div>
-          </div>
-          <ul className={s.points}>
-            <li className={s.point}>
-              <span className={s.pointIcon}>✦</span>
-              <span>{PROMPT_COUNT} prompts, looking inward, outward, and toward growth.</span>
-            </li>
-            <li className={s.point}>
-              <span className={s.pointIcon}>✺</span>
-              <span>Every answer reveals your mandala.</span>
-            </li>
-            <li className={s.point}>
-              <span className={s.pointIcon}>❋</span>
-              <span>Replies are never saved to your account or linked to your number.</span>
-            </li>
-            <li className={s.point}>
-              <span className={s.pointIcon}>✓</span>
-              <span>Keep going for as long as it helps. Cancel anytime.</span>
-            </li>
-          </ul>
+          <ExampleThread />
           <div className={s.nav}>
-            <button type="button" className={s.btnSage} onClick={() => go("frequency")}>
-              Get started
+            <button type="button" className={s.btnBack} onClick={() => go("welcome")}>
+              Back
+            </button>
+            <button type="button" className={s.btnNext} onClick={() => go("frequency")}>
+              Continue
             </button>
           </div>
         </>
@@ -155,7 +117,7 @@ export default function TextsSignupPage() {
             *Texts are sent between 8am and 9pm in your local timezone.
           </p>
           <div className={s.nav}>
-            <button type="button" className={s.btnBack} onClick={() => go("welcome")}>
+            <button type="button" className={s.btnBack} onClick={() => go("example")}>
               Back
             </button>
             <button type="button" className={s.btnNext} onClick={() => go("pricing")}>

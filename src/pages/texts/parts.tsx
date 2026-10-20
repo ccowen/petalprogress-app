@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
 import { Link } from "react-router";
+import { Butterfly } from "./Butterfly";
 import { DEMO, resetDemo } from "../../texts/api";
 import {
   ANSWERS_PRIVACY,
@@ -12,7 +13,7 @@ import { formatUsPhone } from "../../texts/phone";
 import { describeDuration } from "../../texts/schedule";
 import s from "./texts.module.css";
 
-/** Page frame for every texts screen: wordmark, one card, optional top link. */
+/** Page frame for every texts screen: wordmark, optional top link, one card. */
 export function TextsShell({ children, topLink }: { children: ReactNode; topLink?: ReactNode }) {
   return (
     <main className={s.page}>
@@ -42,15 +43,16 @@ export function TextsShell({ children, topLink }: { children: ReactNode; topLink
   );
 }
 
-/** `current` below 0 shows every dot unlit (a screen before the first step). */
+/**
+ * Step indicator: one butterfly per numbered step. The current step's
+ * butterfly is larger and in colour; the others are small and grey.
+ * `current` below 0 (the landing and example pages) shows them all grey.
+ */
 export function StepDots({ count, current }: { count: number; current: number }) {
   return (
-    <div className={s.dots} aria-label={current < 0 ? `${count} steps` : `Step ${current + 1} of ${count}`}>
+    <div className={s.steps} aria-label={current < 0 ? `${count} steps` : `Step ${current + 1} of ${count}`}>
       {Array.from({ length: count }, (_, i) => (
-        <span
-          key={i}
-          className={`${s.dot} ${i < current ? s.dotDone : ""} ${i === current ? s.dotActive : ""}`}
-        />
+        <Butterfly key={i} className={`${s.stepFly} ${i === current ? s.stepFlyOn : ""}`} />
       ))}
     </div>
   );

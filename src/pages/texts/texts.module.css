@@ -2,6 +2,7 @@
 
 .page {
   min-height: 100vh;
+  overflow-x: clip; /* clouds sit at the screen edge; never let them add sideways scroll */
   background: var(--pp-sky);
   display: flex;
   flex-direction: column;
@@ -50,7 +51,7 @@
   border-radius: 18px;
   padding: 32px 28px 28px;
   box-shadow: 0 4px 24px rgba(0, 0, 0, 0.04);
-  animation: fadeUp 0.28s ease both;
+  animation: fadeUp 0.28s ease backwards; /* not both: a lingering transform would trap the fixed privacy cloud */
 }
 
 @keyframes fadeUp {
@@ -63,27 +64,27 @@
 }
 
 /* ── Step dots (matches onboarding) ── */
-.dots {
+/* Step indicator: butterflies. The current one is larger and in colour. */
+.steps {
   display: flex;
-  gap: 6px;
-  margin-bottom: 28px;
+  align-items: flex-end;
+  gap: 12px;
+  height: 30px;
+  margin-bottom: 26px;
 }
 
-.dot {
-  height: 3px;
-  width: 14px;
-  border-radius: 2px;
-  background: var(--pp-warm-1, #EDE9E3);
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+.stepFly {
+  width: 22px;
+  height: auto;
+  filter: grayscale(1);
+  opacity: 0.32;
+  transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s, filter 0.3s;
 }
 
-.dotDone {
-  background: var(--pp-warm-3, #9C958D);
-}
-
-.dotActive {
-  width: 28px;
-  background: var(--pp-primary);
+.stepFlyOn {
+  width: 34px;
+  filter: none;
+  opacity: 1;
 }
 
 /* ── Type ── */
@@ -498,8 +499,8 @@
   max-width: 460px;
   font-size: 11.5px;
   text-align: center;
-  color: var(--pp-marigold);
-  background: var(--pp-surface, #FDFCFA);
+  color: var(--pp-text-soft, #6B6460);
+  background: var(--pp-warm-1, #EDE9E3);
   border-radius: 8px;
   padding: 6px 10px;
   margin-top: 12px;
@@ -590,27 +591,14 @@
   margin-bottom: 22px;
 }
 
-/*
- * The gif PetalProgress sends back after a reply: an incoming media bubble.
- * Until the real gifs exist this is a labelled placeholder; an <img> with the
- * same class drops straight in (object-fit keeps it tidy).
- */
-.gifSlot {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 160px;
-  height: 120px;
+/* The gif PetalProgress sends back after a reply: an incoming media bubble. */
+.gif {
+  display: block;
+  width: 150px;
+  height: auto;
+  aspect-ratio: 480 / 528;
   margin-bottom: 8px;
   border-radius: 18px 18px 18px 4px;
-  background: rgba(185, 83, 106, 0.12);
-  border: 1.5px dashed var(--pp-primary);
-  color: var(--pp-primary);
-  font-size: 12px;
-  font-weight: 600;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  object-fit: cover;
 }
 
 /* Day and time above a message, as a text thread shows them. */
@@ -634,4 +622,209 @@
   .title {
     font-size: 27px;
   }
+}
+
+/* ══════════════════════════════════════════════════════
+   Tablet and up (also desktop). The phone layout above is the base; here
+   the card widens and type grows a little. The welcome landing has its own
+   two-column rules further down (WelcomeStep).
+   ══════════════════════════════════════════════════════ */
+@media (min-width: 768px) {
+  .page {
+    padding: 0 32px 64px;
+  }
+
+  .top {
+    max-width: 540px;
+    padding: 28px 4px;
+  }
+
+  .wordmark {
+    font-size: 26px;
+  }
+
+  .topLink {
+    font-size: 13.5px;
+  }
+
+  .card {
+    max-width: 540px;
+    padding: 40px 44px 36px;
+    border-radius: 22px;
+  }
+
+  .title {
+    font-size: 34px;
+  }
+
+  .subtitle {
+    font-size: 25px;
+  }
+
+  .desc {
+    font-size: 15px;
+  }
+
+  .point {
+    font-size: 14px;
+  }
+
+  .nameValue {
+    font-size: 34px;
+  }
+}
+
+/* ══════════════════════════════════════════════════════
+   Welcome landing (WelcomeStep), inside the card like every other step.
+   ══════════════════════════════════════════════════════ */
+.hero {
+  display: flex;
+  flex-direction: column;
+}
+
+.heroTitle {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 34px;
+  font-weight: 400;
+  line-height: 1.15;
+  margin-bottom: 24px;
+}
+
+.heroPoints {
+  gap: 14px;
+  margin-bottom: 28px;
+}
+
+.heroPoints .point {
+  font-size: 14.5px;
+}
+
+.heroNav {
+  display: flex;
+}
+
+.heroNav .btnSage {
+  flex: 1;
+  padding: 16px;
+  font-size: 15px;
+}
+
+@media (min-width: 768px) {
+  .heroTitle {
+    font-size: 42px;
+  }
+
+  .heroPoints .point {
+    font-size: 15px;
+  }
+}
+
+/* Notes shaped like clouds. On narrow screens they sit in the flow at full
+   size, ABOVE the thread (right under the "yes, maybe, 3, or squirrel"
+   paragraph), side by side and overlapping a little; the pair is wider than
+   the card, so it spills evenly past both card edges into the blue (the
+   page clips sideways scroll). A thin line separates them from the thread.
+   From 860px up they float off the card's right edge instead and drift as
+   you scroll. */
+.threadStage {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+/* The divider, as a flex item placed between the clouds and the thread. */
+.threadStage::before {
+  content: '';
+  order: -1;
+  height: 1px;
+  margin: 6px 0 20px;
+  background: var(--pp-warm-2, #D4CEC7);
+}
+
+.cloudStack {
+  order: -2; /* clouds, then the divider, then the thread */
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  margin: 0;
+  pointer-events: none;
+}
+
+.privacyCloud {
+  position: relative;
+  flex-shrink: 0;
+  width: 207px;
+  height: 138px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transform: rotate(3deg);
+}
+
+.privacyCloud + .privacyCloud {
+  margin-left: -22px; /* tuck the second behind the first a little, like a cluster */
+  margin-top: 14px;
+  transform: rotate(-2deg);
+}
+
+.cloudShape {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  fill: var(--pp-marigold);
+  filter: drop-shadow(0 6px 10px rgba(30, 26, 23, 0.2));
+}
+
+.cloudText {
+  position: relative;
+  width: 134px;
+  padding-top: 16px;
+  color: var(--pp-dark);
+  font-size: 12px;
+  line-height: 1.35;
+  text-align: center;
+}
+
+@media (min-width: 860px) {
+  .threadStage::before {
+    display: none; /* no divider when the clouds float beside the card */
+  }
+
+  .cloudStack {
+    position: fixed;
+    left: calc(50% + 238px); /* just past the 460px card's right edge */
+    top: 50%;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 48px;
+    margin: 0;
+    transform: translateY(calc(-50% + var(--bob, 0px)));
+    transition: transform 0.25s ease-out;
+  }
+
+  .privacyCloud + .privacyCloud {
+    margin-left: 0;
+    margin-top: 0;
+  }
+}
+
+/* A soft shadow on the "ground" beneath the cloud, so it reads as hovering. */
+@media (min-width: 860px) {
+  .privacyCloud::after {
+    content: '';
+    position: absolute;
+    left: 14%;
+    right: 14%;
+    bottom: -30px;
+    height: 16px;
+    border-radius: 50%;
+    background: rgba(30, 26, 23, 0.22);
+    filter: blur(9px);
+  }
+}
+
+/* Very light pink, the neutral from the cover palette. */
+.cloudBlush .cloudShape {
+  fill: var(--pp-blush);
 }
