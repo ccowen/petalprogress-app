@@ -81,7 +81,9 @@ export function ExampleThread() {
 
   return (
     <div ref={stageRef} className={s.threadStage}>
-      <div className={s.phoneMock} role="group" aria-label="Example text thread">
+      {/* Two separate screens, not one thread: these prompts arrive weeks
+          apart, never in the same week. Each is its own card with a shadow. */}
+      <div className={s.phoneMock} role="group" aria-label="Example text, first prompt">
         <div className={s.stamp}>Tuesday 8:04 AM</div>
         <div className={s.bubble}>
           {"🌱 Please consider this. Your yes could lose intention if you default to saying yes.\n\n" +
@@ -89,8 +91,12 @@ export function ExampleThread() {
             "All responses welcome, including yes no maybe unsure"}
         </div>
         <div className={s.bubbleMe}>maybe...</div>
-        <div className={s.bubble}>Nice!</div>
+        {/* Replies are acknowledged, never read: no words that judge or react to the answer. */}
+        <div className={s.bubble}>Thanks for your thought. Now you can see another tile.</div>
         <img className={s.gif} src={day4} alt={revealGifAlt.day4Outward} />
+      </div>
+
+      <div className={s.phoneMock} role="group" aria-label="Example text, a later prompt">
         <div className={s.stamp}>Friday 7:12 PM</div>
         <div className={s.bubble}>
           {"🌙 Which of these animal quirks fits you right about now? Or pick one you like.\n\n" +
@@ -101,7 +107,7 @@ export function ExampleThread() {
             "- unsure"}
         </div>
         <div className={s.bubbleMe}>DEF SQUIRREL</div>
-        <div className={s.bubble}>Love that.</div>
+        <div className={s.bubble}>Thanks for your thought. Here's your progress image.</div>
         <img className={s.gif} src={day75} alt={revealGifAlt.day75Inward} />
       </div>
       <div className={s.cloudStack}>

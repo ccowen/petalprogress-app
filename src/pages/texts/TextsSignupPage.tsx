@@ -163,12 +163,22 @@ export default function TextsSignupPage() {
         </>
       )}
 
-      {step === "review" && <Review draft={draft} onEdit={() => go("frequency")} />}
+      {step === "review" && (
+        <Review draft={draft} onEdit={() => go("frequency")} onBack={() => go("pricing")} />
+      )}
     </TextsShell>
   );
 }
 
-function Review({ draft, onEdit }: { draft: SignupDraft; onEdit: () => void }) {
+function Review({
+  draft,
+  onEdit,
+  onBack,
+}: {
+  draft: SignupDraft;
+  onEdit: () => void;
+  onBack: () => void;
+}) {
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -185,9 +195,9 @@ function Review({ draft, onEdit }: { draft: SignupDraft; onEdit: () => void }) {
 
   return (
     <>
-      <div className={s.eyebrow}>Step 3 · Review</div>
+      <div className={s.eyebrow}>Step 3 · Confirmation</div>
       <h1 className={s.title}>
-        Almost <em>there.</em>
+        Almost there. <em>Confirmation.</em>
       </h1>
       <div className={s.summaryBox}>
         <strong>{describeSchedule(draft.perWeek, draft.sendWindows)}</strong>
@@ -210,6 +220,9 @@ function Review({ draft, onEdit }: { draft: SignupDraft; onEdit: () => void }) {
         </p>
       )}
       <div className={s.nav}>
+        <button type="button" className={s.btnBack} onClick={onBack} disabled={busy}>
+          Back
+        </button>
         <button type="button" className={s.btnSage} onClick={checkout} disabled={busy}>
           {busy ? "Opening checkout…" : "Continue to payment"}
         </button>
