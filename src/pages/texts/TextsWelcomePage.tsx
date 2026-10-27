@@ -3,7 +3,7 @@ import { Link, useSearchParams } from "react-router";
 import { claimCheckout, getClaimStatus } from "../../texts/api";
 import { SITE_URL, consentText } from "../../texts/config";
 import { clearDraft } from "../../texts/draft";
-import { generateJournalName } from "../../texts/names";
+import { generateJournalNames } from "../../texts/names";
 import { displayPhone, toE164 } from "../../texts/phone";
 import { PhoneInput, PrivacyNote, TextsShell } from "./parts";
 import s from "./texts.module.css";
@@ -17,6 +17,9 @@ import s from "./texts.module.css";
  * The number is asked for here, after paying, so no text ever goes to a
  * number nobody has paid for. See TextsSignupPage for the whole flow.
  */
+/** How many signatures to offer at once. */
+const SIGNATURE_CHOICES = 5;
+
 export default function TextsWelcomePage() {
   const [params] = useSearchParams();
   const sessionId = params.get("session_id");
@@ -24,9 +27,15 @@ export default function TextsWelcomePage() {
   const [stage, setStage] = useState<"checking" | "name" | "number" | "sent">(
     sessionId ? "checking" : "name",
   );
-  const [name, setName] = useState(generateJournalName);
-  // Names shuffled past, so "Back" can return to one that was better.
-  const [previous, setPrevious] = useState<string[]>([]);
+  // Five signatures at a time; one is selected. Shuffle brings five new ones,
+  // Back returns to the previous five (with what was selected there).
+  const [options, setOptions] = useState<string[]>(() =>
+    generateJournalNames(SIGNATURE_CHOICES),
+  );
+  const [name, setName] = useState<string>(() => options[0]);
+  const [previous, setPrevious] = useState<
+    { options: string[]; name: string }[]
+  >([]);
   const [phone, setPhone] = useState<string | null>(null);
 
   useEffect(() => {
@@ -36,7 +45,10 @@ export default function TextsWelcomePage() {
       .then((status) => {
         if (!live) return;
         if (status.claimed && status.phone) {
-          if (status.displayName) setName(status.displayName);
+          if (status.displayName) {
+            setName(status.displayName);
+            setOptions([status.displayName]);
+          }
           setPhone(status.phone);
           setStage("sent");
         } else {
@@ -51,14 +63,19 @@ export default function TextsWelcomePage() {
   }, [sessionId]);
 
   function shuffle() {
-    setPrevious((p) => [...p, name]);
-    setName(generateJournalName());
+    setPrevious((p) => [...p, { options, name }]);
+    // Never repeat a name from any set already shown.
+    const shown = previous.flatMap((p) => p.options).concat(options);
+    const next = generateJournalNames(SIGNATURE_CHOICES, shown);
+    setOptions(next);
+    setName(next[0]);
   }
   function back() {
     const last = previous[previous.length - 1];
     if (!last) return;
     setPrevious((p) => p.slice(0, -1));
-    setName(last);
+    setOptions(last.options);
+    setName(last.name);
   }
 
   if (stage === "checking") {
@@ -82,21 +99,33 @@ export default function TextsWelcomePage() {
           <p className={s.desc} style={{ marginBottom: 14 }}>
             It goes at the bottom of your mandala.
           </p>
-          <div className={s.nameBox}>
-            <span className={s.nameValue}>{name}</span>
-            <div className={s.nameActions}>
+          <div className={s.sigTools}>
+            <button
+              type="button"
+              className={s.linkBtn}
+              onClick={back}
+              disabled={previous.length === 0}
+            >
+              ← Back
+            </button>
+            <button type="button" className={s.linkBtn} onClick={shuffle}>
+              Shuffle ↻
+            </button>
+          </div>
+          <div className={s.sigList} role="radiogroup" aria-label="Signature">
+            {options.map((option) => (
               <button
+                key={option}
                 type="button"
-                className={s.nameBtn}
-                onClick={back}
-                disabled={previous.length === 0}
+                role="radio"
+                aria-checked={option === name}
+                className={`${s.sigOption} ${option === name ? s.sigOptionOn : ""}`}
+                onClick={() => setName(option)}
               >
-                ← Back
+                <span className={s.sigRadio} aria-hidden="true" />
+                <span>{option}</span>
               </button>
-              <button type="button" className={s.nameBtn} onClick={shuffle}>
-                Shuffle ↻
-              </button>
-            </div>
+            ))}
           </div>
         </div>
         <div className={s.nav}>

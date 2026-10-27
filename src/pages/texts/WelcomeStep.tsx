@@ -1,7 +1,7 @@
 import { useEffect, useRef } from "react";
 import { revealGifAlt } from "@petalprogress/ui";
-import day4 from "@petalprogress/ui/assets/reveal/day-4-outward.gif";
-import day75 from "@petalprogress/ui/assets/reveal/day-75-inward.gif";
+import tiles14 from "@petalprogress/ui/assets/reveal/14-tiles.gif";
+import tiles88 from "@petalprogress/ui/assets/reveal/88-tiles.gif";
 import { PROMPT_COUNT } from "../../texts/config";
 import s from "./texts.module.css";
 
@@ -26,6 +26,10 @@ export function WelcomeStep({ onStart }: { onStart: () => void }) {
         <li className={s.point}>
           <span className={s.pointIcon}>✓</span>
           <span>Keep going for as long as it helps. Cancel anytime.</span>
+        </li>
+        <li className={s.point}>
+          <span className={s.pointIcon}>✽</span>
+          <span>Your subscription ends automatically after {PROMPT_COUNT} prompts.</span>
         </li>
       </ul>
       <div className={s.heroNav}>
@@ -93,7 +97,7 @@ export function ExampleThread() {
         <div className={s.bubbleMe}>maybe...</div>
         {/* Replies are acknowledged, never read: no words that judge or react to the answer. */}
         <div className={s.bubble}>Thanks for your thought. Now you can see another tile.</div>
-        <img className={s.gif} src={day4} alt={revealGifAlt.day4Outward} />
+        <img className={s.gif} src={tiles14} alt={revealGifAlt.tiles14} />
       </div>
 
       <div className={s.phoneMock} role="group" aria-label="Example text, a later prompt">
@@ -108,7 +112,7 @@ export function ExampleThread() {
         </div>
         <div className={s.bubbleMe}>DEF SQUIRREL</div>
         <div className={s.bubble}>Thanks for your thought. Here's your progress image.</div>
-        <img className={s.gif} src={day75} alt={revealGifAlt.day75Inward} />
+        <img className={s.gif} src={tiles88} alt={revealGifAlt.tiles88} />
       </div>
       <div className={s.cloudStack}>
         <Cloud>

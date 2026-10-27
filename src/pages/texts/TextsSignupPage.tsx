@@ -114,7 +114,7 @@ export default function TextsSignupPage() {
           <FrequencyPicker value={draft.perWeek} onChange={(perWeek) => update({ perWeek })} />
           <TimePicker value={draft.sendWindows} onChange={(sendWindows) => update({ sendWindows })} />
           <p className={s.fine} style={{ marginBottom: 18 }}>
-            *Texts are sent between 8am and 9pm in your local timezone.
+            *Texts are sent between 8am and 8pm in your local timezone.
           </p>
           <div className={s.nav}>
             <button type="button" className={s.btnBack} onClick={() => go("example")}>

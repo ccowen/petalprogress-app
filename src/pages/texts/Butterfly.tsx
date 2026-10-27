@@ -1,42 +1,56 @@
 import type { CSSProperties } from "react";
 
 /**
- * Placeholder butterfly, copied from petalprogress-web/src/components/Butterfly.tsx
- * (standing in for the one on the book cover). Swap the SVG for the real
- * artwork when it's ready, here and there. Decorative only.
+ * The PetalProgress butterfly (yellow-butterfly.svg, also in
+ * petalprogress-ui/assets/butterfly/ with a grey twin). Inlined so CSS can
+ * size it and grey it out with a filter, as the step markers do.
+ * Decorative only.
  */
-function Wings() {
+export function Butterfly({
+  className,
+  style,
+  backing = false,
+}: {
+  className?: string;
+  style?: CSSProperties;
+  /** The brown shape behind the wings. Off by default; on for the full-colour artwork. */
+  backing?: boolean;
+}) {
   return (
-    <>
+    <svg className={className} style={style} viewBox="0 0 137.39 82.07" aria-hidden="true" focusable="false">
+      {backing && (
+        <path
+          fill="#92785e"
+        d="M103.05,2.31c-17.72,3.62-34.05,11.86-34.05,11.86,0,0-16.33-8.24-34.05-11.86C17.24-1.31.78,6.27,3.1,16.15c2.33,9.88,6.49,46.78,12.4,53.04,5.91,6.26,38.56,9.88,53.5,9.88s47.6-3.62,53.5-9.88c5.91-6.26,10.08-43.16,12.4-53.04,2.33-9.88-14.14-17.46-31.86-13.84Z"
+        />
+      )}
       <path
-        d="M100 72 C74 8 12 2 8 44 C5 76 58 88 100 82 Z"
-        style={{ fill: "var(--pp-marigold)" }}
+        fill="#d39335"
+        d="M132.83,21.32c-.26-1.12-3.83-2.18-3.83-2.18-10.99-6.71-52.88-3.47-60.68,8.57,0,0-10.59-11.21-29.46-12.14-26.62.76-41.08.81-30.41,17.82,10.59,8.26,9.24,16.84,20.87,20.76,4.22.9,7.12-2.93,4.43.05-2.75,10.85,15.54,24.02,26.36,24.37,9.22.3,23.14,1.64,30.04-4.32,5.18-4.48,19.23-14.55,13.09-21.19,6.4,4.8,16.39-5.24,17.59-11.14,3.39-1.97,14.98-15.39,12.01-20.59Z"
       />
       <path
-        d="M100 84 C72 86 30 94 34 126 C38 152 82 142 100 102 Z"
-        style={{ fill: "color-mix(in srgb, var(--pp-marigold) 80%, var(--pp-dark))" }}
+        fill="#fbc9c4"
+        d="M48.19,44.1c9.23-1.05,9.39,9.39,9.28,11.54s-1.37,6.87-3.24,8.08-7.14,2.31-9.45-.27-5.38-4.72-3.96-10.88,3.52-8.02,7.36-8.46Z"
       />
-      <circle cx="46" cy="40" r="9" style={{ fill: "var(--pp-sunflower)" }} />
-      <circle cx="68" cy="58" r="5" style={{ fill: "var(--pp-sunflower)" }} />
-      <circle cx="58" cy="118" r="6" style={{ fill: "var(--pp-peach)" }} />
-    </>
-  );
-}
-
-export function Butterfly({ className, style }: { className?: string; style?: CSSProperties }) {
-  return (
-    <svg className={className} style={style} viewBox="0 0 200 160" aria-hidden="true" focusable="false">
-      <Wings />
-      <g transform="translate(200 0) scale(-1 1)">
-        <Wings />
-      </g>
-      <ellipse cx="100" cy="86" rx="5" ry="30" style={{ fill: "var(--pp-dark)" }} />
       <path
-        d="M98 58 C92 38 84 28 76 24 M102 58 C108 38 116 28 124 24"
-        fill="none"
-        strokeWidth="2"
-        strokeLinecap="round"
-        style={{ stroke: "var(--pp-dark)" }}
+        fill="#fbc9c4"
+        d="M85.21,42.86c9.1-1.04,9.26,9.26,9.15,11.37-.11,2.11-1.35,6.77-3.2,7.96s-7.04,2.27-9.32-.27c-2.27-2.55-5.31-4.66-3.9-10.72s3.47-7.91,7.26-8.34Z"
+      />
+      <path
+        fill="#ffcc04"
+        d="M62.05,75.03c2.14.11,4.68-3.36,4.35-5.28s-2.56-4.54-5.36-4.59-3.91,3.25-3.44,4.94,2.31,4.83,4.46,4.94Z"
+      />
+      <path
+        fill="#ffcc04"
+        d="M75.1,75.03c-2.14.11-4.68-3.36-4.35-5.28s2.56-4.54,5.36-4.59,3.91,3.25,3.44,4.94-2.31,4.83-4.46,4.94Z"
+      />
+      <path
+        fill="#fbc9c4"
+        d="M23.62,32.13c1.09,3.87,4.74,3.83,7.8,2.89s6.01-4.19,4.06-7.37-5.01-3.48-7.84-2.48-4.78,4.25-4.01,6.96Z"
+      />
+      <path
+        fill="#fbc9c4"
+        d="M116.01,32.13c-1.09,3.87-4.74,3.83-7.8,2.89s-6.01-4.19-4.06-7.37c1.95-3.18,5.01-3.48,7.84-2.48s4.78,4.25,4.01,6.96Z"
       />
     </svg>
   );

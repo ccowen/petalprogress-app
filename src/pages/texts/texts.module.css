@@ -74,15 +74,15 @@
 }
 
 .stepFly {
-  width: 22px;
+  width: 28px; /* the art is wide and low (137×82), so a touch wider than the old placeholder */
   height: auto;
   filter: grayscale(1);
-  opacity: 0.32;
+  opacity: 0.38;
   transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s, filter 0.3s;
 }
 
 .stepFlyOn {
-  width: 34px;
+  width: 42px;
   filter: none;
   opacity: 1;
 }
@@ -172,7 +172,7 @@
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 8px;
-  margin: 4px 0 14px;
+  margin: 4px 0 22px; /* same gap below as the time-of-day options */
 }
 
 .freqNum {
@@ -188,7 +188,7 @@
   font-size: 13px;
   font-style: italic;
   color: var(--pp-text-muted, #A09890);
-  margin-bottom: 18px;
+  margin: -8px 0 18px; /* tucks under the buttons when a note is shown */
 }
 
 .summaryBox {
@@ -204,6 +204,105 @@
 .summaryBox strong {
   color: var(--pp-text, #2C2825);
   font-weight: 500;
+}
+
+/* ── Pace calculator: a <details> dropdown under the frequency buttons ── */
+.calc {
+  margin: 0 0 22px;
+}
+
+.calcToggle {
+  cursor: pointer;
+  list-style: none; /* we draw our own chevron */
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--pp-primary);
+  padding: 6px 0;
+}
+
+.calcToggle::-webkit-details-marker {
+  display: none;
+}
+
+.calcToggle::before {
+  content: '';
+  width: 7px;
+  height: 7px;
+  border-right: 1.5px solid currentColor;
+  border-bottom: 1.5px solid currentColor;
+  transform: rotate(-45deg);
+  transition: transform 0.2s ease;
+  margin-left: 2px;
+}
+
+.calc[open] .calcToggle::before {
+  transform: rotate(45deg);
+}
+
+.calcBody {
+  background: var(--pp-bg, #F8F6F3);
+  border-radius: 12px;
+  padding: 14px 16px 12px;
+  margin-top: 6px;
+  font-size: 13px;
+  color: var(--pp-text-soft, #6B6460);
+  line-height: 1.6;
+}
+
+.calcLine {
+  margin-bottom: 12px;
+}
+
+.calcLine strong {
+  color: var(--pp-text, #2C2825);
+  font-weight: 500;
+}
+
+.calcTable {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-bottom: 12px;
+}
+
+.calcRow {
+  display: grid;
+  grid-template-columns: 5.5em 1fr auto;
+  gap: 10px;
+  align-items: baseline;
+  width: 100%;
+  padding: 8px 10px;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  background: transparent;
+  font: inherit;
+  font-size: 12.5px;
+  color: var(--pp-text-soft, #6B6460);
+  text-align: left;
+  cursor: pointer;
+}
+
+.calcRow:hover {
+  background: rgba(255, 255, 255, 0.6);
+}
+
+.calcRowOn {
+  background: var(--pp-surface, #FDFCFA);
+  border-color: var(--pp-primary);
+  color: var(--pp-text, #2C2825);
+}
+
+.calcPace {
+  font-weight: 600;
+}
+
+.calcFinish {
+  font-size: 11.5px;
+  color: var(--pp-text-muted, #A09890);
+  white-space: nowrap;
 }
 
 /* ── Time-of-day options ── */
@@ -518,49 +617,86 @@
 }
 
 /* ── Signature (after payment) ── */
-.nameBox {
-  composes: summaryBox;
-  text-align: center;
-  padding: 22px 16px 18px;
-}
 
-.nameActions {
+/* Five signatures to choose from, picked like radio buttons. */
+.sigList {
   display: flex;
-  justify-content: center;
-  gap: 10px;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 14px;
 }
 
-/* Small outlined pills under the name: visible, but quieter than "Keep this name". */
-.nameBtn {
-  padding: 8px 16px;
-  background: var(--pp-surface, #FDFCFA);
-  border: 1.5px solid var(--pp-primary);
-  border-radius: 999px;
-  font-family: inherit;
-  font-size: 13px;
-  font-weight: 500;
-  color: var(--pp-primary);
-  cursor: pointer;
+/* Back / Shuffle sit above the list as quiet links, away from the one real
+   button at the bottom, so there's a clear order: adjust, pick, continue. */
+.sigTools {
+  display: flex;
+  justify-content: flex-end;
+  gap: 18px;
+  margin-bottom: 8px;
 }
 
-.nameBtn:hover:not(:disabled) {
-  background: rgba(185, 83, 106, 0.12);
-}
-
-.nameBtn:disabled {
+.sigTools .linkBtn:disabled {
   opacity: 0.4;
   cursor: default;
 }
 
-.nameValue {
-  display: block;
+.sigOption {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  width: 100%;
+  padding: 12px 16px;
+  background: var(--pp-bg, #F8F6F3);
+  border: 1.5px solid transparent;
+  border-radius: 12px;
   font-family: 'Cormorant Garamond', serif;
-  font-size: 30px;
-  line-height: 1.15;
+  font-size: 22px;
+  line-height: 1.2;
   color: var(--pp-text, #2C2825);
-  word-break: break-word;
-  margin-bottom: 10px;
+  text-align: left;
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s;
 }
+
+.sigOption:hover {
+  border-color: var(--pp-warm-2, #D4CEC7);
+}
+
+.sigOptionOn,
+.sigOptionOn:hover {
+  background: var(--pp-surface, #FDFCFA);
+  border-color: var(--pp-primary);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+}
+
+/* A drawn radio dot, so the pick is unmistakable even if the border is subtle. */
+.sigRadio {
+  flex-shrink: 0;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: 2px solid var(--pp-warm-3, #9C958D);
+  background: var(--pp-surface, #FDFCFA);
+  position: relative;
+  transition: border-color 0.15s;
+}
+
+.sigOptionOn .sigRadio {
+  border-color: var(--pp-primary);
+}
+
+.sigOptionOn .sigRadio::after {
+  content: '';
+  position: absolute;
+  inset: 4px;
+  border-radius: 50%;
+  background: var(--pp-primary);
+}
+
+
+
+
+
 
 .bubble {
   background: #e9e9eb;
@@ -600,9 +736,12 @@
   display: block;
   width: 150px;
   height: auto;
-  aspect-ratio: 480 / 528;
+  aspect-ratio: auto 480 / 528;
   margin-bottom: 8px;
-  border-radius: 18px 18px 18px 4px;
+  /* No rounding and no frame: the artwork runs to its own corners (ornaments
+     top left and right, the ring touching the top), so any rounding clips it.
+     Shown exactly as the gif is drawn. */
+  border-radius: 0;
 }
 
 /* Day and time above a message, as a text thread shows them. */
@@ -673,9 +812,6 @@
     font-size: 14px;
   }
 
-  .nameValue {
-    font-size: 34px;
-  }
 }
 
 /* ══════════════════════════════════════════════════════

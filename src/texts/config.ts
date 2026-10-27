@@ -24,16 +24,14 @@ export const MAX_PER_WEEK = Math.max(...FREQUENCY_OPTIONS);
  * The app only knows how many a week and roughly what time of day.
  */
 
-export const FREQ_NOTES: Record<number, string> = {
-  2: "Gentle and easy to keep.",
-  4: "Most weeks, most days.",
-  6: "Nearly every day.",
-};
+/** Optional short note under the chosen frequency. Shown only when set. */
+export const FREQ_NOTES: Record<number, string> = {};
 
 /**
  * Time-of-day choices. People can pick more than one. The hour is the local
  * hour the texts service sends in; it's never shown, so a "morning" prompt
- * stays a small surprise. All sit inside the 8am–9pm quiet-hours window.
+ * stays a small surprise. All sit inside the 8am–8pm quiet-hours window
+ * (8pm everywhere, the stricter state rule, to keep things simple).
  *
  * sms_subscribers.send_hour holds one hour today; see api.ts for how a
  * multi-window choice is sent and read back until the column becomes a list.

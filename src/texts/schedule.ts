@@ -1,8 +1,20 @@
 import { PROMPT_COUNT, SEND_WINDOWS, type SendWindowId } from "./config";
 
+/** Weeks to get through every prompt at this pace. */
+export function weeksToFinish(perWeek: number): number {
+  return Math.ceil(PROMPT_COUNT / perWeek);
+}
+
+/** "September 2027": the month the last prompt would arrive, starting now. */
+export function finishMonth(perWeek: number, from: Date = new Date()): string {
+  const end = new Date(from);
+  end.setDate(end.getDate() + weeksToFinish(perWeek) * 7);
+  return new Intl.DateTimeFormat("en-US", { month: "long", year: "numeric" }).format(end);
+}
+
 /** Rough length of a full run through the book at this pace. */
 export function describeDuration(perWeek: number): string {
-  const weeks = Math.ceil(PROMPT_COUNT / perWeek);
+  const weeks = weeksToFinish(perWeek);
   if (weeks < 8) return `about ${weeks} weeks`;
   const months = Math.round(weeks / 4.35);
   if (months < 18) return `about ${months} months`;

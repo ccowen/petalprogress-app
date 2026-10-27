@@ -6,11 +6,12 @@ import {
   ANSWERS_PRIVACY,
   FREQ_NOTES,
   FREQUENCY_OPTIONS,
+  PROMPT_COUNT,
   SEND_WINDOWS,
   type SendWindowId,
 } from "../../texts/config";
 import { formatUsPhone } from "../../texts/phone";
-import { describeDuration } from "../../texts/schedule";
+import { describeDuration, finishMonth, weeksToFinish } from "../../texts/schedule";
 import s from "./texts.module.css";
 
 /** Page frame for every texts screen: wordmark, optional top link, one card. */
@@ -77,15 +78,50 @@ export function FrequencyPicker({ value, onChange }: { value: number; onChange: 
         ))}
       </div>
       {FREQ_NOTES[value] && <div className={s.freqNote}>{FREQ_NOTES[value]}</div>}
-      {/* Nothing selected yet (e.g. a subscriber whose frequency isn't offered any more) */}
-      {FREQUENCY_OPTIONS.includes(value as (typeof FREQUENCY_OPTIONS)[number]) && (
-        <div className={s.summaryBox}>
-          We'll pick the days, so each prompt is a small surprise. At this pace the whole
-          journal takes <strong>{describeDuration(value)}</strong>. You can change this any
-          time.
-        </div>
-      )}
     </>
+  );
+}
+
+/**
+ * NOT shown anywhere yet. Meant for the Q&A page once there is one: a
+ * dropdown with how long the journal takes at each pace and when it would
+ * finish. Tapping a row picks that pace, so it can sit next to a frequency
+ * picker. Was briefly under the Step 1 buttons; removed to keep that step short.
+ */
+export function PaceCalculator({ value, onChange }: { value: number; onChange: (n: number) => void }) {
+  const known = FREQUENCY_OPTIONS.includes(value as (typeof FREQUENCY_OPTIONS)[number]);
+  return (
+    <details className={s.calc}>
+      <summary className={s.calcToggle}>How long will the journal take?</summary>
+      <div className={s.calcBody}>
+        {known && (
+          <p className={s.calcLine}>
+            {PROMPT_COUNT} prompts at {value} a week is about{" "}
+            <strong>{weeksToFinish(value)} weeks</strong>, so {describeDuration(value)}. Starting
+            now, your last prompt would arrive around <strong>{finishMonth(value)}</strong>.
+          </p>
+        )}
+        <div className={s.calcTable} role="group" aria-label="Compare paces">
+          {FREQUENCY_OPTIONS.map((n) => (
+            <button
+              key={n}
+              type="button"
+              className={`${s.calcRow} ${n === value ? s.calcRowOn : ""}`}
+              aria-pressed={n === value}
+              onClick={() => onChange(n)}
+            >
+              <span className={s.calcPace}>{n} a week</span>
+              <span className={s.calcDuration}>{describeDuration(n)}</span>
+              <span className={s.calcFinish}>{finishMonth(n)}</span>
+            </button>
+          ))}
+        </div>
+        <p className={s.fine}>
+          We'll pick the days, so each prompt is a small surprise. You can change your pace any
+          time.
+        </p>
+      </div>
+    </details>
   );
 }
 
@@ -108,7 +144,9 @@ export function TimePicker({
   const allOn = SEND_WINDOWS.every((w) => value.includes(w.id));
   return (
     <>
-      <span className={s.label}>What time of day? Pick as many as you like.</span>
+      <p className={s.desc} style={{ marginBottom: 10 }}>
+        What time of day? Pick as many as you like.
+      </p>
       <div className={s.options} role="group" aria-label="Time of day">
         {SEND_WINDOWS.map((w) => {
           const on = value.includes(w.id);
