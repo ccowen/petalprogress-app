@@ -97,6 +97,7 @@ export function ExampleThread() {
         <div className={s.bubbleMe}>maybe...</div>
         {/* Replies are acknowledged, never read: no words that judge or react to the answer. */}
         <div className={s.bubble}>Thanks for your thought. Now you can see another tile.</div>
+        <div className={s.bubble}>Sample design. Wouldn't want to spoil the reveal :)</div>
         <img className={s.gif} src={tiles14} alt={revealGifAlt.tiles14} />
       </div>
 
@@ -112,14 +113,12 @@ export function ExampleThread() {
         </div>
         <div className={s.bubbleMe}>DEF SQUIRREL</div>
         <div className={s.bubble}>Thanks for your thought. Here's your progress image.</div>
+        <div className={s.bubble}>Sample design. Wouldn't want to spoil the reveal :)</div>
         <img className={s.gif} src={tiles88} alt={revealGifAlt.tiles88} />
       </div>
       <div className={s.cloudStack}>
         <Cloud>
           <strong>Your responses are private.</strong> They're not linked to your information.
-        </Cloud>
-        <Cloud tone="blush">
-          <strong>This mandala design is a placeholder.</strong> Wouldn't want to spoil the reveal :)
         </Cloud>
       </div>
     </div>
