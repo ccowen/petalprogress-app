@@ -21,7 +21,7 @@ export function WelcomeStep({ onStart }: { onStart: () => void }) {
         </li>
         <li className={s.point}>
           <span className={s.pointIcon}>❋</span>
-          <span>Your replies stay private. They're never sold or shared.</span>
+          <span>Your replies stay private, never shared with your personal information.</span>
         </li>
         <li className={s.point}>
           <span className={s.pointIcon}>✓</span>
@@ -116,7 +116,7 @@ export function ExampleThread() {
       </div>
       <div className={s.cloudStack}>
         <Cloud>
-          <strong>Your responses are private.</strong> They're never shared or sold.
+          <strong>Your responses are private.</strong> They're never shared with your personal information.
         </Cloud>
         <Cloud tone="blush">
           <strong>This mandala design is a placeholder.</strong> Wouldn't want to spoil the reveal :)
