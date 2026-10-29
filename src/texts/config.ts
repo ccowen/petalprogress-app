@@ -66,8 +66,8 @@ export function consentText() {
 }
 
 /**
- * The privacy promise about answers, shown on the welcome and phone steps
- * and the account page. petalprogress-sms stores replies against the
+ * The privacy promise about answers: the title inline on the phone step and
+ * the account page, the details in the "Learn more" pop-up. petalprogress-sms stores replies against the
  * subscriber (sms_messages, service role only) so the prompts can be improved
  * from how people answer, and Twilio keeps its own message logs. So the
  * promise is that replies are private and that any we share carry no
@@ -76,9 +76,15 @@ export function consentText() {
  */
 export const ANSWERS_PRIVACY = {
   title: "Your answers stay private.",
-  text:
-    "We use replies to improve the prompts. If we ever share any, they never include " +
-    "your name, number or other personal information.",
+  details: [
+    "Your replies are saved with your account so we can see which prompts resonate " +
+      "and keep improving them.",
+    "They're never shown publicly or to other subscribers.",
+    "Texts are delivered by Twilio, which keeps a copy of messages, as any texting " +
+      "service does.",
+    "If we ever shared any replies, they would never include your name, number or " +
+      "other personal information.",
+  ],
 };
 
 /** Where the marketing site lives (for Terms / Privacy links). */

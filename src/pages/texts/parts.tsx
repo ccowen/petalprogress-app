@@ -1,4 +1,4 @@
-import type { ReactNode } from "react";
+import { useRef, type ReactNode } from "react";
 import { Link } from "react-router";
 import { Butterfly } from "./Butterfly";
 import { DEMO, resetDemo } from "../../texts/api";
@@ -8,6 +8,7 @@ import {
   FREQUENCY_OPTIONS,
   PROMPT_COUNT,
   SEND_WINDOWS,
+  SITE_URL,
   type SendWindowId,
 } from "../../texts/config";
 import { formatUsPhone } from "../../texts/phone";
@@ -176,16 +177,48 @@ export function TimePicker({
   );
 }
 
-/** The answers-privacy promise, as a quiet callout. */
+/** The answers-privacy promise, as a quiet callout; "Learn more" opens the details. */
 export function PrivacyNote() {
+  const dialog = useRef<HTMLDialogElement>(null);
   return (
     <div className={s.privacy}>
       <span className={s.privacyIcon} aria-hidden="true">
         ◎
       </span>
       <p>
-        <strong>Privacy Note. {ANSWERS_PRIVACY.title}</strong> {ANSWERS_PRIVACY.text}
+        <strong>Privacy Note.</strong> {ANSWERS_PRIVACY.title}{" "}
+        <button type="button" className={s.privacyMore} onClick={() => dialog.current?.showModal()}>
+          Learn more
+        </button>
       </p>
+      <dialog
+        ref={dialog}
+        className={s.privacyDialog}
+        aria-labelledby="privacy-dialog-title"
+        // A click on the backdrop lands on the dialog itself, not its contents.
+        onClick={(e) => e.target === e.currentTarget && dialog.current?.close()}
+      >
+        <div className={s.privacyDialogBody}>
+          <h2 id="privacy-dialog-title" className={s.privacyDialogTitle}>
+            {ANSWERS_PRIVACY.title}
+          </h2>
+          <ul className={s.privacyDialogList}>
+            {ANSWERS_PRIVACY.details.map((line) => (
+              <li key={line}>{line}</li>
+            ))}
+          </ul>
+          <p className={s.fine}>
+            More in our{" "}
+            <a href={`${SITE_URL}/privacy`} target="_blank" rel="noopener">
+              Privacy Policy
+            </a>
+            .
+          </p>
+          <button type="button" className={s.privacyDialogClose} onClick={() => dialog.current?.close()}>
+            Close
+          </button>
+        </div>
+      </dialog>
     </div>
   );
 }
