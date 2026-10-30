@@ -66,17 +66,25 @@ export function consentText() {
 }
 
 /**
- * The privacy promise about answers, shown on the welcome and phone steps
- * and the account page. petalprogress-sms makes it true: reply words go only
- * to an anonymous table (no person, number or time), and messages are deleted
- * from Twilio an hour after they finish. Don't strengthen this wording
- * without checking that the backend still backs it up.
+ * The privacy promise about answers: the title inline on the phone step and
+ * the account page, the details in the "Learn more" pop-up. petalprogress-sms stores replies against the
+ * subscriber (sms_messages, service role only) so the prompts can be improved
+ * from how people answer, and Twilio keeps its own message logs. So the
+ * promise is that replies are private and that any we share carry no
+ * personal information, not that they are anonymous or never shared. Don't
+ * strengthen this wording without checking that the backend still backs it up.
  */
 export const ANSWERS_PRIVACY = {
-  title: "Your answers stay yours.",
-  text:
-    "Replies are never saved to your account or linked to your number. We may keep " +
-    "answers anonymously, with no name or number attached, to help improve the prompts.",
+  title: "Your answers stay private.",
+  details: [
+    "Your replies are saved under a randomly generated user ID, so we can see which " +
+      "prompts resonate and keep improving them.",
+    "They're never shown publicly or to other subscribers.",
+    "Texts are delivered by Twilio, which also keeps a record of messages, as any " +
+      "texting service does.",
+    "If we ever shared any replies, they would never include your name, number or " +
+      "other personal information.",
+  ],
 };
 
 /** Where the marketing site lives (for Terms / Privacy links). */

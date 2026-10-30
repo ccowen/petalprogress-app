@@ -86,7 +86,7 @@ account, so neither form can be used to pump texts at arbitrary numbers.
   | `POST /pause`, `POST /resume` | none | 2xx | Sets `subscription_status`. |
   | `POST /billing-portal` | `return_url` | `{ url }` | Stripe Billing Portal session (card, receipts, cancel). |
 
-- **`petalprogress-db`** migration `20260925000100_texts_signup.sql`
+- **`petalprogress-db`** migration `20261029000100_texts_signup.sql`
   (`texts_per_week`, `paused_at`, consent record, `sms_messages`), plus a
   `sms_subscribers.display_name text` column for the signature, with a
   **unique index** (`src/texts/names.ts` generates it, e.g. `Gentle_Heron_42`;
