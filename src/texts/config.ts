@@ -77,11 +77,11 @@ export function consentText() {
 export const ANSWERS_PRIVACY = {
   title: "Your answers stay private.",
   details: [
-    "Your replies are saved with your account so we can see which prompts resonate " +
-      "and keep improving them.",
+    "Your replies are saved under a randomly generated user ID, so we can see which " +
+      "prompts resonate and keep improving them.",
     "They're never shown publicly or to other subscribers.",
-    "Texts are delivered by Twilio, which keeps a copy of messages, as any texting " +
-      "service does.",
+    "Texts are delivered by Twilio, which also keeps a record of messages, as any " +
+      "texting service does.",
     "If we ever shared any replies, they would never include your name, number or " +
       "other personal information.",
   ],
