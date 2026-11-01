@@ -20,16 +20,12 @@ export function WelcomeStep({ onStart }: { onStart: () => void }) {
           <span>Every answer reveals your mandala.</span>
         </li>
         <li className={s.point}>
-          <span className={s.pointIcon}>❋</span>
-          <span>Your responses stay private.</span>
-        </li>
-        <li className={s.point}>
           <span className={s.pointIcon}>✓</span>
           <span>Keep going for as long as it helps. Cancel anytime.</span>
         </li>
         <li className={s.point}>
           <span className={s.pointIcon}>✽</span>
-          <span>Your subscription ends automatically after {PROMPT_COUNT} prompts.</span>
+          <span>Your subscription ends automatically when journal finishes.</span>
         </li>
       </ul>
       <div className={s.heroNav}>
@@ -118,7 +114,7 @@ export function ExampleThread() {
       </div>
       <div className={s.cloudStack}>
         <Cloud>
-          <strong>Your responses stay private.</strong>
+          Engaging with the question is the practice. Maybe you reply with yes, maybe, 3, or squirrel.
         </Cloud>
       </div>
     </div>
