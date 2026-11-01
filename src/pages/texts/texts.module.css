@@ -539,6 +539,70 @@
   line-height: 1.6;
 }
 
+.privacyMore {
+  background: none;
+  border: none;
+  padding: 0;
+  font: inherit;
+  color: var(--pp-primary);
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+/* "Learn more" pop-up: a native <dialog>, so Escape and focus come free. */
+.privacyDialog {
+  margin: auto; /* the global margin reset would pin it to the top left */
+  border: 1px solid var(--pp-warm-1, #EDE9E3);
+  border-radius: 20px;
+  padding: 0;
+  width: calc(100% - 32px);
+  max-width: 420px;
+  background: var(--pp-surface, #FDFCFA);
+  color: var(--pp-text, #2C2825);
+  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.14);
+}
+
+.privacyDialog::backdrop {
+  background: rgba(44, 40, 37, 0.45);
+  backdrop-filter: blur(3px);
+}
+
+.privacyDialogBody {
+  padding: 28px 28px 24px;
+}
+
+.privacyDialogTitle {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 24px;
+  font-weight: 400;
+  margin: 0 0 14px;
+}
+
+.privacyDialogList {
+  margin: 0 0 16px;
+  padding-left: 18px;
+  font-size: 13.5px;
+  line-height: 1.65;
+  color: var(--pp-text-soft, #6B6460);
+}
+
+.privacyDialogList li + li {
+  margin-top: 8px;
+}
+
+.privacyDialogClose {
+  margin-top: 18px;
+  width: 100%;
+  padding: 11px 14px;
+  border: 1.5px solid var(--pp-warm-2, #D4CEC7);
+  border-radius: 10px;
+  background: none;
+  font-family: inherit;
+  font-size: 14px;
+  color: var(--pp-text, #2C2825);
+  cursor: pointer;
+}
+
 /* ── Account page ── */
 .section {
   border-top: 1px solid var(--pp-warm-1, #EDE9E3);

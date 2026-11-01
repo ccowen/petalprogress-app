@@ -21,7 +21,7 @@ export function WelcomeStep({ onStart }: { onStart: () => void }) {
         </li>
         <li className={s.point}>
           <span className={s.pointIcon}>❋</span>
-          <span>Replies are never saved to your account or linked to your number.</span>
+          <span>Your responses stay private.</span>
         </li>
         <li className={s.point}>
           <span className={s.pointIcon}>✓</span>
@@ -118,7 +118,7 @@ export function ExampleThread() {
       </div>
       <div className={s.cloudStack}>
         <Cloud>
-          <strong>Your responses are private.</strong> They're not linked to your information.
+          <strong>Your responses stay private.</strong>
         </Cloud>
       </div>
     </div>
