@@ -1,5 +1,6 @@
 import { useRef, type ReactNode } from "react";
 import { Link } from "react-router";
+import lotus from "@petalprogress/ui/assets/logo/lotus-header.png";
 import { Butterfly } from "./Butterfly";
 import { DEMO, resetDemo } from "../../texts/api";
 import {
@@ -36,7 +37,7 @@ export function TextsShell({ children, topLink }: { children: ReactNode; topLink
       )}
       <header className={s.top}>
         <Link to="/guided-journal" className={s.wordmark}>
-          PetalProgress
+          <img className={s.wordmarkIcon} src={lotus} alt="" /> PetalProgress
         </Link>
         {topLink}
       </header>

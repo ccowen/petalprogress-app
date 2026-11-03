@@ -20,11 +20,20 @@
 }
 
 .wordmark {
+  display: flex;
+  align-items: center;
+  gap: 10px;
   font-family: 'Cormorant Garamond', serif;
   font-size: 24px;
   font-weight: 600;
-  color: #fff;
+  color: #fce0c5;
   text-decoration: none;
+}
+
+.wordmarkIcon {
+  display: block;
+  height: 22px;
+  width: auto;
 }
 
 .topLink {
