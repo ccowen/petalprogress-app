@@ -804,6 +804,46 @@
   box-shadow: 0 10px 28px rgba(30, 26, 23, 0.14), 0 1px 3px rgba(30, 26, 23, 0.08);
 }
 
+/* Prompt 14 / Prompt 88: a two-option segmented toggle above the example text. */
+.promptToggle {
+  align-self: center;
+  display: inline-flex;
+  padding: 4px;
+  gap: 4px;
+  margin-bottom: 16px;
+  border-radius: 999px;
+  background: var(--pp-warm-1, #EDE9E3);
+}
+
+.promptToggleBtn {
+  padding: 8px 18px;
+  border: none;
+  border-radius: 999px;
+  background: transparent;
+  font-family: var(--pp-font-body);
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--pp-text-soft, #6B6460);
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+}
+
+.promptToggleBtn:hover {
+  color: var(--pp-text);
+}
+
+.promptToggleBtn[aria-pressed="true"] {
+  /* Neutral, not the primary rose: rose is for calls to action, and this is optional. */
+  background: var(--pp-surface, #FDFCFA);
+  color: var(--pp-text, #2C2825);
+  box-shadow: 0 1px 3px rgba(30, 26, 23, 0.12), 0 1px 1px rgba(30, 26, 23, 0.06);
+}
+
+.promptToggleBtn:focus-visible {
+  outline: 2px solid var(--pp-text-soft, #6B6460);
+  outline-offset: 2px;
+}
+
 /* The gif PetalProgress sends back after a reply: an incoming media bubble. */
 .gif {
   display: block;
@@ -1041,3 +1081,4 @@
 .cloudBlush .cloudShape {
   fill: var(--pp-blush);
 }
+

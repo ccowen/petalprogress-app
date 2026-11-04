@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { revealGifAlt } from "@petalprogress/ui";
 import tiles14 from "@petalprogress/ui/assets/reveal/14-tiles.gif";
 import tiles88 from "@petalprogress/ui/assets/reveal/88-tiles.gif";
@@ -56,9 +56,41 @@ function Cloud({
   );
 }
 
+const exampleTexts = [
+  {
+    label: "Prompt 14",
+    stamp: "Tuesday 8:04 AM",
+    prompt:
+      "🌱 Please consider this. Your yes could lose intention if you default to saying yes.\n\n" +
+      "Did you personally, deeply value saying yes to something recently?\n\n" +
+      "All responses welcome, including yes no maybe unsure",
+    reply: "maybe...",
+    thanks: "Thanks for your thought. Now you can see another tile.",
+    gif: tiles14,
+    alt: revealGifAlt.tiles14,
+  },
+  {
+    label: "Prompt 88",
+    stamp: "Friday 7:12 PM",
+    prompt:
+      "🌙 Which of these animal quirks fits you right about now? Or pick one you like.\n\n" +
+      "- a squirrel burying a decoy nut pile\n" +
+      "- an emperor penguin rotating in its group huddle\n" +
+      "- a pufferfish drawing sand circles\n" +
+      "- something else\n" +
+      "- unsure",
+    reply: "DEF SQUIRREL",
+    thanks: "Thanks for your thought. Here's your progress image.",
+    gif: tiles88,
+    alt: revealGifAlt.tiles88,
+  },
+];
+
 /** Two real prompts and replies, shown as a text thread on the "something like this" page. */
 export function ExampleThread() {
   const stageRef = useRef<HTMLDivElement>(null);
+  const [active, setActive] = useState(0);
+  const t = exampleTexts[active];
 
   // The clouds drift up and down a few pixels as the page scrolls.
   useEffect(() => {
@@ -82,35 +114,29 @@ export function ExampleThread() {
   return (
     <div ref={stageRef} className={s.threadStage}>
       {/* Two separate screens, not one thread: these prompts arrive weeks
-          apart, never in the same week. Each is its own card with a shadow. */}
-      <div className={s.phoneMock} role="group" aria-label="Example text, first prompt">
-        <div className={s.stamp}>Tuesday 8:04 AM</div>
-        <div className={s.bubble}>
-          {"🌱 Please consider this. Your yes could lose intention if you default to saying yes.\n\n" +
-            "Did you personally, deeply value saying yes to something recently?\n\n" +
-            "All responses welcome, including yes no maybe unsure"}
-        </div>
-        <div className={s.bubbleMe}>maybe...</div>
-        {/* Replies are acknowledged, never read: no words that judge or react to the answer. */}
-        <div className={s.bubble}>Thanks for your thought. Now you can see another tile.</div>
-        <div className={s.bubble}>Sample design. Wouldn't want to spoil the reveal :)</div>
-        <img className={s.gif} src={tiles14} alt={revealGifAlt.tiles14} />
+          apart, never in the same week. Only one shows at a time; both at
+          once is a lot to take in. */}
+      <div className={s.promptToggle} role="group" aria-label="Choose an example text">
+        {exampleTexts.map((t, i) => (
+          <button
+            key={t.label}
+            type="button"
+            className={s.promptToggleBtn}
+            aria-pressed={i === active}
+            onClick={() => setActive(i)}
+          >
+            {t.label}
+          </button>
+        ))}
       </div>
-
-      <div className={s.phoneMock} role="group" aria-label="Example text, a later prompt">
-        <div className={s.stamp}>Friday 7:12 PM</div>
-        <div className={s.bubble}>
-          {"🌙 Which of these animal quirks fits you right about now? Or pick one you like.\n\n" +
-            "- a squirrel burying a decoy nut pile\n" +
-            "- an emperor penguin rotating in its group huddle\n" +
-            "- a pufferfish drawing sand circles\n" +
-            "- something else\n" +
-            "- unsure"}
-        </div>
-        <div className={s.bubbleMe}>DEF SQUIRREL</div>
-        <div className={s.bubble}>Thanks for your thought. Here's your progress image.</div>
+      <div key={active} className={s.phoneMock} role="group" aria-label={`Example text, ${t.label}`}>
+        <div className={s.stamp}>{t.stamp}</div>
+        <div className={s.bubble}>{t.prompt}</div>
+        <div className={s.bubbleMe}>{t.reply}</div>
+        {/* Replies are acknowledged, never read: no words that judge or react to the answer. */}
+        <div className={s.bubble}>{t.thanks}</div>
         <div className={s.bubble}>Sample design. Wouldn't want to spoil the reveal :)</div>
-        <img className={s.gif} src={tiles88} alt={revealGifAlt.tiles88} />
+        <img className={s.gif} src={t.gif} alt={t.alt} />
       </div>
       <div className={s.cloudStack}>
         <Cloud>
