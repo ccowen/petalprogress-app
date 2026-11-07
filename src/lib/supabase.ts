@@ -1,9 +1,10 @@
 import { createClient } from "@supabase/supabase-js";
-// Types are generated from the migrations in ../petalprogress-db and linked
-// as a file: dependency. `import type` is deliberate: the generated module
-// has one runtime export we don't use, and a type-only import is erased at
-// compile time so the bundler never has to touch it.
-import type { Database } from "@ccowen/petalprogress-db";
+// database.types.ts is a copy of ../petalprogress-db/types/database.ts (that
+// repo is private, so Vercel can't install it). Refresh it with
+// `npm run sync:db-types` after a schema change. `import type` is deliberate:
+// the generated module has one runtime export we don't use, and a type-only
+// import is erased at compile time.
+import type { Database } from "./database.types";
 
 const url = import.meta.env.VITE_SUPABASE_URL;
 const anonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;

@@ -223,19 +223,19 @@ export async function getSubscription(): Promise<Subscription | null> {
   const { data: row, error } = await (await db())
     .from("sms_subscribers")
     .select(
-      "phone, display_name, texts_per_week, send_hour, timezone, subscription_status, paused_at, consent_confirmed_at, sms_opted_out_at, current_prompt_index",
+      "phone, display_name, texts_per_week, send_hour, timezone, subscription_status, consent_confirmed_at, sms_opted_out_at, current_prompt_index",
     )
     .maybeSingle();
   if (error) throw new Error(error.message);
   if (!row) return null;
 
-  // subscription_status mirrors Stripe billing; pause and the YES are
-  // separate columns (see petalprogress-db docs/database-decisions.md).
+  // subscription_status holds billing state and pause ('paused'); the YES is
+  // its own column (consent_confirmed_at).
   let status: SubscriptionStatus;
   if (row.subscription_status === "cancelled" || row.sms_opted_out_at) status = "cancelled";
   else if (row.subscription_status === "past_due") status = "past_due";
   else if (!row.consent_confirmed_at) status = "awaiting_confirmation";
-  else if (row.paused_at) status = "paused";
+  else if (row.subscription_status === "paused") status = "paused";
   else status = "active";
 
   return {

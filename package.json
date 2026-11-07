@@ -10,11 +10,11 @@
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "check:motion": "node src/mandala/motion/checks/run.mjs",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "sync:db-types": "cp ../petalprogress-db/types/database.ts src/lib/database.types.ts"
   },
   "dependencies": {
-    "@ccowen/petalprogress-db": "file:../petalprogress-db",
-    "@petalprogress/ui": "file:../petalprogress-ui",
+    "@petalprogress/ui": "git+https://github.com/ccowen/petalprogress-ui.git#445da897c4cf30ca87bb65692abe7ce781010e9a",
     "@supabase/supabase-js": "^2.111.0",
     "d3": "^7.9.0",
     "react": "^19.2.4",
