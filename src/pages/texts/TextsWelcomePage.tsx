@@ -99,19 +99,6 @@ export default function TextsWelcomePage() {
           <p className={s.desc} style={{ marginBottom: 14 }}>
             It goes at the bottom of your mandala.
           </p>
-          <div className={s.sigTools}>
-            <button
-              type="button"
-              className={s.linkBtn}
-              onClick={back}
-              disabled={previous.length === 0}
-            >
-              ← Back
-            </button>
-            <button type="button" className={s.linkBtn} onClick={shuffle}>
-              Shuffle ↻
-            </button>
-          </div>
           <div className={s.sigList} role="radiogroup" aria-label="Signature">
             {options.map((option) => (
               <button
@@ -126,6 +113,23 @@ export default function TextsWelcomePage() {
                 <span>{option}</span>
               </button>
             ))}
+          </div>
+          <div className={s.sigShuffleRow}>
+            <button
+              type="button"
+              className={s.btnBack}
+              onClick={back}
+              disabled={previous.length === 0}
+            >
+              ← Back
+            </button>
+            <button
+              type="button"
+              className={`${s.btnBack} ${s.sigShuffle}`}
+              onClick={shuffle}
+            >
+              Shuffle for new names ↻
+            </button>
           </div>
         </div>
         <div className={s.nav}>
