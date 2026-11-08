@@ -162,24 +162,30 @@ export default function TextsWelcomePage() {
           </div>
           <div className={s.bubbleMe}>YES</div>
         </div>
-        <p className={s.fine} style={{ marginBottom: 20 }}>
+        <h2 className={s.subtitle} style={{ marginTop: 24, marginBottom: 14 }}>
+          Great, you're all set. Your experience from here will be over text.
+        </h2>
+        <p className={s.fine}>
           No text after a few minutes, or wrong number?{" "}
           <button
             type="button"
             className={s.linkBtn}
-            onClick={() => setStage("number")}
+            style={{ color: "var(--pp-text-soft, #6B6460)", fontSize: "inherit" }}
+            onClick={() => {
+              setStage("number");
+              window.scrollTo(0, 0);
+            }}
           >
             Enter the number again
           </button>
           . You can also reply HELP to any of our messages.
         </p>
-        <Link
-          to="/guided-journal/account"
-          className={s.btnNext}
-          style={{ display: "block" }}
-        >
-          Go to your settings
-        </Link>
+        <p className={s.fine} style={{ marginTop: 14 }}>
+          You can return to{" "}
+          <Link to="/guided-journal/account">app.petalprogress.com</Link> to
+          change your settings in the future, or to cancel. Cancellation can
+          also be handled over text.
+        </p>
       </TextsShell>
     );
   }
