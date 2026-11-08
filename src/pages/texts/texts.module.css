@@ -509,8 +509,13 @@
   cursor: pointer;
 }
 
-.btnBack:hover {
+.btnBack:hover:not(:disabled) {
   background: var(--pp-warm-1, #EDE9E3);
+}
+
+.btnBack:disabled {
+  opacity: 0.4;
+  cursor: default;
 }
 
 .linkBtn {
@@ -699,18 +704,16 @@
   margin-bottom: 14px;
 }
 
-/* Back / Shuffle sit above the list as quiet links, away from the one real
-   button at the bottom, so there's a clear order: adjust, pick, continue. */
-.sigTools {
+/* Back / Shuffle sit under the list as outlined buttons, so it's clear the
+   names can be changed, but they stay quieter than the one filled button
+   below: adjust, pick, continue. */
+.sigShuffleRow {
   display: flex;
-  justify-content: flex-end;
-  gap: 18px;
-  margin-bottom: 8px;
+  gap: 10px;
 }
 
-.sigTools .linkBtn:disabled {
-  opacity: 0.4;
-  cursor: default;
+.sigShuffle {
+  flex: 1;
 }
 
 .sigOption {
