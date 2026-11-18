@@ -75,7 +75,7 @@ const exampleTexts: {
   note?: string;
 }[] = [
   {
-    label: "Prompt 14",
+    label: "Sample",
     stamp: "Tuesday 8:30 AM",
     messages: [
       {
@@ -90,7 +90,7 @@ const exampleTexts: {
     ],
   },
   {
-    label: "Prompt 88 (Mandala Monday)",
+    label: "Sample (Mandala Monday)",
     stamp: "Monday 8:30 AM",
     note: "Sample design. Wouldn't want to spoil the reveal :)",
     media: { src: tiles88, alt: revealGifAlt.tiles88 },
