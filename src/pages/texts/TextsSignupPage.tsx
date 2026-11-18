@@ -92,6 +92,7 @@ export default function TextsSignupPage() {
             Engaging with the question is the practice. Maybe you reply with <em>yes</em>,{" "}
             <em>maybe</em>, <em>3</em>, or <em>squirrel</em>.
           </p>
+          <p className={s.tagline}>One journal, two ways to engage.</p>
           <ExampleThread />
           <div className={s.nav}>
             <button type="button" className={s.btnBack} onClick={() => go("welcome")}>

@@ -118,6 +118,16 @@
   color: var(--pp-text-soft, #6B6460);
 }
 
+/* One-line tagline above the sample toggle. */
+.tagline {
+  font-family: 'Cormorant Garamond', serif;
+  font-style: italic;
+  font-size: 20px;
+  color: var(--pp-text-soft, #6B6460);
+  text-align: center;
+  margin: 4px 0 14px;
+}
+
 /* Section heading inside a card, smaller than .title. */
 .subtitle {
   font-family: 'Cormorant Garamond', serif;
@@ -807,7 +817,7 @@
   box-shadow: 0 10px 28px rgba(30, 26, 23, 0.14), 0 1px 3px rgba(30, 26, 23, 0.08);
 }
 
-/* Prompt 14 / Prompt 88 (Mandala Monday): a two-option segmented toggle above the example text. */
+/* Sample / Sample (Mandala Monday): a two-option segmented toggle above the example text. */
 .promptToggle {
   align-self: center;
   display: inline-flex;
@@ -835,7 +845,7 @@
   color: var(--pp-text);
 }
 
-/* "Prompt 88 (Mandala Monday)" is a long label: tighten it so both fit on a phone. */
+/* "Sample (Mandala Monday)" is a long label: tighten it so both fit on a phone. */
 @media (max-width: 420px) {
   .promptToggleBtn {
     padding: 8px 12px;
